@@ -1,6 +1,6 @@
 Gurme
 =====
 
-Apps to calculate calories
+Keep your calories on track
 
-- TTL edit'as
+- Vytauto PUSH'ina
