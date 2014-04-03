@@ -2,10 +2,6 @@ nfq_akademija_base:
     resource: "@NFQAkademijaBaseBundle/Resources/config/routing.yml"
     prefix:   /
 
-acme_hello:
-    resource: "@AcmeHelloBundle/Resources/config/routing.yml"
-    prefix:   /
-
 fos_user_security:
     resource: "@FOSUserBundle/Resources/config/routing/security.xml"
 

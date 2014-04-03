@@ -14,4 +14,30 @@
 .DS_Store
 /node_modules
 /bower_components
+/.vagrant/machines
 
+composer.phar
+.idea/*
+.vagrant/machines/*
+# Bootstrap
+app/bootstrap*
+
+bin/*
+
+# Symfony directories
+vendor/*
+*/logs/*
+*/cache/*
+web/uploads/*
+web/bundles/*
+web/css/*
+web/js/*
+web/fonts/*
+app/Resources/lib/*
+bower_components/*
+node_modules/*
+
+
+# Configuration files
+app/config/parameters.ini
+app/config/parameters.yml

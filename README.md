@@ -169,3 +169,11 @@ Enjoy!
 [11]: http://symfony.com/doc/2.4/cookbook/logging/monolog.html
 [12]: http://symfony.com/doc/2.4/cookbook/assetic/asset_management.html
 [13]: http://symfony.com/doc/2.4/bundles/SensioGeneratorBundle/index.html
+
+-----------------------------------------------------
+
+bower install - visa frontenda instalioti
+
+npm install  //reikalingas package.json paketams sudegti
+
+grunt
