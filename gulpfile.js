@@ -13,7 +13,7 @@ gulp.task('default', function() {
         .pipe(sass())
         .pipe(gulp.dest('web/css'));
 
-    gulp.src(['app/Resources/lib/jquery/jquery.js'])
+    gulp.src(['app/Resources/lib/jquery/jquery.js','app/Resources/scripts/script.js'])
         .pipe(concat('all.js'))
         .pipe(gulp.dest('web/js'));
 
