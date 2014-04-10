@@ -1,0 +1,7 @@
+parameters:
+#    gurme_main.example.class: Gurme\MainBundle\Example
+
+services:
+#    gurme_main.example:
+#        class: %gurme_main.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

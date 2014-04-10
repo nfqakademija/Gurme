@@ -1,0 +1,39 @@
+<?php
+
+namespace Gurme\MainBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Units
+ *
+ * @ORM\Table(name="units")
+ * @ORM\Entity
+ */
+class Unit
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="short", type="string", length=10, nullable=false)
+     */
+    private $short;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="long", type="string", length=45, nullable=true)
+     */
+    private $long;
+
+
+}

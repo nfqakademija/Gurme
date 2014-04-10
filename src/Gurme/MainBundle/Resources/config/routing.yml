@@ -1,0 +1,8 @@
+gurme_main_homepage:
+    pattern:  /hello/{name}
+    defaults: { _controller: GurmeMainBundle:Default:index }
+
+crud_unit:
+    resource: "@GurmeMainBundle/Controller"
+    type: annotation
+    prefix:   /
