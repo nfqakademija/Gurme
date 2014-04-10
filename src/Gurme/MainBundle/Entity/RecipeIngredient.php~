@@ -1,0 +1,69 @@
+<?php
+
+namespace Gurme\MainBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * RecipeIngredients
+ *
+ * @ORM\Table(name="recipe_ingredients", indexes={@ORM\Index(name="fk_recipe_ingredients_1_idx", columns={"ingredient_id"}), @ORM\Index(name="fk_recipe_ingredients_2_idx", columns={"recipe_id"}), @ORM\Index(name="fk_recipe_ingredients_3_idx", columns={"unit_id"})})
+ * @ORM\Entity
+ */
+class RecipeIngredient
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="ammount", type="string", length=10, nullable=false)
+     */
+    private $ammount;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="note", type="string", length=45, nullable=true)
+     */
+    private $note;
+
+    /**
+     * @var \Ingredients
+     *
+     * @ORM\ManyToOne(targetEntity="Ingredient")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="ingredient_id", referencedColumnName="id")
+     * })
+     */
+    private $ingredient;
+
+    /**
+     * @var \Recipes
+     *
+     * @ORM\ManyToOne(targetEntity="Recipe")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="recipe_id", referencedColumnName="id")
+     * })
+     */
+    private $recipe;
+
+    /**
+     * @var \Units
+     *
+     * @ORM\ManyToOne(targetEntity="Unit")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="unit_id", referencedColumnName="id")
+     * })
+     */
+    private $unit;
+
+
+}

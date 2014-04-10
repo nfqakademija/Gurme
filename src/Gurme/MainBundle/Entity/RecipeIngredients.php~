@@ -1,0 +1,194 @@
+<?php
+
+namespace Gurme\MainBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * RecipeIngredients
+ *
+ * @ORM\Table(name="recipe_ingredients", indexes={@ORM\Index(name="fk_recipe_ingredients_1_idx", columns={"ingredient_id"}), @ORM\Index(name="fk_recipe_ingredients_2_idx", columns={"recipe_id"}), @ORM\Index(name="fk_recipe_ingredients_3_idx", columns={"unit_id"})})
+ * @ORM\Entity
+ */
+class RecipeIngredients
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="ammount", type="string", length=10, nullable=true)
+     */
+    private $ammount;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="note", type="string", length=45, nullable=true)
+     */
+    private $note;
+
+    /**
+     * @var \Ingredients
+     *
+     * @ORM\ManyToOne(targetEntity="Ingredients")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="ingredient_id", referencedColumnName="id")
+     * })
+     */
+    private $ingredient;
+
+    /**
+     * @var \Recipes
+     *
+     * @ORM\ManyToOne(targetEntity="Recipes")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="recipe_id", referencedColumnName="id")
+     * })
+     */
+    private $recipe;
+
+    /**
+     * @var \Units
+     *
+     * @ORM\ManyToOne(targetEntity="Units")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="unit_id", referencedColumnName="id")
+     * })
+     */
+    private $unit;
+
+
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set ammount
+     *
+     * @param string $ammount
+     * @return RecipeIngredients
+     */
+    public function setAmmount($ammount)
+    {
+        $this->ammount = $ammount;
+
+        return $this;
+    }
+
+    /**
+     * Get ammount
+     *
+     * @return string 
+     */
+    public function getAmmount()
+    {
+        return $this->ammount;
+    }
+
+    /**
+     * Set note
+     *
+     * @param string $note
+     * @return RecipeIngredients
+     */
+    public function setNote($note)
+    {
+        $this->note = $note;
+
+        return $this;
+    }
+
+    /**
+     * Get note
+     *
+     * @return string 
+     */
+    public function getNote()
+    {
+        return $this->note;
+    }
+
+    /**
+     * Set ingredient
+     *
+     * @param \Gurme\MainBundle\Entity\Ingredients $ingredient
+     * @return RecipeIngredients
+     */
+    public function setIngredient(\Gurme\MainBundle\Entity\Ingredients $ingredient = null)
+    {
+        $this->ingredient = $ingredient;
+
+        return $this;
+    }
+
+    /**
+     * Get ingredient
+     *
+     * @return \Gurme\MainBundle\Entity\Ingredients 
+     */
+    public function getIngredient()
+    {
+        return $this->ingredient;
+    }
+
+    /**
+     * Set recipe
+     *
+     * @param \Gurme\MainBundle\Entity\Recipes $recipe
+     * @return RecipeIngredients
+     */
+    public function setRecipe(\Gurme\MainBundle\Entity\Recipes $recipe = null)
+    {
+        $this->recipe = $recipe;
+
+        return $this;
+    }
+
+    /**
+     * Get recipe
+     *
+     * @return \Gurme\MainBundle\Entity\Recipes 
+     */
+    public function getRecipe()
+    {
+        return $this->recipe;
+    }
+
+    /**
+     * Set unit
+     *
+     * @param \Gurme\MainBundle\Entity\Units $unit
+     * @return RecipeIngredients
+     */
+    public function setUnit(\Gurme\MainBundle\Entity\Units $unit = null)
+    {
+        $this->unit = $unit;
+
+        return $this;
+    }
+
+    /**
+     * Get unit
+     *
+     * @return \Gurme\MainBundle\Entity\Units 
+     */
+    public function getUnit()
+    {
+        return $this->unit;
+    }
+}

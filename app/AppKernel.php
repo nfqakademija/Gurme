@@ -23,6 +23,7 @@ class AppKernel extends Kernel
 
             #3rd party bundles
             new FOS\UserBundle\FOSUserBundle(),
+            new Gurme\MainBundle\GurmeMainBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
