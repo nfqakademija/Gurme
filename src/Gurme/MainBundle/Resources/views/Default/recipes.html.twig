@@ -1,0 +1,21 @@
+<html>
+
+<head>
+    <title>Receptai</title>
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}"/>
+    <link rel="script" href="{{ asset('js/all.js') }}"/>
+</head>
+
+<body>
+    <div>
+        <a href="" class="btn btn-default btn-lg active" role="button">=</a>
+        <header><i>Gurme</i></header>
+    </div>
+
+    <ul style="list-style-type: none">
+       {# cia turetu buti kazkas panasaus i foreach sakini #}
+       <li><a href="{{ path('recipe') }}"><img src="{{ asset('images/lettuce.jpg') }}" width="100px" height="auto"></a></li>
+    </ul>
+</body>
+
+</html>
