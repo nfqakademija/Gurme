@@ -1,0 +1,131 @@
+<?php
+
+namespace Gurme\MainBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * UserFavorites
+ *
+ * @ORM\Table(name="user_favorites", indexes={@ORM\Index(name="fk_user_favorites_1_idx", columns={"user_id"}), @ORM\Index(name="fk_user_favorites_2_idx", columns={"recipe_id"})})
+ * @ORM\Entity
+ */
+class UserFavorites
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="added_at", type="datetime", nullable=false)
+     */
+    private $addedAt;
+
+    /**
+     * @var \Users
+     *
+     * @ORM\ManyToOne(targetEntity="Users")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * })
+     */
+    private $user;
+
+    /**
+     * @var \Recipes
+     *
+     * @ORM\ManyToOne(targetEntity="Recipes")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="recipe_id", referencedColumnName="id")
+     * })
+     */
+    private $recipe;
+
+
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set addedAt
+     *
+     * @param \DateTime $addedAt
+     * @return UserFavorites
+     */
+    public function setAddedAt($addedAt)
+    {
+        $this->addedAt = $addedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get addedAt
+     *
+     * @return \DateTime 
+     */
+    public function getAddedAt()
+    {
+        return $this->addedAt;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \Gurme\MainBundle\Entity\Users $user
+     * @return UserFavorites
+     */
+    public function setUser(\Gurme\MainBundle\Entity\Users $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \Gurme\MainBundle\Entity\Users 
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * Set recipe
+     *
+     * @param \Gurme\MainBundle\Entity\Recipes $recipe
+     * @return UserFavorites
+     */
+    public function setRecipe(\Gurme\MainBundle\Entity\Recipes $recipe = null)
+    {
+        $this->recipe = $recipe;
+
+        return $this;
+    }
+
+    /**
+     * Get recipe
+     *
+     * @return \Gurme\MainBundle\Entity\Recipes 
+     */
+    public function getRecipe()
+    {
+        return $this->recipe;
+    }
+}

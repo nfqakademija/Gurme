@@ -1,0 +1,155 @@
+<?php
+
+namespace Gurme\MainBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Ingredients
+ *
+ * @ORM\Table(name="ingredients")
+ * @ORM\Entity
+ */
+class Ingredients
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string aaaaaaaaaaaaaaaaaaaaaaaaa
+     *
+     * @ORM\Column(name="name", type="string", length=100, nullable=false)
+     */
+    private $name;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="icon_url", type="string", length=2083, nullable=false)
+     */
+    private $iconUrl;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="popularity", type="integer", nullable=true)
+     */
+    private $popularity;
+
+    /**
+     * @var simplearray
+     *
+     * @ORM\Column(name="alias", type="simplearray", nullable=false)
+     */
+    private $alias;
+
+
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     * @return Ingredients
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string 
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set iconUrl
+     *
+     * @param string $iconUrl
+     * @return Ingredients
+     */
+    public function setIconUrl($iconUrl)
+    {
+        $this->iconUrl = $iconUrl;
+
+        return $this;
+    }
+
+    /**
+     * Get iconUrl
+     *
+     * @return string 
+     */
+    public function getIconUrl()
+    {
+        return $this->iconUrl;
+    }
+
+    /**
+     * Set popularity
+     *
+     * @param integer $popularity
+     * @return Ingredients
+     */
+    public function setPopularity($popularity)
+    {
+        $this->popularity = $popularity;
+
+        return $this;
+    }
+
+    /**
+     * Get popularity
+     *
+     * @return integer 
+     */
+    public function getPopularity()
+    {
+        return $this->popularity;
+    }
+
+    /**
+     * Set alias
+     *
+     * @param \simplearray $alias
+     * @return Ingredients
+     */
+    public function setAlias(\simplearray $alias)
+    {
+        $this->alias = $alias;
+
+        return $this;
+    }
+
+    /**
+     * Get alias
+     *
+     * @return \simplearray 
+     */
+    public function getAlias()
+    {
+        return $this->alias;
+    }
+}

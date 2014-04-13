@@ -10,7 +10,7 @@ Vagrant.configure(2) do |config|
     v.customize ["modifyvm", :id, "--memory", 1024]
     v.customize ["setextradata", :id, "--VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
   end
-  config.vm.hostname = "projektas.dev"
+  config.vm.hostname = "gurme.dev"
   sync_type = Vagrant::Util::Platform.windows? == true ? "smb" : "nfs"
   config.vm.synced_folder "./", "/var/www", id: "vagrant-root" , :type => sync_type
   config.vm.provision :shell, :inline =>"sudo apt-get update"

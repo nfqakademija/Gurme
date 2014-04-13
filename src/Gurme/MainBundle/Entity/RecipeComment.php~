@@ -1,0 +1,66 @@
+<?php
+
+namespace Gurme\MainBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * RecipeComments
+ *
+ * @ORM\Table(name="recipe_comments", indexes={@ORM\Index(name="fk_recipe_comments_1_idx", columns={"user_id"}), @ORM\Index(name="fk_recipe_comments_2_idx", columns={"recipe_id"})})
+ * @ORM\Entity
+ */
+class RecipeComment
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="comment", type="string", length=500, nullable=false)
+     */
+    private $comment;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="created_at", type="datetime", nullable=false)
+     */
+    private $createdAt;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="flaged", type="boolean", nullable=false)
+     */
+    private $flaged;
+
+    /**
+     * @var \Users
+     *
+     * @ORM\ManyToOne(targetEntity="NFQAkademija\BaseBundle\Entity\User")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * })
+     */
+    private $user;
+
+    /**
+     * @var \Recipes
+     *
+     * @ORM\ManyToOne(targetEntity="Recipe")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="recipe_id", referencedColumnName="id")
+     * })
+     */
+    private $recipe;
+
+
+}
