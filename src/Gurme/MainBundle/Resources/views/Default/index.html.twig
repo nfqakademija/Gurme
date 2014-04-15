@@ -1,14 +1,20 @@
-<!DOCTYPE html>
-<html data-ng-app="">
+
+<html>
+
 <head>
-    <meta charset="UTF-8" />
-    <title>Admin</title>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="stylesheet" type="text/css" href="/css/style.css" />
-    <script src="/js/all.js"></script>
+    <title>Pradinis</title>
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}" />
+    <link rel="script" href="{{ asset('js/all.js') }}" />
 </head>
+
 <body>
-Hello {{ name }}! This is at GurmeMainBundle:Default:index
-<input type="text" data-ng-model="name" >{% verbatim %}{{ name }}{% endverbatim %}
+    <div>
+        <img src="{{ asset('images/home.jpg') }}" width="200px" height="auto" style="margin: auto; display: block">
+    </div>
+    <h1 style="text-align: center">Laikydamasis  dietos</br> Tu jau dabar gali valgyti</br> <b>SKANIAI!<b></h1>
+    <div class="text-center">
+        <a href="{{ path('calories') }}" class="btn btn-default btn-lg active" role="button">ĮSITIKINK!</a>
+    </div>
 </body>
+
 </html>

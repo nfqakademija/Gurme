@@ -1,3 +1,8 @@
 nfq_akademija_base_homepage:
     pattern:  /hello/{name}
     defaults: { _controller: NFQAkademijaBaseBundle:Default:index }
+
+nfq_akademija_test_homepage:
+    pattern:  /labas/{name}
+    defaults: { _controller: NFQAkademijaBaseBundle:Default:labas }
+

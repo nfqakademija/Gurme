@@ -10,4 +10,9 @@ class DefaultController extends Controller
     {
         return $this->render('NFQAkademijaBaseBundle:Default:index.html.twig', array('name' => $name));
     }
+
+    public function labasAction($name)
+    {
+        return $this->render('NFQAkademijaBaseBundle:Default:index.html.twig', array('name' => $name));
+    }
 }
