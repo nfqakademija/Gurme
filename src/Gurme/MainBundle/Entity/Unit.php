@@ -35,6 +35,13 @@ class Unit
      */
     private $plural;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="system", type="string", length=6, nullable=true)
+     */
+    private $system;
+
 
     /**
      * Get id
@@ -90,5 +97,26 @@ class Unit
     public function getPlural()
     {
         return $this->plural;
+    }
+
+    /**
+     * Set system
+     *
+     * @param string $system
+     * @return Unit
+     */
+    public function setSystem($system)
+    {
+        $this->system = $system;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSystem()
+    {
+        return $this->system;
     }
 }

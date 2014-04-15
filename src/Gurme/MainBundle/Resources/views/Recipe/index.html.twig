@@ -46,7 +46,7 @@
                     {% endif %}</td>
                 <td>{{ entity.calories }}</td>
                 <td>{{ entity.servings }}</td>
-                <td>{{ entity.directions }}</td>
+                <td>{{ entity.directions|length > 50 ? entity.directions|slice(0, 50) ~ '...' : entity.directions  }}</td>
                 <td>{{ entity.approved }}</td>
                 <td>{% if entity.createdAt %}{{ entity.createdAt|date('Y-m-d H:i:s') }}{% endif %}</td>
                 <td>{{ entity.rating }}</td>

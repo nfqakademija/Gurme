@@ -93,7 +93,6 @@ class RecipeController extends Controller
 
                 $ingredients[$i] = $listItem;
                 $em->persist($ingredients[$i]);
-
                 $i++;
             }
 //            $em->flush();
@@ -371,10 +370,12 @@ class RecipeController extends Controller
         $pattern = "/^.*$pattern.*\$/m";
 
         if(preg_match_all($pattern, $contents, $matches)){
-
+//exit(var_dump(trim($matches[0])));
             $lines = $matches[0];
             $i=0;
             foreach($lines as $line){
+
+                if (trim($line) == '') { continue; }
 
                 $ing[$i]['valid'] = 'remove';
 
