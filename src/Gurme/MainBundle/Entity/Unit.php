@@ -24,17 +24,16 @@ class Unit
     /**
      * @var string
      *
-     * @ORM\Column(name="short", type="string", length=10, nullable=false)
+     * @ORM\Column(name="main", type="string", length=10, nullable=false)
      */
-    private $short;
+    private $main;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="`long`", type="string", length=45, nullable=true)
+     * @ORM\Column(name="plural", type="string", length=45, nullable=true)
      */
-    private $long;
-
+    private $plural;
 
 
     /**
@@ -48,48 +47,48 @@ class Unit
     }
 
     /**
-     * Set short
+     * Set main
      *
-     * @param string $short
+     * @param string $main
      * @return Unit
      */
-    public function setShort($short)
+    public function setMain($main)
     {
-        $this->short = $short;
+        $this->$main = $main;
 
         return $this;
     }
 
     /**
-     * Get short
+     * Get main
      *
      * @return string 
      */
-    public function getShort()
+    public function getMain()
     {
-        return $this->short;
+        return $this->main;
     }
 
     /**
-     * Set long
+     * Set plural
      *
-     * @param string $long
+     * @param string $plural
      * @return Unit
      */
-    public function setLong($long)
+    public function setPlural($plural)
     {
-        $this->long = $long;
+        $this->$plural = $plural;
 
         return $this;
     }
 
     /**
-     * Get long
+     * Get plural
      *
      * @return string 
      */
-    public function getLong()
+    public function getPlural()
     {
-        return $this->long;
+        return $this->plural;
     }
 }

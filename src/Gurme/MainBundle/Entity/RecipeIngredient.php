@@ -29,11 +29,14 @@ class RecipeIngredient
     private $ammount;
 
     /**
-     * @var string
+     * @var \Units
      *
-     * @ORM\Column(name="note", type="string", length=45, nullable=true)
+     * @ORM\ManyToOne(targetEntity="Unit")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="unit_id", referencedColumnName="id")
+     * })
      */
-    private $note;
+    private $unit;
 
     /**
      * @var \Ingredients
@@ -46,6 +49,13 @@ class RecipeIngredient
     private $ingredient;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="note", type="string", length=45, nullable=true)
+     */
+    private $note;
+
+    /**
      * @var \Recipes
      *
      * @ORM\ManyToOne(targetEntity="Recipe")
@@ -54,16 +64,6 @@ class RecipeIngredient
      * })
      */
     private $recipe;
-
-    /**
-     * @var \Units
-     *
-     * @ORM\ManyToOne(targetEntity="Unit")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="unit_id", referencedColumnName="id")
-     * })
-     */
-    private $unit;
 
 
 

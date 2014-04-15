@@ -3,15 +3,22 @@
 namespace Gurme\MainBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Gurme\MainBundle\Entity\RecipePhoto;
 
 /**
  * Recipes
  *
  * @ORM\Table(name="recipes", indexes={@ORM\Index(name="fk_recipes_2_idx", columns={"cover_photo_id"}), @ORM\Index(name="fk_recipes_1_idx", columns={"user_id"})})
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
  */
 class Recipe
 {
+    ///////////////////////////////////////////////////////////
+    // Database variables
+    ///////////////////////////////////////////////////////////
     /**
      * @var integer
      *
@@ -23,17 +30,11 @@ class Recipe
 
     /**
      * @var string
+     * @Assert\NotBlank()
      *
      * @ORM\Column(name="name", type="string", length=45, nullable=false)
      */
     private $name;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="prep_time", type="time", nullable=true)
-     */
-    private $prepTime;
 
     /**
      * @var string
@@ -41,6 +42,13 @@ class Recipe
      * @ORM\Column(name="directions", type="text", nullable=true)
      */
     private $directions;
+
+    /**
+     * @var \string
+     *
+     * @ORM\Column(name="prep_time", type="time", nullable=true)
+     */
+    private $prepTime;
 
     /**
      * @var \DateTime
@@ -59,14 +67,20 @@ class Recipe
     /**
      * @var integer
      *
-     * @ORM\Column(name="calories", type="integer", nullable=true)
+     * @ORM\Column(name="calories", type="integer", nullable=false)
      */
     private $calories;
 
     /**
      * @var integer
+     * @Assert\NotBlank()
+     * @Assert\Type(type="integer", message="The value {{ value }} is not a valid {{ type }}.")
+     * @Assert\Range( min = 1, max = 100,
+     *      minMessage = "You must enter positive number",
+     *      maxMessage = "Your servings number doesnt make sense"
+     * )
      *
-     * @ORM\Column(name="servings", type="smallint", nullable=true)
+     * @ORM\Column(name="servings", type="smallint", nullable=false)
      */
     private $servings;
 
@@ -118,7 +132,168 @@ class Recipe
      */
     private $coverPhoto;
 
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="carbs", type="float", nullable=false)
+     */
+    private $carbs;
 
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="fat", type="float", nullable=false)
+     */
+    private $fat;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="protein", type="float", nullable=false)
+     */
+    private $protein;
+
+    ///////////////////////////////////////////////////////////
+    // Virtual variables
+    ///////////////////////////////////////////////////////////
+
+    private $ingredients;
+
+    /**
+     * @param mixed $ingredients
+     */
+    public function setIngredients($ingredients)
+    {
+        $this->ingredients = $ingredients;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIngredients()
+    {
+        return $this->ingredients;
+    }
+
+    /**
+     * @Assert\File(maxSize="6000000")
+     */
+    private $file;
+
+    /**
+     * Sets file.
+     *
+     * @param UploadedFile $file
+     */
+    public function setFile(UploadedFile $file = null)
+    {
+        $this->file = $file;
+        // check if we have an old image path
+        if (isset($this->path)) {
+            // store the old name to delete after the update
+            $this->temp = $this->path;
+            $this->path = null;
+        } else {
+            $this->path = 'initialalala';
+        }
+    }
+
+    /**
+     * Get file.
+     *
+     * @return UploadedFile
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate()
+     */
+    public function preUpload()
+    {
+        if (null !== $this->getFile()) {
+            // do whatever you want to generate a unique name
+            $filename = sha1(uniqid(mt_rand(), true));
+            $this->path = $filename.'.'.$this->getFile()->guessExtension();
+        }
+    }
+
+    /**
+     * @ORM\PostPersist()
+     * @ORM\PostUpdate()
+     */
+    public function upload()
+    {
+        // the file property can be empty if the field is not required
+        if (null === $this->getFile()) {
+            return;
+        }
+
+        // if there is an error when moving the file, an exception will
+        // be automatically thrown by move(). This will properly prevent
+        // the entity from being persisted to the database on error
+        $this->path = $this->id . '-' . $this->path;
+        $this->getFile()->move($this->getUploadRootDir(), $this->path);
+//        exit(var_dump($this));
+        // check if we have an old image
+        if (isset($this->temp)) {
+            // delete the old image
+            unlink($this->getUploadRootDir().'/'.$this->temp);
+            // clear the temp image path
+            $this->temp = null;
+        }
+        $this->file = null;
+
+    }
+
+    public $path;
+
+    public function getAbsolutePath()
+    {
+        return null === $this->path
+            ? null
+            : $this->getUploadRootDir().'/'.$this->path;
+    }
+
+    public function getWebPath()
+    {
+        return null === $this->path
+            ? null
+            : $this->getUploadDir().'/'.$this->path;
+    }
+
+    protected function getUploadRootDir()
+    {
+        // the absolute directory path where uploaded
+        // documents should be saved
+        return __DIR__.'/../../../../web/'.$this->getUploadDir();
+    }
+
+    protected function getUploadDir()
+    {
+        // get rid of the __DIR__ so it doesn't screw up
+        // when displaying uploaded doc/image in the view.
+        return 'images/dishes';
+    }
+
+    private $temp;
+
+    /**
+     * @ORM\PostRemove()
+     */
+    public function removeUpload()
+    {
+        if ($file = $this->getAbsolutePath()) {
+            unlink($file);
+        }
+    }
+
+    ///////////////////////////////////////////////////////////
+    // Database variables' getters and setters
+    ///////////////////////////////////////////////////////////
 
     /**
      * Get id
@@ -169,7 +344,7 @@ class Recipe
     /**
      * Get prepTime
      *
-     * @return \DateTime 
+     * @return \string
      */
     public function getPrepTime()
     {
@@ -322,7 +497,9 @@ class Recipe
      */
     public function setCreatedAt($createdAt)
     {
-        $this->createdAt = $createdAt;
+        if (!isset($this->createdAt)) {
+            $this->createdAt = new \DateTime('NOW');
+        }
 
         return $this;
     }
@@ -391,7 +568,9 @@ class Recipe
      */
     public function setUser(\NFQAkademija\BaseBundle\Entity\User $user = null)
     {
-        $this->user = $user;
+        if(!isset($this->user)){
+            $this->user = $user;
+        }
 
         return $this;
     }
@@ -428,4 +607,54 @@ class Recipe
     {
         return $this->coverPhoto;
     }
+
+    /**
+     * @param float $carbs
+     */
+    public function setCarbs($carbs)
+    {
+        $this->carbs = $carbs;
+    }
+
+    /**
+     * @return float
+     */
+    public function getCarbs()
+    {
+        return $this->carbs;
+    }
+
+    /**
+     * @param float $fat
+     */
+    public function setFat($fat)
+    {
+        $this->fat = $fat;
+    }
+
+    /**
+     * @return float
+     */
+    public function getFat()
+    {
+        return $this->fat;
+    }
+
+    /**
+     * @param float $protein
+     */
+    public function setProtein($protein)
+    {
+        $this->protein = $protein;
+    }
+
+    /**
+     * @return float
+     */
+    public function getProtein()
+    {
+        return $this->protein;
+    }
+
 }
+

@@ -1,1 +1,14 @@
-Hello {{ name }}!
+<!DOCTYPE html>
+<html data-ng-app="">
+<head>
+    <meta charset="UTF-8" />
+    <title>Admin</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
+    <script src="/js/all.js"></script>
+</head>
+<body>
+Hello {{ name }}! This is at GurmeMainBundle:Default:index
+<input type="text" data-ng-model="name" >{% verbatim %}{{ name }}{% endverbatim %}
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" ng-app='gurmeApp'>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Admin{% endblock %}</title>
+        {% block stylesheets %}{% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}" />
+        <script src="{{ asset('js/all.js') }}"></script>
+    </head>
+    <body>
+        {% block body %}
+            <div class="container">
+                {% block header %}
+                    <div class="page-header">
+                        <h1> {% block page_title %} {{ "Gurme :: Admin Zone" }} {% endblock %} </h1>
+                        <h3>{% block page_subtitle_title %} {{ "Very tasty!" }} {% endblock %}</h3>
+                    </div>
+                {% endblock %}
+
+                <div class="row">
+                    <div class="col-lg-12 col-md-12">
+                        {% block content %}{% endblock %}
+                    </div>
+                </div>
+            </div>
+
+        {% endblock %}
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

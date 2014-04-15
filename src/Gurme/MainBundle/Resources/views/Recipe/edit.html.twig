@@ -1,0 +1,34 @@
+{% extends '::admin.html.twig' %}
+
+{% block page_subtitle_title %} {{ "Recipe edit" }} {% endblock %}
+{% block content -%}
+
+    {{ form_start(edit_form) }}
+    {{ form_errors(edit_form) }}
+
+    <div>
+        {{ form_label(edit_form.name) }}
+        {{ form_errors(edit_form.name) }}
+        {{ form_widget(edit_form.name) }}
+    </div>
+
+    <div>
+        {{ form_label(edit_form.prepTime) }}
+        {{ form_errors(edit_form.prepTime) }}
+        {{ form_widget(edit_form.prepTime) }}
+    </div>
+
+    <div>
+        {{ form_widget(edit_form.submit) }}
+    </div>
+
+    {{ form_end(edit_form) }}
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('data_recipe') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>{{ form(delete_form) }}</li>
+</ul>
+{% endblock %}
