@@ -13,6 +13,7 @@ use Gurme\MainBundle\Entity\Recipe;
 use Gurme\MainBundle\Form\RecipeType;
 use Gurme\MainBundle\Entity\RecipePhoto;
 use Gurme\MainBundle\Entity\RecipeIngredient;
+use Gurme\MainBundle\Entity\RecipeCategorie;
 
 
 /**
@@ -62,6 +63,14 @@ class RecipeController extends Controller
         $form = $this->createCreateForm($entity);
 
         $form->handleRequest($request);
+//        exit(var_dump($entity->getCategories()));
+        $zeroTime = new \DateTime('1970-01-01 00:00:00');
+        if ($entity->getReadyTime() == $zeroTime) {
+            $interval1 = date_diff($zeroTime, $entity->getPrepTime());
+            $interval2 = date_diff($zeroTime, $entity->getCookTime());
+            $zeroTime->add($interval1)->add($interval2);
+            $entity->setReadyTime($zeroTime);
+        }
 
         $ingredientCheck = $this->checkIngredientInput($entity->getIngredients());
 //        exit(var_dump($ingredientCheck));
@@ -69,6 +78,16 @@ class RecipeController extends Controller
         if (($form->isValid())&&($ingredientCheck['status'])) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
+            $em->flush();
+
+            $categories = array();
+            foreach($entity->getCategories() as $selectedCat) {
+                $recipeCat = new RecipeCategorie();
+                $recipeCat->setCategory($em->getRepository('GurmeMainBundle:Categorie')->find($selectedCat));
+                $recipeCat->setRecipe($entity);
+                $categories[]=$recipeCat;
+                $em->persist(end($categories));
+            }
             $em->flush();
 
             $ingredients = array();
@@ -142,6 +161,19 @@ class RecipeController extends Controller
         $form->remove('rating');
         $form->remove('user');
         $form->remove('coverPhoto');
+
+        $em = $this->getDoctrine()->getManager();
+        $entities = $em->getRepository('GurmeMainBundle:Categorie')->findAll();
+        $categories = array();
+        foreach($entities as $entity) {
+            $categories[$entity->getId()]=$entity->getName();
+        }
+
+        $form->add('categories', 'choice', array(
+            'choices'   => $categories,
+            'multiple'  => true,
+            'expanded'  => true,
+        ));
 
         $form->add('file', 'file');
         $form->add('submit', 'submit', array(

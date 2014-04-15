@@ -153,9 +153,23 @@ class Recipe
      */
     private $protein;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="about", type="text", nullable=true)
+     */
+    private $about;
+
+
     ///////////////////////////////////////////////////////////
     // Virtual variables
     ///////////////////////////////////////////////////////////
+
+    /**
+     * @var array
+     *
+     */
+    private $categories;
 
     private $ingredients;
 
@@ -216,7 +230,9 @@ class Recipe
     {
         if (null !== $this->getFile()) {
             // do whatever you want to generate a unique name
-            $filename = sha1(uniqid(mt_rand(), true));
+//            $filename = sha1(uniqid(mt_rand(), true));
+//            $filename = uniqid(mt_rand());
+            $filename = uniqid();
             $this->path = $filename.'.'.$this->getFile()->guessExtension();
         }
     }
@@ -344,7 +360,7 @@ class Recipe
     /**
      * Get prepTime
      *
-     * @return \string
+     * @return \DateTime
      */
     public function getPrepTime()
     {
@@ -654,6 +670,52 @@ class Recipe
     public function getProtein()
     {
         return $this->protein;
+    }
+
+    /**
+     * Set about
+     *
+     * @param string $about
+     * @return Recipe
+     */
+    public function setAbout($about)
+    {
+        $this->about = $about;
+
+        return $this;
+    }
+
+    /**
+     * Get about
+     *
+     * @return string
+     */
+    public function getAbout()
+    {
+        return $this->about;
+    }
+
+    /**
+     * Set categories
+     *
+     * @param array $categories
+     * @return Recipe
+     */
+    public function setCategories($categories)
+    {
+        $this->categories = $categories;
+
+        return $this;
+    }
+
+    /**
+     * Get categories
+     *
+     * @return array
+     */
+    public function getCategories()
+    {
+        return $this->categories;
     }
 
 }

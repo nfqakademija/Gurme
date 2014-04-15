@@ -34,13 +34,18 @@ class RecipeType extends AbstractType
                     'rows' => '8'
                 )
             ))
+            ->add('about', 'textarea', array(
+                'attr' => array(
+                    'class' => 'form-control',
+                    'rows' => '4'
+                )
+            ))
             ->add('servings', 'integer', array(
                 'attr' => array(
                     'class' => 'form-control'
                 ),
                 'data' => '4'
             ))
-//            ->add('prepTime')
             ->add('prepTime', 'time', array(
                 'label' => 'Preparation Time [hh:mm]',
                 'input'  => 'datetime',
@@ -65,19 +70,19 @@ class RecipeType extends AbstractType
                 ),
                 'data' => '500'
             ))
-            ->add('carbs', 'integer', array(
+            ->add('carbs', 'number', array(
                 'attr' => array(
                     'class' => 'form-control'
                 ),
                 'data' => '52'
             ))
-            ->add('fat', 'integer', array(
+            ->add('fat', 'number', array(
                 'attr' => array(
                     'class' => 'form-control'
                 ),
                 'data' => '23'
             ))
-            ->add('protein', 'integer', array(
+            ->add('protein', 'number', array(
                 'attr' => array(
                     'class' => 'form-control'
                 ),
