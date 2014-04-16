@@ -1,0 +1,167 @@
+{% extends '::admin.html.twig' %}
+
+{% block page_subtitle_title %} {{ "Recipe creation" }} {% endblock %}
+
+{% block content -%}
+
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            {{ form_label(form.name) }}
+            {{ form_errors(form.name) }}
+            {{ form_widget(form.name) }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            {{ form_label(form.categories) }}
+            {{ form_errors(form.categories) }}
+            {{ form_widget(form.categories) }}
+        </div>
+    </div>
+
+<ng ng-controller='MainController'>
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12">
+        {{ form_label(form.ingredients) }}&nbsp;&nbsp;{amount} {unit} {ingredient} , {note}
+        {{ form_errors(form.ingredients) }}
+        {{ form_widget(form.ingredients, { 'attr': {'ng-model': 'ingredientsTextArea'} }) }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-2">
+            <button type="button" class="" ng-click='ingredientCheck()' ng-model='buttonName'>Submittion check</button>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-10">
+
+            <table class="records_list table">
+                <thead>
+                <tr><td colspan="5">{% verbatim %}{{ dataa }}{% endverbatim %}</td></tr>
+                <tr>
+                    <th>{% verbatim %}{{ status }}{% endverbatim %}</th>
+                    <th>Amount</th>
+                    <th>Unit</th>
+                    <th>Ingredient</th>
+                    <th>Note</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="ingredient in ingredients">
+                        <td><span class="glyphicon glyphicon-{% verbatim %}{{ ingredient.valid }}{% endverbatim %}"></span></td>
+                        <td>{% verbatim %}{{ ingredient.amount }}{% endverbatim %}</td>
+                        <td>{% verbatim %}{{ ingredient.unit }}{% endverbatim %}</td>
+                        <td>{% verbatim %}{{ ingredient.ingredient }}{% endverbatim %}</td>
+                        <td>{% verbatim %}{{ ingredient.notes }}{% endverbatim %}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</ng>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            {{ form_label(form.about) }}
+            {{ form_errors(form.about) }}
+            {{ form_widget(form.about) }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12">
+        {{ form_label(form.directions) }}
+        {{ form_errors(form.directions) }}
+        {{ form_widget(form.directions) }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-4">
+            {{ form_label(form.prepTime) }}
+            {{ form_errors(form.prepTime) }}
+            {{ form_widget(form.prepTime) }}
+        </div>
+
+        <div class="col-xs-12 col-sm-12 col-md-4">
+            {{ form_label(form.cookTime) }}
+            {{ form_errors(form.cookTime) }}
+            {{ form_widget(form.cookTime) }}
+        </div>
+
+        <div class="col-xs-12 col-sm-12 col-md-4">
+            {{ form_label(form.readyTime) }}
+            {{ form_errors(form.readyTime) }}
+            {{ form_widget(form.readyTime) }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-4">
+        {{ form_label(form.servings) }}
+        {{ form_errors(form.servings) }}
+        {{ form_widget(form.servings) }}
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-4">
+            {{ form_label(form.calories) }}
+            {{ form_errors(form.calories) }}
+            {{ form_widget(form.calories) }}
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-4">
+            {{ form_label(form.carbs) }}
+            {{ form_errors(form.carbs) }}
+            {{ form_widget(form.carbs) }}
+        </div>
+
+        <div class="col-xs-12 col-sm-12 col-md-4">
+            {{ form_label(form.fat) }}
+            {{ form_errors(form.fat) }}
+            {{ form_widget(form.fat) }}
+        </div>
+
+        <div class="col-xs-12 col-sm-12 col-md-4">
+            {{ form_label(form.protein) }}
+            {{ form_errors(form.protein) }}
+            {{ form_widget(form.protein) }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-4">
+            {{ form_label(form.file) }}
+            {{ form_errors(form.file) }}
+            {{ form_widget(form.file) }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-4">
+            {{ form_label(form.private) }}
+            {{ form_errors(form.private) }}
+            {{ form_widget(form.private) }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-4">
+        {{ form_widget(form.submit) }}
+        </div>
+    </div>
+
+    {{ form_end(form) }}
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-4">
+            <a class="btn btn-primary btn-lg" href="{{ path('data_recipe') }}">
+                Back to the list
+            </a>
+        </div>
+    </div>
+{% endblock %}

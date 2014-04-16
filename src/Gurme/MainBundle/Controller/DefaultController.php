@@ -49,13 +49,15 @@ class DefaultController extends Controller
      */
     public function recipesAction()
     {
-        if(isset($_POST['calories']))
+        if (isset($_POST['calories'])) {
             $calories = $_POST['calories'];
-        $recipes = $product = $this->getDoctrine()
-            ->getRepository('GurmeMainBundle:Recipe')->retrieveRecipesWithPhotos();
-        var_dump($recipes);
-        die;
-        return $this->render('GurmeMainBundle:Default:recipes.html.twig', array('recipes'=>$recipes));
+            $recipes = $product = $this->getDoctrine()
+                ->getRepository('GurmeMainBundle:Recipe')->retrieveRecipesWithPhotos($calories);
+        } else {
+            $recipes = $product = $this->getDoctrine()
+                ->getRepository('GurmeMainBundle:Recipe')->retrieveRecipesWithPhotos();
+        }
+        return $this->render('GurmeMainBundle:Default:recipes.html.twig', array('recipes' => $recipes));
     }
 
     /**
@@ -67,7 +69,14 @@ class DefaultController extends Controller
      */
     public function singleRecipeAction()
     {
-        return $this->render('GurmeMainBundle:Default:recipe.html.twig', array());
+        if(isset($_GET['id']))
+        $recipe = $product = $this->getDoctrine()
+            ->getRepository('GurmeMainBundle:Recipe')->find($_GET['id']);
+        else return false;
+
+        //var_dump($recipe->getIngredient());
+      //  die;
+        return $this->render('GurmeMainBundle:Default:recipe.html.twig', array('recipe' => $recipe));
     }
 
 

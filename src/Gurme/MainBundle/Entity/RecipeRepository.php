@@ -12,13 +12,16 @@ use Doctrine\ORM\EntityRepository;
  */
 class RecipeRepository extends EntityRepository
 {
-    public function retrieveRecipesWithPhotos()
+    public function retrieveRecipesWithPhotos($cal = 500)
     {
 
-        $q = $this->getEntityManager()
-            ->createQuery("SELECT *
-                            FROM recipes AS r
-                            LEFT JOIN recipe_photos AS p ON p.recipe_id = r.id");
-        return $q->getResult();
+        return $this->createQueryBuilder('r')
+            ->select('r')
+
+            ->where('r.calories >= :start')
+            ->andWhere('r.calories <= :end')
+            ->setParameters(array('start' => $cal-50, 'end' => $cal+50))
+            ->getQuery()
+            ->execute();
     }
 }

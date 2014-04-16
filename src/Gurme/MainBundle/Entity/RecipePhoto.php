@@ -98,7 +98,9 @@ class RecipePhoto
      */
     public function setUploadedAt($uploadedAt)
     {
-        $this->uploadedAt = $uploadedAt;
+        if (!isset($this->uploadedAt)) {
+            $this->uploadedAt = new \DateTime('NOW');
+        } else $this->uploadedAt = $uploadedAt;
 
         return $this;
     }

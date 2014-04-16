@@ -59,12 +59,12 @@ php::module {
   ]:
 }
 
-augeas { "php_zone_cli":
+augeas { "php_timezone_cli":
   context => "/files/etc/php5/cli/php.ini",
   changes => "set PHP/date.timezone Europe/Vilnius",
 }
 
-augeas { "php_zone_apache2":
+augeas { "php_timezone_apache2":
   context => "/files/etc/php5/apache2/php.ini",
   changes => "set PHP/date.timezone Europe/Vilnius",
 }

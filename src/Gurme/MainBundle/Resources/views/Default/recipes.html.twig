@@ -10,7 +10,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand">Gurme</a>
+            <a href="{{ path('index') }}" class="navbar-brand">Gurme</a>
         </div>
 
         <div class="navbar-collapse collapse">
@@ -33,7 +33,7 @@
 
                 <div class="row">
                     <div class="thumbnail">
-                        <img src="{{ asset('images/lettuce.jpg') }}">
+                        <img src="{{ asset(item.coverPhoto.url) }}">
                         <div class="caption information">
                             <label>{{ item.calories }}</label>
                             <a href="{{ path('recipe', {'id': item.id}) }}"><h2>{{ item.name }}</h2></a>

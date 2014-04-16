@@ -1,0 +1,68 @@
+{% extends '::admin.html.twig' %}
+
+{% block page_subtitle_title %} {{ "Recipe list" }} {% endblock %}
+
+{% block content -%}
+
+    <ul>
+        <li>
+            <a href="{{ path('data_recipe_new') }}">
+                Create a new entry
+            </a>
+        </li>
+    </ul>
+
+    <table class="records_list table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Preptime</th>
+                <th>Cooktime</th>
+                <th>Readytime</th>
+                <th>Calories</th>
+                <th>Servings</th>
+                <th>Directions</th>
+                <th>Approved</th>
+                <th>Created At</th>
+                <th>Rating</th>
+                <th>Private</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                <td><a href="{{ path('data_recipe_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                <td>{{ entity.name }}</td>
+                <td>{% if entity.prepTime %}
+                        {{ entity.prepTime|date('G \\h i \\m\\i\\n\\s') }}
+                    {% endif %}</td>
+                <td>{% if entity.cookTime %}
+                        {{ entity.cookTime|date('G \\h i \\m\\i\\n\\s') }}
+                    {% endif %}</td>
+                <td>{% if entity.readyTime %}
+                        {{ entity.readyTime|date('G \\h i \\m\\i\\n\\s') }}
+                    {% endif %}</td>
+                <td>{{ entity.calories }}</td>
+                <td>{{ entity.servings }}</td>
+                <td>{{ entity.directions|length > 50 ? entity.directions|slice(0, 50) ~ '...' : entity.directions  }}</td>
+                <td>{{ entity.approved }}</td>
+                <td>{% if entity.createdAt %}{{ entity.createdAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{{ entity.rating }}</td>
+                <td>{{ entity.private }}</td>
+                <td>
+                <ul>
+                    <li>
+                        <a href="{{ path('data_recipe_show', { 'id': entity.id }) }}">show</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('data_recipe_edit', { 'id': entity.id }) }}">edit</a>
+                    </li>
+                </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% endblock %}
