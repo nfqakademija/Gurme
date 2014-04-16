@@ -2,20 +2,25 @@
 
 namespace Gurme\MainBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Gurme\MainBundle\Entity\RecipePhoto;
+use Gurme\MainBundle\Entity\RecipeIngredient;
 
 /**
  * Recipes
  *
  * @ORM\Table(name="recipes", indexes={@ORM\Index(name="fk_recipes_2_idx", columns={"cover_photo_id"}), @ORM\Index(name="fk_recipes_1_idx", columns={"user_id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Gurme\MainBundle\Entity\RecipeRepository")
  * @ORM\HasLifecycleCallbacks
  */
 class Recipe
 {
+    public function __construct(){
+        $this->ingredient = new ArrayCollection();
+    }
     ///////////////////////////////////////////////////////////
     // Database variables
     ///////////////////////////////////////////////////////////
@@ -133,6 +138,15 @@ class Recipe
     private $coverPhoto;
 
     /**
+     * @var \RecipeIngredient
+     *
+     * @ORM\OneToMany(targetEntity="RecipeIngredient", mappedBy="recipe")
+     * @ORM\JoinColumn(name="id", referencedColumnName="id")
+     *
+     */
+    private $ingredient;
+
+    /**
      * @var float
      *
      * @ORM\Column(name="carbs", type="float", nullable=false)
@@ -170,7 +184,14 @@ class Recipe
      *
      */
     private $categories;
-
+    /**
+     * @var \RecipePhotos
+     *
+     * @ORM\ManyToMany(targetEntity="RecipeIngredient")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="id", referencedColumnName="id")
+     * })
+     */
     private $ingredients;
 
     /**
@@ -716,6 +737,16 @@ class Recipe
     public function getCategories()
     {
         return $this->categories;
+    }
+
+    /**
+     * Get ingredient
+     *
+     * @return \Gurme\MainBundle\Entity\RecipeIngredient
+     */
+    public function getIngredient()
+    {
+        return $this->ingredient;
     }
 
 }

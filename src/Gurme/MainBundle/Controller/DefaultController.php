@@ -44,12 +44,20 @@ class DefaultController extends Controller
      * Lists all Unit entities.
      *
      * @Route("/recipes", name="recipes")
-     * @Method("GET")
+     * @Method("POST")
      * @Template()
      */
     public function recipesAction()
     {
-        return $this->render('GurmeMainBundle:Default:recipes.html.twig', array());
+        if (isset($_POST['calories'])) {
+            $calories = $_POST['calories'];
+            $recipes = $product = $this->getDoctrine()
+                ->getRepository('GurmeMainBundle:Recipe')->retrieveRecipesWithPhotos($calories);
+        } else {
+            $recipes = $product = $this->getDoctrine()
+                ->getRepository('GurmeMainBundle:Recipe')->retrieveRecipesWithPhotos();
+        }
+        return $this->render('GurmeMainBundle:Default:recipes.html.twig', array('recipes' => $recipes));
     }
 
     /**
@@ -61,7 +69,14 @@ class DefaultController extends Controller
      */
     public function singleRecipeAction()
     {
-        return $this->render('GurmeMainBundle:Default:recipe.html.twig', array());
+        if(isset($_GET['id']))
+        $recipe = $product = $this->getDoctrine()
+            ->getRepository('GurmeMainBundle:Recipe')->find($_GET['id']);
+        else return false;
+
+        //var_dump($recipe->getIngredient());
+      //  die;
+        return $this->render('GurmeMainBundle:Default:recipe.html.twig', array('recipe' => $recipe));
     }
 
 
