@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Recipes
  *
  * @ORM\Table(name="recipes", indexes={@ORM\Index(name="fk_recipes_2_idx", columns={"cover_photo_id"}), @ORM\Index(name="fk_recipes_1_idx", columns={"user_id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Gurme\MainBundle\Entity\RecipeRepository")
  */
 class Recipe
 {
