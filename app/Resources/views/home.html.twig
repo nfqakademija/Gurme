@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" ng-app='gurmeApp'>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Admin{% endblock %}</title>
+        {% block stylesheets %}{% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon-carrot.ico') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}" />
+        <script src="{{ asset('js/all.js') }}"></script>
+    </head>
+    <body ng-controller='MainController'>
+    <div id="wrap">
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">Gurme</a>
+                </div>
+
+                <div class="navbar-collapse collapse">
+                    <form class="navbar-form navbar-right form-inline" role="form">
+                        <div class="form-group">
+                            <input type="text" placeholder="Email" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" placeholder="Password" class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-success">Sign in</button>
+                    </form>
+                </div><!--/.navbar-collapse -->
+            </div>
+        </div>
+
+
+        <div id="main" class="container clear-top">
+            <div id="calorieInput">
+
+                {#<div class="row">#}
+                {#</div>#}
+
+                <div class="row">
+                    <div class="col-md-4">
+                        &nbsp;
+                    </div>
+                    <div class="col-md-4">
+                        {#<p>&nbsp;</p>#}
+                        <p class="text-center" style="font-size: 26px">Enter maximum amount of calories for the recipe:</p>
+                        <input type="text" class="form-control" style="height: 64px;
+                            margin-bottom: 10px;
+                            line-height: 30px;
+                            padding: 11px 19px;
+                            font-size: 40px; text-align:center" ng-model='calories' ui-keypress="{'enter':'loadRecipes($event);'}"value="500">
+
+                        <p><a class="btn btn-primary btn-lg" style="width:100%" role="button" ng-click='loadRecipes()'>Search</a></p>
+                        <p class="text-center" style="font-size: 30px">or</p>
+                        <p><a class="btn btn-default btn-lg" style="width:100%" role="button">Choose ingredients</a></p>
+
+                    </div>
+                    <div class="col-md-4">
+                        &nbsp;
+                    </div>
+                </div>
+            </div> <!-- /container -->
+
+            <div id="recipesList">
+                <div class="row">
+                    <ng ng-repeat="recipe in recipes">
+                        <div class="col-lg-3 col-md-3" id="recipeBlock">
+
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <div class="row">
+                                        <div class="col-lg-9">
+                                            <h5>{% verbatim %}{{ recipe.name }}{% endverbatim %}</h3>
+                                        </div>
+                                        <div class="col-lg-3" style="text-align: center">
+                                            <p>{% verbatim %}{{ recipe.calories }}{% endverbatim %}<br>kcal</p>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="panel-body" style="text-align: center">
+                                    <img src="http://gurme.dev/{% verbatim %}{{ recipe.url }}{% endverbatim %}" alt="..." class="img-rounded" style="width: 230px;">
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </ng>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p class="text-muted">&copy; Gurme 2014; data -> {% verbatim %}{{ status }}{% endverbatim %}</p>
+        </div>
+    </footer>
+
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

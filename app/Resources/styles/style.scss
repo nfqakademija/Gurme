@@ -1,1 +1,33 @@
 @import "../lib/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap";
+
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+  padding-top: 50px;
+  padding-bottom: 20px;
+}
+
+html, body {
+  height: 100%;
+}
+
+#wrap {
+  min-height: 100%;
+}
+
+#main {
+  overflow:auto;
+  padding-bottom:80px; /* this needs to be bigger than footer height*/
+}
+
+.footer {
+  position: relative;
+  margin-top: -80px; /* negative value of footer height */
+  height: 80px;
+  clear:both;
+  padding-top:20px;
+}
+
+.GurmeListBlock {
+  background-color: lightsalmon;
+  text-align: center;
+}
