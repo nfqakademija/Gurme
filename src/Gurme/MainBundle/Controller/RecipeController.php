@@ -95,7 +95,7 @@ class RecipeController extends Controller
             foreach ($ingredientCheck['ingredients'] as $ing) {
                 $listItem = new RecipeIngredient();
                 $listItem->setRecipe($entity);
-                $listItem->setAmmount($ing['amount']);
+                $listItem->setAmount($ing['amount']);
                 $ingredient = $em->getRepository('GurmeMainBundle:Ingredient')
                     ->findOneBy(array('name' => $ing['ingredient']));
 

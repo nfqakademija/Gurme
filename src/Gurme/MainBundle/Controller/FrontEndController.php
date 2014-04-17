@@ -14,7 +14,7 @@ use Symfony\Component\BrowserKit\Request;
  * @Route("/")
  */
 
-class DefaultController extends Controller
+class FrontEndController extends Controller
 {
     /**
      * Lists all Unit entities.

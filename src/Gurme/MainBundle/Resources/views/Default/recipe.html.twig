@@ -34,7 +34,7 @@
             <ul class="list-unstyled">
                 {# cia turetu buti kazkas panasaus i foreach sakini #}
                 {% for item in recipe.ingredient %}
-                    <li>{{ item.ammount | default("") }}
+                    <li>{{ item.amount | default("") }}
                         {{ item.unit.main | default("") }}
                         {{ item.ingredient.name | default("") }}
                         ( {{ item.note | default("")}} )</li>

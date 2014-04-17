@@ -42,11 +42,17 @@ app.controller("MainController", function($scope, $http){
         }).success(function (data, status, headers, config) {
             $scope.data = angular.fromJson(data);
             $scope.recipes = $scope.data.recipes;
+            var i = 0;
+            for (var prop in $scope.recipes) {
+                i = i + 1;
+                if (0==i%4) {
+                    $scope.recipes[prop].containerInsert = 'clearfix';
+                }
+            }
             $scope.status = $scope.data.status;
             $scope.buttonName = "Submittion check";
         }).error(function (data, status, headers, config) {
             $scope.status = status;
         });
-        $('div:nth-child(4n)').after('<div class="clearfix" id="">...</div>')
     }
 });

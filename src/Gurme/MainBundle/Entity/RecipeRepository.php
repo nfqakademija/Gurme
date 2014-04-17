@@ -17,7 +17,6 @@ class RecipeRepository extends EntityRepository
 
         return $this->createQueryBuilder('r')
             ->select('r')
-
             ->where('r.calories >= :start')
             ->andWhere('r.calories <= :end')
             ->setParameters(array('start' => $cal-50, 'end' => $cal+50))

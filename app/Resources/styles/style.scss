@@ -1,4 +1,5 @@
 @import "../lib/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap";
+@import "../lib/angular/angular-csp.css";
 
 /* Move down content because we have a fixed navbar that is 50px tall */
 body {
@@ -34,4 +35,18 @@ html, body {
 
 .content{
   padding-top: 40px;
+}
+
+#gurmeCalorieInputTopSpacer {
+  @media (max-width: $screen-xs-max) {
+    display: none;
+    background-color: #000000;
+    color: #00ff00;
+  }
+}
+
+#recipeBlock {
+  @media (max-width: $screen-xs-max) {
+    padding: 0;
+  }
 }

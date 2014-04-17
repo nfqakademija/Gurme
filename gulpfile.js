@@ -26,14 +26,14 @@ gulp.task('default', function() {
         .pipe(gulp.dest('web/fonts'));
 });
 
-//gulp.task('watch', function () {
-//    gulp.src('app/Resources/styles/*')
-//        .pipe(watch(function() {
-//            return gulp.src('app/Resources/styles/main.scss')
-//                .pipe(sass())
-//                .pipe(gulp.dest('web/assets/css/'));
-//        }));
-//});
+gulp.task('watch', function () {
+    gulp.src('app/Resources/styles/*')
+        .pipe(watch(function() {
+            return gulp.src('app/Resources/styles/style.scss')
+                .pipe(sass())
+                .pipe(gulp.dest('web/css'));
+        }));
+});
 
 //gulp.task('watchJS', function () {
 //    gulp.src('app/Resources/styles/*')
