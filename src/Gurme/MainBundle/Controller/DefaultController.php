@@ -44,12 +44,13 @@ class DefaultController extends Controller
      * Lists all Unit entities.
      *
      * @Route("/recipes", name="recipes")
-     * @Method("GET")
+     * @Method("POST")
      * @Template()
      */
     public function recipesAction()
     {
-        return $this->render('GurmeMainBundle:Default:recipes.html.twig', array());
+        $calories = $_POST['calories'];
+        return $this->render('GurmeMainBundle:Default:recipes.html.twig', array('calories' => $calories));
     }
 
     /**
