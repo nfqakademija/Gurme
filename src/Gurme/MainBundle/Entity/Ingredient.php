@@ -31,14 +31,14 @@ class Ingredient
     /**
      * @var array
      *
-     * @ORM\Column(name="alias", type="simple_array")
+     * @ORM\Column(name="alias", type="simple_array", nullable=true)
      */
     private $alias;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="icon_url", type="string", length=2083)
+     * @ORM\Column(name="icon_url", type="string", length=2083, nullable=true)
      */
     private $iconUrl;
 

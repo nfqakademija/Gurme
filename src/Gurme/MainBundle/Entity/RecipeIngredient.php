@@ -24,16 +24,19 @@ class RecipeIngredient
     /**
      * @var string
      *
-     * @ORM\Column(name="ammount", type="string", length=10, nullable=false)
+     * @ORM\Column(name="amount", type="string", length=10, nullable=false)
      */
-    private $ammount;
+    private $amount;
 
     /**
-     * @var string
+     * @var \Units
      *
-     * @ORM\Column(name="note", type="string", length=45, nullable=true)
+     * @ORM\ManyToOne(targetEntity="Unit")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="unit_id", referencedColumnName="id")
+     * })
      */
-    private $note;
+    private $unit;
 
     /**
      * @var \Ingredients
@@ -46,25 +49,21 @@ class RecipeIngredient
     private $ingredient;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="note", type="string", length=45, nullable=true)
+     */
+    private $note;
+
+    /**
      * @var \Recipes
      *
-     * @ORM\ManyToOne(targetEntity="Recipe")
+     * @ORM\ManyToOne(targetEntity="Recipe", inversedBy="ingredient")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="recipe_id", referencedColumnName="id")
      * })
      */
     private $recipe;
-
-    /**
-     * @var \Units
-     *
-     * @ORM\ManyToOne(targetEntity="Unit")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="unit_id", referencedColumnName="id")
-     * })
-     */
-    private $unit;
-
 
 
     /**
@@ -78,26 +77,26 @@ class RecipeIngredient
     }
 
     /**
-     * Set ammount
+     * Set amount
      *
-     * @param string $ammount
+     * @param string $amount
      * @return RecipeIngredient
      */
-    public function setAmmount($ammount)
+    public function setAmount($amount)
     {
-        $this->ammount = $ammount;
+        $this->amount = $amount;
 
         return $this;
     }
 
     /**
-     * Get ammount
+     * Get amount
      *
      * @return string 
      */
-    public function getAmmount()
+    public function getAmount()
     {
-        return $this->ammount;
+        return $this->amount;
     }
 
     /**

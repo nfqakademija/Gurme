@@ -6,7 +6,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\BrowserKit\Request;
+//use Symfony\Component\BrowserKit\Request;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Unit controller.
@@ -14,7 +15,7 @@ use Symfony\Component\BrowserKit\Request;
  * @Route("/")
  */
 
-class DefaultController extends Controller
+class FrontEndController extends Controller
 {
     /**
      * Lists all Unit entities.
@@ -47,10 +48,21 @@ class DefaultController extends Controller
      * @Method("POST")
      * @Template()
      */
-    public function recipesAction()
+    public function recipesAction(Request $request)
     {
-        $calories = $_POST['calories'];
-        return $this->render('GurmeMainBundle:Default:recipes.html.twig', array('calories' => $calories));
+//        exit(var_dump($request));
+        //if ($request->request->get('calories')) {
+
+
+        if (isset($_POST['calories'])) {
+            $calories = $_POST['calories'];
+            $recipes = $product = $this->getDoctrine()
+                ->getRepository('GurmeMainBundle:Recipe')->retrieveRecipesWithPhotos($calories);
+        } else {
+            $recipes = $product = $this->getDoctrine()
+                ->getRepository('GurmeMainBundle:Recipe')->retrieveRecipesWithPhotos();
+        }
+        return $this->render('GurmeMainBundle:Default:recipes.html.twig', array('recipes' => $recipes));
     }
 
     /**
@@ -62,7 +74,14 @@ class DefaultController extends Controller
      */
     public function singleRecipeAction()
     {
-        return $this->render('GurmeMainBundle:Default:recipe.html.twig', array());
+        if(isset($_GET['id']))
+        $recipe = $product = $this->getDoctrine()
+            ->getRepository('GurmeMainBundle:Recipe')->find($_GET['id']);
+        else return false;
+
+        //var_dump($recipe->getIngredient());
+      //  die;
+        return $this->render('GurmeMainBundle:Default:recipe.html.twig', array('recipe' => $recipe));
     }
 
 

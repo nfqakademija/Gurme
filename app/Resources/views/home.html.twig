@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" ng-app='gurmeApp'>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Admin{% endblock %}</title>
+        {% block stylesheets %}{% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon-carrot.ico') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}" />
+        <script src="{{ asset('js/all.js') }}"></script>
+
+        {# Chosen jQuery plugin #}
+        <script src="{{ asset('chosen/chosen.jquery.js') }}"></script>
+        <link rel="stylesheet" type="text/css" href="{{ asset('chosen/chosen.css') }}" />
+
+        <style>
+            .chosen-container{
+                margin-bottom: 15px;
+            }
+            li.search-field input[type="text"]{
+                height: 25px !important;
+            }
+        </style>
+
+    </head>
+    <body ng-controller='MainController' class="ng-cloak">
+    <div id="wrap">
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/app_dev.php/home">Gurme</a>
+                </div>
+
+                <div class="navbar-collapse collapse">
+                    <form class="navbar-form navbar-right form-inline" role="form">
+                        <div class="form-group">
+                            <input type="text" placeholder="Email" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" placeholder="Password" class="form-control">
+                        </div>
+                        <button type="button" class="btn btn-default">Sign up</button>
+                        <button type="submit" class="btn btn-success">Sign in</button>
+                    </form>
+                </div><!--/.navbar-collapse -->
+            </div>
+        </div>
+
+
+        <div id="main" class="container clear-top">
+            {% block body %}
+            <div id="calorieInput">
+
+                <div class="row">
+                    <div id="gurmeCalorieInputTopSpacer">
+                        &nbsp;<br>&nbsp;<br>&nbsp;<br>
+                    </div>
+                    <div class="col-md-4">
+                    </div>
+                    <div class="col-md-4">
+                        {#<p>&nbsp;</p>#}
+                        <p class="text-center" style="font-size: 26px">Maximum calories:</p>
+                        <input type="text" class="form-control" style="height: 64px;
+                            margin-bottom: 10px;
+                            line-height: 30px;
+                            padding: 11px 19px;
+                            font-size: 40px; text-align:center" ng-model='calories' ui-keypress="{'enter':'loadRecipes($event);'}"value="500">
+
+                        {# ingredients select box (displayed when "Choose ingredients" button is clicked) #}
+                        <div id="ingredientsBlock" style="display: none">
+                            <p class="text-center" style="font-size: 26px">Ingredients:</p>
+
+                                <select data-placeholder="Your favorite ingredients" multiple class="chosen-select">
+                                    <option>Banana</option>
+                                    <option>Apple</option>
+                                    <option>Nuts</option>
+                                </select>
+
+                        </div>
+
+                        <p><a class="btn btn-primary btn-lg" style="width:100%" role="button" ng-click='loadRecipes()'>Search</a></p>
+
+                        {# content, hidden when "Choose ingredients" button is clicked #}
+                        <div id="orChooseIngredients">
+                            <p class="text-center" style="font-size: 26px">or</p>
+                            <p><a class="btn btn-default btn-lg" style="width:100%" role="button" onclick='displayIngredientsBlock()'>Choose ingredients</a></p>
+                        </div>
+
+                        <script>
+                            function displayIngredientsBlock()
+                            {
+                                document.getElementById("orChooseIngredients").style.display = "none";
+                                document.getElementById("ingredientsBlock").style.display = "block";
+                                $(".chosen-select").chosen({width:"100%"});
+                            }
+                        </script>
+
+                    </div>
+                    <div class="col-md-4">
+                        &nbsp;
+                    </div>
+                </div>
+            </div> <!-- /container -->
+
+            <div id="recipesList">
+                <div class="row">
+
+                    <ng ng-repeat="recipe in recipes">
+                        <a href="recipe/{% verbatim %}{{ recipe.id }}{% endverbatim %}">
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6" id="recipeBlock">
+
+                                <div class="panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">{% verbatim %}{{ recipe.name }}{% endverbatim %}</h3>
+                                    </div>
+                                    <div class="panel-body" style="text-align: center">
+                                        <div>
+                                        <img src="{{ asset('') }}{% verbatim %}{{ recipe.url }}{% endverbatim %}" alt="..." class="img-rounded" style="width: 100%;">
+                                        <p style="position:absolute;
+                                        right:31px;
+                                        bottom:26px;
+                                        background-color: rgba(230, 230, 230, 0.7);
+                                        color: #000;
+                                        font-size: 20px; padding: 5px 5px;">{% verbatim %}{{ recipe.calories }}{% endverbatim %} kcal</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="{% verbatim %}{{ recipe.containerInsert }}{% endverbatim %}"></div>
+                        </a>
+                    </ng>
+
+                </div>
+            </div>
+            {% endblock %}
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p class="text-muted">&copy; Gurme 2014; Server message: {% verbatim %}{{ status }}{% endverbatim %}</p>
+        </div>
+    </footer>
+
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

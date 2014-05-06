@@ -1,19 +1,27 @@
+
 <html>
 
 <head>
     <title>Pradinis</title>
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}" />
-    <link rel="script" href="{{ asset('js/all.js') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}"/>
+    <link rel="script" href="{{ asset('js/all.js') }}"/>
 </head>
 
-<body>
-    <div>
-        <img src="{{ asset('images/home.jpg') }}" width="200px" height="auto" style="margin: auto; display: block">
-    </div>
-    <h1 style="text-align: center">Laikydamasis  dietos</br> Tu jau dabar gali valgyti</br> <b>SKANIAI!<b></h1>
+
+{% block body %}
+<div class="container">
     <div class="text-center">
-        <a href="{{ path('calories') }}" class="btn btn-default btn-lg active" role="button">ĮSITIKINK!</a>
+        <div>
+            <img src="{{ asset('images/home.jpg') }}" class="img-thumbnail">
+        </div>
+        <h1>Laikydamasis dietos</br> Tu jau dabar gali valgyti</br> <b>SKANIAI!<b></h1>
+
+        <div>
+            <a href="{{ path('calories') }}" class="btn btn-default btn-lg active" role="button">ĮSITIKINK!</a>
+        </div>
     </div>
-</body>
+</div>
+{% endblock %}
+
 
 </html>
