@@ -23,18 +23,6 @@ use Gurme\MainBundle\Entity\RecipeCategorie;
  */
 class DataController extends Controller
 {
-    /**
-     * Lists all Unit entities.
-     *
-     * @Route("/home", name="home")
-     * @Method("GET")
-     * @Template()
-     */
-    public function indexAction()
-    {
-        $name = "swswsws";
-        return $this->render('GurmeMainBundle:Data:index.html.twig', array('name' => $name));
-    }
 
 //    /**
 //     * Lists all Unit entities.
@@ -111,7 +99,7 @@ class DataController extends Controller
     }
 
     /**
-     * Lists all Unit entities.
+     * Show recipe.
      *
      * @Route("/recipe/{id}", name="recipeV2_get")
      * @Method("GET")
@@ -181,7 +169,7 @@ class DataController extends Controller
 //        exit (var_dump($photo));
 
 //        $recipe = 'asdasdasd';
-        return $this->render('GurmeMainBundle:Default:recipeV2.html.twig',
+        return $this->render('GurmeMainBundle:FrontEnd:recipeV2.html.twig',
             array('recipe' => $recipe,
                 'ingredients' => $ingredients,
                 'directions' => $directions,

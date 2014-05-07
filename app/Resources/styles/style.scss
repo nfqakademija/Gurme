@@ -5,6 +5,10 @@
 body {
   padding-top: 50px;
   padding-bottom: 20px;
+
+//  background-image:url(images/salad.jpg);
+//  background-position:center bottom;
+//  background-repeat:no-repeat
 }
 
 html, body {
@@ -44,9 +48,49 @@ html, body {
     color: #00ff00;
   }
 }
+#inputDiv {
+  margin-top: 220px;
+  margin-bottom: 10px;
+  background-color: rgba(230, 230, 230, 0.7);
+}
+
+#recipeDiv {
+  background-color: rgba(230, 230, 230, 0.7);
+  margin-top: 10px;
+}
+
+#inputDiv {
+  @media (max-width: $screen-xs-max) {
+    margin-top: 0px;
+    padding-bottom: 5px;
+  }
+}
 
 #recipeBlock {
   @media (max-width: $screen-xs-max) {
     padding: 0;
   }
+}
+
+#bg {
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+}
+#bg img {
+  -webkit-filter: blur(2px);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  min-width: 50%;
+  min-height: 50%;
+}
+
+#content {
+  z-index:1;
 }

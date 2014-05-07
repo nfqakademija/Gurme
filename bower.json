@@ -7,7 +7,8 @@
         "bootstrap-sass-official": "3.1.1",
         "jquery": "1.10.2",
         "angular": "*",
-        "jquery-mobile": "1.4.x"
+        "jquery-mobile": "1.4.x",
+        "chosen": "https://github.com/harvesthq/chosen/releases/download/v1.1.0/chosen_v1.1.0.zip"
     },
     "exportsOverride": {}
 }

@@ -114,6 +114,7 @@ class RecipeController extends Controller
                 $em->persist($ingredients[$i]);
                 $i++;
             }
+
 //            $em->flush();
 //            exit(var_dump($ingredients));
 

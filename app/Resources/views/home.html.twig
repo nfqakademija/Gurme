@@ -10,6 +10,7 @@
 
         {# Chosen jQuery plugin #}
         <script src="{{ asset('chosen/chosen.jquery.js') }}"></script>
+        <script src="{{ asset('chosen/chosen.ajaxaddition.jquery.js') }}"></script>
         <link rel="stylesheet" type="text/css" href="{{ asset('chosen/chosen.css') }}" />
 
         <style>
@@ -33,7 +34,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="/app_dev.php/home">Gurme</a>
+                    <a class="navbar-brand" href="{{ path('index') }}">Gurme</a>
                 </div>
 
                 <div class="navbar-collapse collapse">
@@ -51,54 +52,38 @@
             </div>
         </div>
 
+        <div id="bg">
+            <img style="display:block;" src="{{ asset('images/salad.jpg') }}">
+        </div>
 
         <div id="main" class="container clear-top">
             {% block body %}
             <div id="calorieInput">
 
                 <div class="row">
-                    <div id="gurmeCalorieInputTopSpacer">
-                        &nbsp;<br>&nbsp;<br>&nbsp;<br>
-                    </div>
                     <div class="col-md-4">
                     </div>
-                    <div class="col-md-4">
-                        {#<p>&nbsp;</p>#}
+                    <div class="col-md-4" id="inputDiv">
                         <p class="text-center" style="font-size: 26px">Maximum calories:</p>
                         <input type="text" class="form-control" style="height: 64px;
                             margin-bottom: 10px;
                             line-height: 30px;
                             padding: 11px 19px;
-                            font-size: 40px; text-align:center" ng-model='calories' ui-keypress="{'enter':'loadRecipes($event);'}"value="500">
+                            font-size: 40px; text-align:center" id="calories" ng-model='calories' ui-keypress="{'enter':'loadRecipes($event);'}" value="500">
 
                         {# ingredients select box (displayed when "Choose ingredients" button is clicked) #}
                         <div id="ingredientsBlock" style="display: none">
                             <p class="text-center" style="font-size: 26px">Ingredients:</p>
-
-                                <select data-placeholder="Your favorite ingredients" multiple class="chosen-select">
-                                    <option>Banana</option>
-                                    <option>Apple</option>
-                                    <option>Nuts</option>
-                                </select>
-
+                            <select data-placeholder="Your favorite ingredients" multiple class="chosen-select form-control" ng-change="ingredientInputChange()"></select>
                         </div>
 
-                        <p><a class="btn btn-primary btn-lg" style="width:100%" role="button" ng-click='loadRecipes()'>Search</a></p>
+                        <p><a class="btn btn-primary btn-lg" style="width:100%" role="button" ng-click='loadRecipes()' id="btnSearch">Search</a></p>
 
                         {# content, hidden when "Choose ingredients" button is clicked #}
                         <div id="orChooseIngredients">
                             <p class="text-center" style="font-size: 26px">or</p>
                             <p><a class="btn btn-default btn-lg" style="width:100%" role="button" onclick='displayIngredientsBlock()'>Choose ingredients</a></p>
                         </div>
-
-                        <script>
-                            function displayIngredientsBlock()
-                            {
-                                document.getElementById("orChooseIngredients").style.display = "none";
-                                document.getElementById("ingredientsBlock").style.display = "block";
-                                $(".chosen-select").chosen({width:"100%"});
-                            }
-                        </script>
 
                     </div>
                     <div class="col-md-4">
@@ -144,7 +129,7 @@
 
     <footer class="footer">
         <div class="container">
-            <p class="text-muted">&copy; Gurme 2014; Server message: {% verbatim %}{{ status }}{% endverbatim %}</p>
+            <p class="text-white">&copy; Gurme 2014; Server message: {% verbatim %}{{ status }}{% endverbatim %}</p>
         </div>
     </footer>
 
