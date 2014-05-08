@@ -1,48 +1,112 @@
-{% extends "GurmeMainBundle:Default:index.html.twig" %}
+{% extends "::home.html.twig" %}
 {% block body %}
 
-<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-    <div class="container">
-
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a href="{{ path('index') }}" class="navbar-brand">Gurme</a>
+<div class="row">
+    <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12" id="recipeDiv">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <h1>{{ recipe.name }}</h1><hr>
         </div>
-
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li><a href="#">Pirmas</a></li>
-                <li><a href="#">Antras</a></li>
-            </ul>
-        </div>
-
-    </div>
-</div>
-<div class="container">
-    <div class="content">
-        <div class="text-center">
-            <h1>{{ recipe.name }}</h1>
-            <div>
-            <img class="img-thumbnail" src="{{ asset( recipe.coverPhoto.url ) }}">
+        <div class="row">
+            <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12" id="recipePhoto">
+                <img src="{{ asset('') }}{{ photoUrl }}" alt="..." class="img-rounded" style="width: 100%;">
             </div>
-            <h3>Ingredients</h3>
-            <ul class="list-unstyled">
-                {# cia turetu buti kazkas panasaus i foreach sakini #}
-                {% for item in recipe.ingredient %}
-                    <li>{{ item.amount | default("") }}
-                        {{ item.unit.main | default("") }}
-                        {{ item.ingredient.name | default("") }}
-                        ( {{ item.note | default("")}} )</li>
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12" id="recipeDesc">
+                <h4>Preparation time:</h4>
+                <span style="font-size: 20px; color: #aa7700">
+                    {% if  recipe.prepTime|date("H:i") != '00:00' %}
+                        {{ recipe.prepTime|date("H:i") }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </span>
+                <h4>Cook time:</h4>
+                <span style="font-size: 20px; color: #aa7700">
+                    {% if  recipe.cookTime|date("H:i") != '00:00' %}
+                        {{ recipe.cookTime|date("H:i") }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </span>
+                <h4>Ready time:</h4>
+                <span style="font-size: 20px; color: #aa7700">
+                    {% if  recipe.readyTime|date("H:i") != '00:00' %}
+                        {{ recipe.readyTime|date("H:i") }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </span>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
+                <h4>Calories:</h4>
+                <span style="font-size: 20px; color: #aa7700">{{ recipe.calories }} kcal</span>
+                <h4>Nutrition:</h4>
+                <table>
+                    <tr>
+                        <td>Carbs:</td>
+                        <td>{{ recipe.carbs }} g</td>
+                    </tr>
+                    <tr>
+                        <td>Fat:</td>
+                        <td>{{ recipe.fat }} g</td>
+                    </tr>
+                    <tr>
+                        <td>Protein:&nbsp;&nbsp;&nbsp;</td>
+                        <td>{{ recipe.protein }} g</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" id="recipeIngredients">
+                <h3>Ingredients</h3>
+                {#<ul style="padding-left:0;">#}
+                {% for ingredient in ingredients %}
+                    <p style="border-bottom: dotted 1px;">
+                        {{ ingredient.amount }} {{ ingredient.main }} {{ ingredient.name }}
+                        {% if ingredient.note != '' %}, {{ ingredient.note }}{% endif %}
+                    </p>
                 {% endfor %}
-            </ul>
+                {#</ul>#}
+            </div>
+            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12" id="recipeDirections">
+                <h3>Directions</h3>
+                <ol>
+                {% for dir in directions %}
+                    <li>
+                        {{ dir }}
+                    </li>
+                {% endfor %}
+                </ol>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12" id="similarRecipes">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <h3>Suggestions</h3>
+            </div>
+        </div>
+        <div class="row">
+        {% for s in suggestions %}
+            <a href="../recipe/{{ s.id }}">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"
+                     style="" id="recipeSuggestions">
 
-            <h3>Darbo eiga</h3>
-                {{ recipe.directions }}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">{{ s.name }}</h3>
+                        </div>
+                        <div class="panel-body" style="text-align: center">
+                            <div>
+                                <img src="{{ asset('') }}{{ s.url }}" alt="..." class="img-rounded" style="width: 100%;">
+                                <p class="calorieBadge">{{ s.calories }} kcal</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </a>
+        {% endfor %}
         </div>
     </div>
 </div>

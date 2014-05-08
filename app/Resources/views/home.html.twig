@@ -106,12 +106,7 @@
                                     <div class="panel-body" style="text-align: center">
                                         <div>
                                         <img src="{{ asset('') }}{% verbatim %}{{ recipe.url }}{% endverbatim %}" alt="..." class="img-rounded" style="width: 100%;">
-                                        <p style="position:absolute;
-                                        right:31px;
-                                        bottom:26px;
-                                        background-color: rgba(230, 230, 230, 0.7);
-                                        color: #000;
-                                        font-size: 20px; padding: 5px 5px;">{% verbatim %}{{ recipe.calories }}{% endverbatim %} kcal</p>
+                                        <p class="calorieBadge">{% verbatim %}{{ recipe.calories }}{% endverbatim %} kcal</p>
                                         </div>
                                     </div>
                                 </div>

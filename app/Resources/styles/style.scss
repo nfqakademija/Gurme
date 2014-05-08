@@ -41,13 +41,15 @@ html, body {
   padding-top: 40px;
 }
 
-#gurmeCalorieInputTopSpacer {
-  @media (max-width: $screen-xs-max) {
-    display: none;
-    background-color: #000000;
-    color: #00ff00;
-  }
+.calorieBadge {
+  position:absolute;
+  right:31px;
+  bottom:26px;
+  background-color: rgba(230, 230, 230, 0.7);
+  color: #000;
+  font-size: 20px; padding: 5px 5px;
 }
+
 #inputDiv {
   margin-top: 220px;
   margin-bottom: 10px;

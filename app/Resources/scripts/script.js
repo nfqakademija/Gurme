@@ -10,6 +10,7 @@ app.controller("MainController", function($scope, $http){
     $scope.data = "I now understand how the scope works!";
     $scope.ingredientsTextArea = ' 1/2 cup butter ';
     $scope.calories = '500';
+    $scope.status = $("#ingredientsBlock").css("display");
     $("#recipeBlock").toggleClass("hidden");
 
     $("inputtt").on('keyup',function() {
@@ -50,10 +51,13 @@ app.controller("MainController", function($scope, $http){
 
         $( "#recipeBlock" ).toggleClass( "hidden", false );
         $( "#inputDiv" ).css("margin-top","10px");
+        if ($("#ingredientsBlock").css("display")=="block") {
+            var ingredients = $('.chosen-select').chosen().val();
+        }
         $http({
             url: document.location.href.replace(/\/$/,'') + '/list',
             method: "POST",
-            data: $.param({ "calories" : $scope.calories }),
+            data: $.param({"calories":$scope.calories , "ingredients":ingredients}),
             headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
         }).success(function (data, status, headers, config) {
             $scope.data = angular.fromJson(data);

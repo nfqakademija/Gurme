@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Doctrine\ORM\EntityManager;
 use Gurme\MainBundle\Entity\Unit;
 use Gurme\MainBundle\Form\UnitType;
 use Gurme\MainBundle\Entity\Ingredient;
@@ -23,6 +24,53 @@ use Gurme\MainBundle\Entity\RecipeCategorie;
  */
 class DataController extends Controller
 {
+    /**
+     * Test function.
+     *
+     * @Route("/test", name="test")
+     * @Method("GET")
+     * @Template()
+     */
+    public function testAction(Request $request)
+    {
+//        $calories = $request->request->get('calories','0');
+
+        $query = array(141,50,21);
+        $calories=500;
+        /**
+         * @var $em \Doctrine\ORM\EntityManager
+         */
+        $em = $this->getDoctrine()->getManager();
+
+        $where = '';
+        foreach($query as $q) {
+            $where .= ($where=='') ? " AND ( ri.ingredient = '$q'" : " OR ri.ingredient = '$q'";
+        }
+        $where .= ($where!='') ? ' )' : '';
+//        'r.id','r.name','r.calories','p.url'
+        $dql = "SELECT r.id,r.name,r.calories,p.url
+                FROM GurmeMainBundle:RecipeIngredient ri
+                JOIN ri.recipe r
+                JOIN r.coverPhoto p
+                WHERE r.calories < $calories".$where."
+                ORDER BY r.calories";
+        $recipes = $em->createQuery($dql)->getResult(); //i.name LIKE '%$query%' OR i.alias LIKE '%$query%'");
+//        exit (var_dump($recipes));
+
+//        foreach($result as $ingredient) {
+//            $ingredients[] = array(
+//                'id' => $ingredient['id'] ,
+//                'text' => str_replace(array("\r\n", "\n", "\r"), '', $ingredient['name'])
+//            );
+//        }
+//
+//        $recipes = $query->getResult();
+
+
+        $result = 'DB loaded';
+
+        return new JsonResponse(array('status' => $result, 'recipes' => $recipes));
+    }
 
 //    /**
 //     * Lists all Unit entities.
@@ -69,30 +117,39 @@ class DataController extends Controller
      */
     public function listAction(Request $request)
     {
-//        $calories = $request->request->get('calories','0');
+        $calories = $request->request->get('calories','1000');
+        $ingredients = $request->request->get('ingredients');
+        if (!isset($ingredients)||is_null($ingredients)||$ingredients=='') $ingredients = array();
 
-        $inputCal = $request->request->get('calories','1000');
-        $repository = $this->getDoctrine()->getRepository('GurmeMainBundle:Recipe');
-        $query = $repository->createQueryBuilder('r')
-            ->leftJoin('r.coverPhoto','p')
-            ->select('r.id','r.name','r.calories','p.url')
-            ->where('r.calories <= :inputCal')
-            ->orderBy('r.calories', 'DESC')
-            ->setParameter('inputCal',$inputCal)
-            ->getQuery();
-
-        $recipes = $query->getResult();
-//        $em = $this->getDoctrine()->getManager();
-//        $qb = $em->createQueryBuilder();
-//        $qb->select('*')
-//            ->from('Recipes', 'u')
-//            ->where('u.id = ?1')
-//            ->orderBy('u.name ASC');
+//        $repository = $this->getDoctrine()->getRepository('GurmeMainBundle:Recipe');
+//        $query = $repository->createQueryBuilder('r')
+//            ->leftJoin('r.coverPhoto','p')
+//            ->select('r.id','r.name','r.calories','p.url')
+//            ->where('r.calories <= :inputCal')
+//            ->orderBy('r.calories', 'DESC')
+//            ->setParameter('inputCal',$calories)
+//            ->getQuery();
 //
-//        $em->createQueryBuilder()
-//            ->from('Project\Entities\Item', 'i')
-//            ->select("*");
-//        exit (var_dump($recipes));
+//        $recipes = $query->getResult();
+//        exit (var_dump($ingredients));
+
+        /** @var $em \Doctrine\ORM\EntityManager */
+        $em = $this->getDoctrine()->getManager();
+
+        $where = '';
+        foreach($ingredients as $q) {
+            $where .= ($where=='') ? " AND ( ri.ingredient = '$q'" : " OR ri.ingredient = '$q'";
+        }
+        $where .= ($where!='') ? ' )' : '';
+
+        $dql = "SELECT r.id,r.name,r.calories,p.url
+                FROM ".(($where!='')?"GurmeMainBundle:RecipeIngredient ri JOIN ri.recipe":'GurmeMainBundle:Recipe')." r
+                JOIN r.coverPhoto p
+                WHERE r.calories < $calories".$where."
+                ORDER BY r.calories";
+
+        $recipes = $em->createQuery($dql)->getResult(); //i.name LIKE '%$query%' OR i.alias LIKE '%$query%'");
+
         $result = 'DB loaded';
 
         return new JsonResponse(array('status' => $result, 'recipes' => $recipes));
@@ -101,7 +158,7 @@ class DataController extends Controller
     /**
      * Show recipe.
      *
-     * @Route("/recipe/{id}", name="recipeV2_get")
+     * @Route("/recipe/{id}", name="recipe_get")
      * @Method("GET")
      * @Template()
      */
@@ -114,6 +171,7 @@ class DataController extends Controller
 
         $suggestions = array();
         $i = 0;
+        /** @var $s \Gurme\MainBundle\Entity\Recipe */
         foreach ($recipes as $s) {
             $suggestions[$i]['id']=$s->getId();
             $suggestions[$i]['name']=$s->getName();
@@ -140,6 +198,7 @@ class DataController extends Controller
 
         $photo = $photo->getUrl();
 
+        /** @var $em \Doctrine\ORM\EntityManager */
         $query = $em->getRepository('GurmeMainBundle:RecipeIngredient')
             ->createQueryBuilder('il')
             ->leftJoin('il.recipe','r')
@@ -158,6 +217,7 @@ class DataController extends Controller
             $x++;
         }
 
+        $directions = '';
         $searchFor = '';
         // escape special characters in the query
         $pattern = preg_quote($searchFor, '/');
@@ -169,7 +229,7 @@ class DataController extends Controller
 //        exit (var_dump($photo));
 
 //        $recipe = 'asdasdasd';
-        return $this->render('GurmeMainBundle:FrontEnd:recipeV2.html.twig',
+        return $this->render('GurmeMainBundle:FrontEnd:recipe.html.twig',
             array('recipe' => $recipe,
                 'ingredients' => $ingredients,
                 'directions' => $directions,
