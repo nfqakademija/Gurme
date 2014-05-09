@@ -19,7 +19,7 @@ use Gurme\MainBundle\Entity\RecipeCategorie;
 /**
  * Recipe controller.
  *
- * @Route("/data/recipe")
+ * @Route("/editor/recipe")
  */
 class RecipeController extends Controller
 {
@@ -209,7 +209,7 @@ class RecipeController extends Controller
     /**
      * Mano nauja funkcija.
      *
-     * @Route("/ingredientCheck", name="data_recipe_ingredient_check")
+     * @Route("/new/ingredientCheck", name="data_recipe_ingredient_check")
      * @Method("POST")
      */
     public function ingredientCheckAction(Request $request)

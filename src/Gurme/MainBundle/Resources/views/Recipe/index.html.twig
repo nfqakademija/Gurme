@@ -4,13 +4,9 @@
 
 {% block content -%}
 
-    <ul>
-        <li>
-            <a href="{{ path('data_recipe_new') }}">
-                Create a new entry
-            </a>
-        </li>
-    </ul>
+    <a class="btn btn-default" href="{{ path('data_recipe_new') }}">
+        Create a new entry
+    </a>
 
     <table class="records_list table">
         <thead>
