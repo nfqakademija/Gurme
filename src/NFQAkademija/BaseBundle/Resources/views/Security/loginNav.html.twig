@@ -1,0 +1,46 @@
+
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% block fos_user_content_error %}
+    {% if error %}
+        <div class="container">
+            <div class="row">
+                <div class="alert alert-danger">{{ error|trans }}</div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+    <ul class="nav navbar-nav navbar-right">
+        <li class="navbar-text" style="margin-top: 16px">
+            {{ 'Logged in as '|trans }} {{ app.user.username }} <span class="glyphicon glyphicon-user"></span>
+        </li>
+        {% if mode == 'homepage' %}
+            <li><a href="{{ path('index') }}">
+                    {{ 'My menu'|trans({}, 'FOSUserBundle') }} <span class="glyphicon glyphicon-folder-open"></span>
+            </a></li>
+        {% endif %}
+        {% if is_granted('ROLE_ADMIN') %}
+            <li><a href="{{ path('data_recipe') }}">
+                    {{ 'Recipes'|trans({}, 'FOSUserBundle') }} <span class="glyphicon glyphicon-list"></span>
+            </a></li>
+        {% endif %}
+        <li><a href="{{ path('fos_user_security_logout') }}">
+                {{ 'Log out'|trans({}, 'FOSUserBundle') }} <span class="glyphicon glyphicon-off"></span>
+            </a></li>
+    </ul>
+{% else %}
+    {% block fos_user_content_navbar %}
+        <form class="navbar-form navbar-right form-inline" role="form" action="{{ path("fos_user_security_check") }}" method="post">
+            <div class="form-group">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+                <input type="text" placeholder="{{ 'Email'|trans }}" class="form-control" id="username" name="_username" value="{{ last_username }}" required="required">
+            </div>
+            <div class="form-group">
+                <input type="password" placeholder="Password" class="form-control" id="password" name="_password" required="required">
+            </div>
+            <a class="btn btn-default" href="{{ path('fos_user_registration_register') }}">Sign up</a>
+            <button type="submit" class="btn btn-success" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans }}">Sign in</button>
+        </form>
+    {% endblock fos_user_content_navbar %}
+{% endif %}

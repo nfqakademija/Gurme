@@ -1,0 +1,22 @@
+{% extends "::home.html.twig" %}
+
+{% block body %}
+<div id="calorieInput">
+
+    <div class="row">
+        <div class="col-md-4">
+            &nbsp;
+        </div>
+
+        <div class="col-md-4" id="inputDiv">
+            <div><h2>Registration</h2></div>
+            {% include "NFQAkademijaBaseBundle:Registration:register_content.html.twig" %}
+            <div>&nbsp;</div>
+        </div>
+
+        <div class="col-md-4">
+            &nbsp;
+        </div>
+    </div>
+</div> <!-- /container -->
+{% endblock body %}

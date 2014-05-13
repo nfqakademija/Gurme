@@ -1,0 +1,60 @@
+{% extends "::home.html.twig" %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% block fos_user_content_error %}
+    {% if error %}
+        <div class="container">
+            <div class="row">
+                <div class="alert alert-danger" style="margin-top: 20px">{{ error|trans }}</div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block fos_user_content %}
+
+<form action="{{ path("fos_user_security_check") }}" method="post">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+
+    <label for="username">{{ 'security.login.username'|trans }}</label>
+    <input type="text" id="username" name="_username" value="{{ last_username }}" required="required" />
+
+    <label for="password">{{ 'security.login.password'|trans }}</label>
+    <input type="password" id="password" name="_password" required="required" />
+
+    <input type="checkbox" id="remember_me" name="_remember_me" value="on" />
+    <label for="remember_me">{{ 'security.login.remember_me'|trans }}</label>
+
+    <input type="submit" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans }}" />
+</form>
+{% endblock fos_user_content %}
+
+{% block fos_user_content_navbar %}
+
+    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <p class="navbar-text">{{ 'Logged in as '|trans({'%username%': app.user.username}, 'FOSUserBundle') }}</p>
+            </li>
+            <li><a href="{{ path('fos_user_security_logout') }}">
+                    {{ 'Log out'|trans({}, 'FOSUserBundle') }} <span class="glyphicon glyphicon-off"></span>
+                </a></li>
+        </ul>
+
+    {% else %}
+        <a href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
+    {% endif %}
+<form class="navbar-form navbar-right form-inline" role="form" action="{{ path("fos_user_security_check") }}" method="post">
+    <div class="form-group">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+        <input type="text" placeholder="{{ 'Email'|trans }}" class="form-control" id="username" name="_username" value="{{ last_username }}" required="required">
+    </div>
+    <div class="form-group">
+        <input type="password" placeholder="Password" class="form-control" id="password" name="_password" required="required">
+    </div>
+    <button type="submit" class="btn btn-success" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans }}">Sign in</button>
+</form>
+
+{% endblock fos_user_content_navbar %}

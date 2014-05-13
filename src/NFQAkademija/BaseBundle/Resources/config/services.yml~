@@ -13,3 +13,7 @@ services:
         tags:
             - { name: form.type, alias: gurme_user_registration }
 
+        <service id="ups_user.registration.form.type" class="Ups\BaseBundle\Form\Type\RegistrationFormType">
+            <tag name="form.type" alias="ups_user_registration" />
+            <argument>%fos_user.model.user.class%</argument>
+        </service>
