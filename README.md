@@ -19,6 +19,11 @@ Po "git clone" reikia atlikti šias komandas:
 
     gulp            // generuojam css ir js
 
+Pasiūlymai
+-------------------------------------
+- My menu, kad sudarytų programą, nes žmogus atėjęs pirma kartą nežino, kiek jis norės kalorijų suvalgyti
+- Gal nebūtinai įrašyti produktą, bet pasirinkti, iš esamų produktų sarašo
+
 Notes:
 -------------------------------------
 marvel app - wireframe'ams
