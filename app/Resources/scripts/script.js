@@ -51,6 +51,7 @@ app.controller("MainController", function($scope, $http){
 
         $( "#recipeBlock" ).toggleClass( "hidden", false );
         $( "#inputDiv" ).css("margin-top","10px");
+        $( ".top-row" ).css("margin-top","0px");
         if ($("#ingredientsBlock").css("display")=="block") {
             var ingredients = $('.chosen-select').chosen().val();
         }
