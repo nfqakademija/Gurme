@@ -60,10 +60,17 @@
 
             <div id="calorieInput">
 
-                <div class="row">
-                    <div class="col-md-4">
+                <div class="row top-row">
+                    <div class="col-md-4" style="margin-top: 30px; height: 250px;">
+                        <div class="transparentBg" style="height: 100%; padding: 15px; vertical-align: middle">
+                            <div style="margin-top: auto; margin-bottom: auto">
+                                <h3 style="margin-top: 10px; margin-bottom: 15px"><strong>How much calories do I need?</strong></h3>
+                                <p style="font-size: 20px;">Find out your daily calorie menu for your personality and create your own menus with a help of Gurme staff.</p>
+                                <a href="{{ path('fos_user_registration_register') }}" class="btn btn-default" style="">Register</a>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-4" id="inputDiv" style="margin-top:10%">
+                    <div class="col-md-4" id="inputDiv" style="">
                         <p class="text-center" style="font-size: 26px">Maximum calories:</p>
                         <input type="text" class="form-control" style="height: 64px;
                             margin-bottom: 10px;
@@ -94,8 +101,10 @@
                         <p><a class="btn btn-primary btn-lg" style="width:100%" role="button" id="btnSearch" onclick="caloriesLessThan(100)"><100</a></p>
 
                     </div>
-                    <div class="col-md-4">
-                        &nbsp;
+                    <div class="col-md-4"  style="margin-top: 30px; height: 250px;">
+                        <div class="transparentBg" style="height: 100%;">
+                            &nbsp;
+                        </div>
                     </div>
                 </div>
             </div> <!-- /container -->
