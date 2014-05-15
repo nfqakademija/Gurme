@@ -23,7 +23,7 @@
         </style>
 
     </head>
-    <body ng-controller='MainController' class="ng-cloak">
+    <body id='body' ng-controller='MainController' class="ng-cloak">
     <div id="wrap">
         <div class="navbar navbar-default navbar-fixed-top" role="navigation">
             <div class="container">
@@ -63,7 +63,7 @@
                 <div class="row">
                     <div class="col-md-4">
                     </div>
-                    <div class="col-md-4" id="inputDiv">
+                    <div class="col-md-4" id="inputDiv" style="margin-top:10%">
                         <p class="text-center" style="font-size: 26px">Maximum calories:</p>
                         <input type="text" class="form-control" style="height: 64px;
                             margin-bottom: 10px;
@@ -84,6 +84,14 @@
                             <p class="text-center" style="font-size: 26px">or</p>
                             <p><a class="btn btn-default btn-lg" style="width:100%" role="button" onclick='displayIngredientsBlock()'>Choose ingredients</a></p>
                         </div>
+
+                        {# content, displayed when no recipes were found #}
+                        <p class="text-center" id="no_recipes" style="font-size: 20px; display: none; color: red"><strong>We are sorry<br />No matching results were found</strong></p>
+
+                        <p><a class="btn btn-primary btn-lg" style="width:100%" role="button" id="btnSearch" onclick="caloriesLessThan(400)"><400</a></p>
+                        <p><a class="btn btn-primary btn-lg" style="width:100%" role="button" id="btnSearch" onclick="caloriesLessThan(300)"><300</a></p>
+                        <p><a class="btn btn-primary btn-lg" style="width:100%" role="button" id="btnSearch" onclick="caloriesLessThan(200)"><200</a></p>
+                        <p><a class="btn btn-primary btn-lg" style="width:100%" role="button" id="btnSearch" onclick="caloriesLessThan(100)"><100</a></p>
 
                     </div>
                     <div class="col-md-4">

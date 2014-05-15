@@ -50,8 +50,8 @@ app.controller("MainController", function($scope, $http){
     $scope.loadRecipes = function() {
 
         $( "#recipeBlock" ).toggleClass( "hidden", false );
-        $( "#inputDiv" ).css("margin-top","10px");
         $( ".top-row" ).css("margin-top","0px");
+        //$( "#inputDiv" ).css("margin-top","10px");
         if ($("#ingredientsBlock").css("display")=="block") {
             var ingredients = $('.chosen-select').chosen().val();
         }
@@ -70,6 +70,19 @@ app.controller("MainController", function($scope, $http){
                     $scope.recipes[prop].containerInsert = 'clearfix';
                 }
             }
+
+            // checks if any recipes were found
+            if(i==0){
+                $( "#no_recipes").css("display", "block");
+            }
+            else{
+                $( "#no_recipes").css("display", "none");
+
+                $('html, body').animate({
+                    scrollTop: $('#recipesList').offset().top - 60
+                }, 1000);
+            }
+
             $scope.status = $scope.data.status;
             $scope.buttonName = "Submittion check";
         }).error(function (data, status, headers, config) {
@@ -120,6 +133,11 @@ function displayIngredientsBlock()
 //        minLength: 2
     });
 
+}
+
+function caloriesLessThan(calories) {
+    angular.element($('body')).scope().calories = calories;
+    angular.element($('body')).scope().loadRecipes();
 }
 
 
