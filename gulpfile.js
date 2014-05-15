@@ -23,7 +23,7 @@ gulp.task('default', function() {
         .pipe(gulp.dest('web/js'));
 
     gulp.src('app/Resources/lib/bootstrap-sass-official/vendor/assets/fonts/bootstrap/*')
-        .pipe(gulp.dest('web/fonts'));
+        .pipe(gulp.dest('web/css/bootstrap'));
 });
 
 gulp.task('watch', function () {

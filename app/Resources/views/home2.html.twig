@@ -23,7 +23,7 @@
         </style>
 
     </head>
-    <body id='body' ng-controller='MainController' class="ng-cloak">
+    <body ng-controller='MainController' class="ng-cloak">
     <div id="wrap">
         <div class="navbar navbar-default navbar-fixed-top" role="navigation">
             <div class="container">
@@ -57,46 +57,66 @@
 
         <div id="main" class="container clear-top">
             {% block body %}
+            <div class="row">
 
-            <div id="calorieInput">
+                <div class="col-md-4" id="inputDiv">
+                    <p class="text-center" style="font-size: 26px">Maximum calories:</p>
+                    <input type="text" class="form-control" style="height: 64px;
+                        margin-bottom: 10px;
+                        line-height: 30px;
+                        padding: 11px 19px;
+                        font-size: 40px; text-align:center" id="calories" ng-model='calories' ui-keypress="{'enter':'loadRecipes($event);'}" value="500">
 
-                <div class="row">
-                    <div class="col-md-4">
+                    {# ingredients select box (displayed when "Choose ingredients" button is clicked) #}
+                    <div id="ingredientsBlock" style="display: none">
+                        <p class="text-center" style="font-size: 26px">Ingredients:</p>
+                        <select data-placeholder="Your favorite ingredients" multiple class="chosen-select form-control" ng-change="ingredientInputChange()"></select>
                     </div>
-                    <div class="col-md-4" id="inputDiv" style="margin-top:10%">
-                        <p class="text-center" style="font-size: 26px">Maximum calories:</p>
-                        <input type="text" class="form-control" style="height: 64px;
-                            margin-bottom: 10px;
-                            line-height: 30px;
-                            padding: 11px 19px;
-                            font-size: 40px; text-align:center" id="calories" ng-model='calories' ui-keypress="{'enter':'loadRecipes($event);'}" value="500">
 
-                        {# ingredients select box (displayed when "Choose ingredients" button is clicked) #}
-                        <div id="ingredientsBlock" style="display: none">
-                            <p class="text-center" style="font-size: 26px">Ingredients:</p>
-                            <select data-placeholder="Your favorite ingredients" multiple class="chosen-select form-control" ng-change="ingredientInputChange()"></select>
-                        </div>
+                    <p><a class="btn btn-primary btn-lg" style="width:100%" role="button" ng-click='loadRecipes()' id="btnSearch">Search</a></p>
 
-                        <p><a class="btn btn-primary btn-lg" style="width:100%" role="button" ng-click='loadRecipes()' id="btnSearch">Search</a></p>
+                    {# content, hidden when "Choose ingredients" button is clicked #}
+                    <div id="orChooseIngredients">
+                        <p class="text-center" style="font-size: 26px">or</p>
+                        <p><a class="btn btn-default btn-lg" style="width:100%" role="button" onclick='displayIngredientsBlock()'>Choose ingredients</a></p>
+                    </div>
 
-                        {# content, hidden when "Choose ingredients" button is clicked #}
-                        <div id="orChooseIngredients">
-                            <p class="text-center" style="font-size: 26px">or</p>
-                            <p><a class="btn btn-default btn-lg" style="width:100%" role="button" onclick='displayIngredientsBlock()'>Choose ingredients</a></p>
-                        </div>
+                </div>
 
-                        {# content, displayed when no recipes were found #}
-                        <p class="text-center" id="no_recipes" style="font-size: 20px; display: none; color: red"><strong>We are sorry<br />No matching results were found</strong></p>
+                <div class="col-md-8">
 
-                        <p><a class="btn btn-primary btn-lg" style="width:100%" role="button" id="btnSearch" onclick="caloriesLessThan(400)"><400</a></p>
-                        <p><a class="btn btn-primary btn-lg" style="width:100%" role="button" id="btnSearch" onclick="caloriesLessThan(300)"><300</a></p>
-                        <p><a class="btn btn-primary btn-lg" style="width:100%" role="button" id="btnSearch" onclick="caloriesLessThan(200)"><200</a></p>
-                        <p><a class="btn btn-primary btn-lg" style="width:100%" role="button" id="btnSearch" onclick="caloriesLessThan(100)"><100</a></p>
+                    <div class="row">
+
+                        <ng ng-repeat="recipe in recipes">
+                            <a href="recipe/{% verbatim %}{{ recipe.id }}{% endverbatim %}" style="color: #333333;">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="recipeBlock"  style="margin-top: 10px; padding-right: 0px; padding-left: 10px">
+                                    <div class="" style="padding: 10px; background-color: rgba(230, 230, 230, 0.8);">
+                                        <table style="width: 100%">
+                                            <tr>
+                                                <td style="width: 100px; padding-right: 10px">
+                                                    <img src="{{ asset('') }}{% verbatim %}{{ recipe.url }}{% endverbatim %}" alt="..." class="img-rounded" style="width: 100%">
+                                                </td>
+                                                <td style="vertical-align: top; ">
+                                                    <h3 style="margin-top: 0px;">{% verbatim %}{{ recipe.name }}{% endverbatim %}</h3>
+                                                    By <strong>Gurme Staff</strong>
+                                                </td>
+                                                <td style="width: 100px; padding-left: 10px">
+                                                    {% verbatim %}{{ recipe.calories }}{% endverbatim %} kcal
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                        {#<p style="display: inline">{% verbatim %}{{ recipe.calories }}{% endverbatim %} kcal</p>#}
+
+                                    </div>
+                                </div>
+                                {#<div class="{% verbatim %}{{ recipe.containerInsert }}{% endverbatim %}"></div>#}
+                            </a>
+                        </ng>
 
                     </div>
-                    <div class="col-md-4">
-                        &nbsp;
-                    </div>
+
+                    &nbsp;
                 </div>
             </div> <!-- /container -->
 

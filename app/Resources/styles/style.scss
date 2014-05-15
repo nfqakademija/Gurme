@@ -53,6 +53,7 @@ html, body {
 #inputDiv {
   margin-top: 220px;
   margin-bottom: 10px;
+  padding-top: 10px;
   background-color: rgba(230, 230, 230, 0.7);
 }
 
@@ -87,7 +88,9 @@ html, body {
   height: 200%;
 }
 #bg img {
-  -webkit-filter: blur(2px);
+//  -webkit-filter: blur(2px);
+//  -webkit-filter: brightness(50%);
+
   position: absolute;
   top: 0;
   left: 0;

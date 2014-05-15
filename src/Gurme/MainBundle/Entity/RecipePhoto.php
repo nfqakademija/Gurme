@@ -24,7 +24,7 @@ class RecipePhoto
     /**
      * @var string
      *
-     * @ORM\Column(name="url", type="string", length=2083, nullable=false)
+     * @ORM\Column(name="url", type="text", nullable=false)
      */
     private $url;
 

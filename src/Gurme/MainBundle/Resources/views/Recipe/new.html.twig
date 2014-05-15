@@ -4,6 +4,19 @@
 
 {% block content -%}
 
+    {#<a class="btn btn-default" href="{{ path('data_recipe_new') }}">#}
+        {#Back to list#}
+    {#</a>#}
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <a class="btn btn-default" href="{{ path('data_recipe') }}">
+                Back to the list
+            </a>
+            <br>&nbsp;
+        </div>
+    </div>
+
     {{ form_start(form) }}
     {{ form_errors(form) }}
 
@@ -157,12 +170,4 @@
     </div>
 
     {{ form_end(form) }}
-
-    <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-4">
-            <a class="btn btn-primary btn-lg" href="{{ path('data_recipe') }}">
-                Back to the list
-            </a>
-        </div>
-    </div>
 {% endblock %}
