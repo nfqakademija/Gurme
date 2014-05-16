@@ -29,43 +29,33 @@ class DataController extends Controller
      *
      * @Route("/test", name="test")
      * @Method("GET")
-     * @Template()
      */
-    public function testAction(Request $request)
+    public function testAction()
     {
 //        $calories = $request->request->get('calories','0');
 
-        $query = array(141,50,21);
+        $ingredients = array(141,50,21);
         $calories=500;
         /**
          * @var $em \Doctrine\ORM\EntityManager
          */
         $em = $this->getDoctrine()->getManager();
 
-        $where = '';
-        foreach($query as $q) {
-            $where .= ($where=='') ? " AND ( ri.ingredient = '$q'" : " OR ri.ingredient = '$q'";
-        }
-        $where .= ($where!='') ? ' )' : '';
-//        'r.id','r.name','r.calories','p.url'
-        $dql = "SELECT r.id,r.name,r.calories,p.url
-                FROM GurmeMainBundle:RecipeIngredient ri
-                JOIN ri.recipe r
+        if ($ingredients==array()) {
+            $dql = "SELECT r.id,r.name,r.calories,p.url
+                FROM 'GurmeMainBundle:Recipe' r
                 JOIN r.coverPhoto p
-                WHERE r.calories < $calories".$where."
+                WHERE r.calories < $calories
                 ORDER BY r.calories";
-        $recipes = $em->createQuery($dql)->getResult(); //i.name LIKE '%$query%' OR i.alias LIKE '%$query%'");
-//        exit (var_dump($recipes));
-
-//        foreach($result as $ingredient) {
-//            $ingredients[] = array(
-//                'id' => $ingredient['id'] ,
-//                'text' => str_replace(array("\r\n", "\n", "\r"), '', $ingredient['name'])
-//            );
-//        }
-//
-//        $recipes = $query->getResult();
-
+            $recipes = $em->createQuery($dql)->getResult();
+        } else {
+            $dql = "SELECT DISTINCT r.id,r.name,r.calories,p.url
+                FROM GurmeMainBundle:RecipeIngredient ri JOIN ri.recipe r
+                JOIN r.coverPhoto p
+                WHERE r.calories < $calories AND ri.ingredient IN (:ingredients)
+                ORDER BY r.calories";
+            $recipes = $em->createQuery($dql)->setParameter('ingredients',$ingredients)->getResult();
+        }
 
         $result = 'DB loaded';
 
@@ -109,11 +99,10 @@ class DataController extends Controller
 //    }
 
     /**
-     * Lists all Unit entities.
+     * AJAX query for recipes by id and ingredients.
      *
      * @Route("/list", name="list_result_json")
      * @Method("POST")
-     * @Template()
      */
     public function listAction(Request $request)
     {
@@ -121,34 +110,24 @@ class DataController extends Controller
         $ingredients = $request->request->get('ingredients');
         if (!isset($ingredients)||is_null($ingredients)||$ingredients=='') $ingredients = array();
 
-//        $repository = $this->getDoctrine()->getRepository('GurmeMainBundle:Recipe');
-//        $query = $repository->createQueryBuilder('r')
-//            ->leftJoin('r.coverPhoto','p')
-//            ->select('r.id','r.name','r.calories','p.url')
-//            ->where('r.calories <= :inputCal')
-//            ->orderBy('r.calories', 'DESC')
-//            ->setParameter('inputCal',$calories)
-//            ->getQuery();
-//
-//        $recipes = $query->getResult();
-//        exit (var_dump($ingredients));
-
         /** @var $em \Doctrine\ORM\EntityManager */
         $em = $this->getDoctrine()->getManager();
 
-        $where = '';
-        foreach($ingredients as $q) {
-            $where .= ($where=='') ? " AND ( ri.ingredient = '$q'" : " OR ri.ingredient = '$q'";
-        }
-        $where .= ($where!='') ? ' )' : '';
-
-        $dql = "SELECT r.id,r.name,r.calories,p.url
-                FROM ".(($where!='')?"GurmeMainBundle:RecipeIngredient ri JOIN ri.recipe":'GurmeMainBundle:Recipe')." r
+        if ($ingredients==array()) {
+            $dql = "SELECT r.id,r.name,r.calories,p.url
+                FROM 'GurmeMainBundle:Recipe' r
                 JOIN r.coverPhoto p
-                WHERE r.calories < $calories".$where."
+                WHERE r.calories < $calories
                 ORDER BY r.calories";
-
-        $recipes = $em->createQuery($dql)->getResult(); //i.name LIKE '%$query%' OR i.alias LIKE '%$query%'");
+            $recipes = $em->createQuery($dql)->getResult();
+        } else {
+            $dql = "SELECT DISTINCT r.id,r.name,r.calories,p.url
+                FROM GurmeMainBundle:RecipeIngredient ri JOIN ri.recipe r
+                JOIN r.coverPhoto p
+                WHERE r.calories < $calories AND ri.ingredient IN (:ingredients)
+                ORDER BY r.calories";
+            $recipes = $em->createQuery($dql)->setParameter('ingredients',$ingredients)->getResult();
+        }
 
         $result = 'DB loaded';
 
@@ -156,7 +135,7 @@ class DataController extends Controller
     }
 
     /**
-     * Show recipe.
+     * Show recipe by id.
      *
      * @Route("/recipe/{id}", name="recipe_get")
      * @Method("GET")
@@ -164,10 +143,15 @@ class DataController extends Controller
      */
     public function getRecipeAction($id)
     {
+        $favorite = false;
         $em = $this->getDoctrine()->getManager();
 
         $recipe = $em->getRepository('GurmeMainBundle:Recipe')->find($id);
         $recipes = $em->getRepository('GurmeMainBundle:Recipe')->findAll();
+        if (!is_null($this->getUser())) {
+            $favorite = $em->getRepository('GurmeMainBundle:UserFavorite')->findOneBy(array('user' => $this->getUser()->getId(), 'recipe' => $id));
+            $favorite = ($favorite) ? true : false ;
+        }
 
         $suggestions = array();
         $i = 0;
@@ -234,6 +218,7 @@ class DataController extends Controller
                 'ingredients' => $ingredients,
                 'directions' => $directions,
                 'photoUrl' => $photo,
+                'favorite' => $favorite,
                 'suggestions' => $suggestions));
     }
 

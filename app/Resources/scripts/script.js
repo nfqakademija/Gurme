@@ -7,6 +7,10 @@
 var app = angular.module('gurmeApp',[]);
 
 app.controller("MainController", function($scope, $http){
+
+    $scope.root = 'http://' + window.location.host.replace(/\/$/,'');
+    $scope.root += (document.location.href.search('/app_dev.php') >= 0) ? '/app_dev.php' : '';
+
     $scope.data = "I now understand how the scope works!";
     $scope.ingredientsTextArea = ' 1/2 cup butter ';
     $scope.calories = '500';
@@ -84,6 +88,33 @@ app.controller("MainController", function($scope, $http){
             }
 
             $scope.status = $scope.data.status;
+            $scope.buttonName = "Submittion check";
+        }).error(function (data, status, headers, config) {
+            $scope.status = status;
+        });
+    }
+
+    $scope.toggleFavorite = function(recipe) {
+        $("#toggleFavorite").html("Adding...");
+        $http({
+            url: $scope.root + '/recipe/'+recipe+'/toggleFavorite',
+            method: "GET",
+            headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
+        }).success(function (data, status, headers, config) {
+            $scope.data = angular.fromJson(data);
+            $("#toggleFavorite").html($scope.data.r);
+            switch ($scope.data.r) {
+                case 'Redirecting...':
+                    window.location = $scope.root + '/register';
+                    break;
+                case 'Added to favorites':
+                    $("#toggleFavorite").removeClass('btn-default').addClass('btn-success');
+                    break;
+                case 'Removed from favorites':
+                    $("#toggleFavorite").removeClass('btn-success').addClass('btn-default');
+                    break;
+            }
+//            $scope.ingredients = null;
             $scope.buttonName = "Submittion check";
         }).error(function (data, status, headers, config) {
             $scope.status = status;

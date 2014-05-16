@@ -3,6 +3,7 @@
 namespace Gurme\MainBundle\Controller;
 
 use Gurme\MainBundle\Entity\Ingredient;
+use Gurme\MainBundle\Entity\UserFavorite;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -10,10 +11,12 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Gurme\MainBundle\Entity\Recipe;
+use Gurme\MainBundle\Entity\Categorie;
 use Gurme\MainBundle\Form\RecipeType;
 use Gurme\MainBundle\Entity\RecipePhoto;
 use Gurme\MainBundle\Entity\RecipeIngredient;
 use Gurme\MainBundle\Entity\RecipeCategorie;
+use NFQAkademija\BaseBundle\Entity\User;
 
 
 /**
@@ -66,14 +69,14 @@ class RecipeController extends Controller
 //        exit(var_dump($entity->getCategories()));
         $zeroTime = new \DateTime('1970-01-01 00:00:00');
         if ($entity->getReadyTime() == $zeroTime) {
-            $interval1 = date_diff($zeroTime, $entity->getPrepTime());
-            $interval2 = date_diff($zeroTime, $entity->getCookTime());
+            $interval1 = date_diff($zeroTime, $entity->getPrepTime(), true);
+            $interval2 = date_diff($zeroTime, $entity->getCookTime(), true);
             $zeroTime->add($interval1)->add($interval2);
             $entity->setReadyTime($zeroTime);
         }
 
         $ingredientCheck = $this->checkIngredientInput($entity->getIngredients());
-//        exit(var_dump($ingredientCheck));
+//        exit(var_dump($entity->getUser()));
 
         if (($form->isValid())&&($ingredientCheck['status'])) {
             $em = $this->getDoctrine()->getManager();
@@ -83,7 +86,9 @@ class RecipeController extends Controller
             $categories = array();
             foreach($entity->getCategories() as $selectedCat) {
                 $recipeCat = new RecipeCategorie();
-                $recipeCat->setCategory($em->getRepository('GurmeMainBundle:Categorie')->find($selectedCat));
+                /** @var Categorie $category */
+                $category = $em->getRepository('GurmeMainBundle:Categorie')->find($selectedCat);
+                $recipeCat->setCategory($category);
                 $recipeCat->setRecipe($entity);
                 $categories[]=$recipeCat;
                 $em->persist(end($categories));
@@ -96,6 +101,7 @@ class RecipeController extends Controller
                 $listItem = new RecipeIngredient();
                 $listItem->setRecipe($entity);
                 $listItem->setAmount($ing['amount']);
+                /** @var Ingredient $ingredient */
                 $ingredient = $em->getRepository('GurmeMainBundle:Ingredient')
                     ->findOneBy(array('name' => $ing['ingredient']));
 
@@ -121,7 +127,7 @@ class RecipeController extends Controller
             $photo = new RecipePhoto();
             $photo->setRecipe($entity);
             $photo->setUrl($entity->getWebPath());
-            $photo->setUser($entity->getUser());
+            $photo->setUser(($entity->getUser() instanceof User) ? $entity->getUser() : null);
             $photo->setUploadedAt(new \DateTime('NOW'));
 
             $entity->setCoverPhoto($photo);
@@ -214,26 +220,7 @@ class RecipeController extends Controller
      */
     public function ingredientCheckAction(Request $request)
     {
-
         $contents = $request->request->get('ingredients','makukaracha');
-
-
-//        $contents = "1 (14.5 ounce) can whole berry cranberry sauce
-// 1 cup apple jelly
-// 1 tablespoon Dijon mustard
-// 4 cubes chicken bouillon, crushed
-// 1a/2 teaspoon prepared horseradish
-// 2 teaspoons garlic powder
-//2 tablespoons chopped fresh thyme
-// 1 (4 pound) boneless pork loin roast
-// 1 teaspoon salt
-// 1 teaspoon ground black pepper";
-
-
-//        exit (var_dump($ing));
-//        return new JsonResponse(array('status' => $result,
-//            'ingredients' => $ing));
-
         $response = $this->checkIngredientInput($contents);
         $i=0;
         foreach ($response['ingredients'] as $ii) {
@@ -313,6 +300,7 @@ class RecipeController extends Controller
 
         return $form;
     }
+
     /**
      * Edits an existing Recipe entity.
      *
@@ -414,6 +402,7 @@ class RecipeController extends Controller
 
                 // Find any notes within brackets. e.g. (4 ponds)
                 $pattern = '/\((.+)\)/';
+                unset($matches);
                 if(preg_match_all($pattern, $line, $matches)){
                     $ing[$i]['notes'] = $matches[0][0];
                     $line = preg_replace($pattern, '', $line);
@@ -426,6 +415,7 @@ class RecipeController extends Controller
                     // check singular
                     if (null !== $unit->getMain()) {
                         $pattern = '/\s('.$unit->getMain().'s?)\s/';
+                        unset($matches);
                         if(preg_match($pattern, $line, $matches)){
                             //exit($matches[0]);
                             $ing[$i]['unit'] = $matches[1];
@@ -436,6 +426,7 @@ class RecipeController extends Controller
                     // check plural
                     if ((null !== $unit->getPlural())&&($unit->getPlural()!=$unit->getMain())) {
                         $pattern = '/\s('.$unit->getPlural().'s?)\s/';
+                        unset($matches);
                         if(preg_match($pattern, $line, $matches)){
                             //exit($matches[0]);
                             $ing[$i]['unit'] = $matches[1];
@@ -447,11 +438,13 @@ class RecipeController extends Controller
 
                 // Get amount and ingredient data from line
                 if ($unitMatched) {
+                    unset($matches);
                     preg_match('/^\s*([. 0-9\/]+) '.$ing[$i]['unit'].'/', $line, $matches);
                     if (isset($matches[1])) {
                         $ing[$i]['amount'] = $matches[1];
                     }
                     $pattern = '/^.*'.$ing[$i]['unit'].'\s*((.*),\s*(.*)|(.*))/';
+                    unset($matches);
                     preg_match($pattern, $line, $matches);
                     if (isset($matches[3]) && $matches[3]!='')
                     {
@@ -465,7 +458,7 @@ class RecipeController extends Controller
                     }
                 } else {
                     if(preg_match('/^\s*([ 0-9\/]*)((.*),\s(.*)|(.*))/', $line, $matches)) {
-                        if (($matches[3]=='')&&($matches[3]=='')) {
+                        if (isset($matches[3])&&($matches[3]=='')&&($matches[3]=='')) {
                             $ing[$i]['amount'] = $matches[1];
                             $ing[$i]['ingredient'] = $matches[2];
                         } else {
