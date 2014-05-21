@@ -28,7 +28,12 @@ class Categorie
      */
     private $name;
 
-
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="recipes", type="integer", nullable=false)
+     */
+    private $recipes;
 
     /**
      * Get id
@@ -61,5 +66,28 @@ class Categorie
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Set recipes
+     *
+     * @param integer $recipes
+     * @return Categorie
+     */
+    public function setRecipes($recipes)
+    {
+        $this->recipes = $recipes;
+
+        return $this;
+    }
+
+    /**
+     * Get recipes
+     *
+     * @return integer
+     */
+    public function getRecipes()
+    {
+        return $this->recipes;
     }
 }

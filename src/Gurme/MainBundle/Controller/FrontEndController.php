@@ -32,8 +32,17 @@ class FrontEndController extends Controller
      */
     public function indexAction()
     {
+        /** @var \Doctrine\ORM\EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+        $categories = $em->getRepository('GurmeMainBundle:Categorie')->findAll();
+
+        $qb = $em->getRepository('GurmeMainBundle:Tip')->createQueryBuilder('tip');
+        $qb->select('COUNT(tip)');
+        $count = $qb->getQuery()->getSingleScalarResult();
+        $tip = $em->getRepository('GurmeMainBundle:Tip')->find(rand(1,$count));
+
         $name = "Gurme";
-        return array('name' => $name);
+        return array('name' => $name, 'categories' => $categories, 'tip' => $tip);
     }
 
     /**

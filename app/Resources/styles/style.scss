@@ -63,6 +63,27 @@ html, body {
   text-align: center;
 }
 
+#loadingDiv {
+  display: none;
+}
+
+#categories {
+  display: none;
+  padding-top: 10px;
+}
+
+.row-transparentBg {
+  background-color: rgb(230, 230, 230);
+  background-color: rgba(230, 230, 230, 0.9);
+  filter:alpha(opacity=90); /* IE */
+  -moz-opacity:0.9; /* Mozilla */
+  opacity: 0.9; /* CSS3 */
+}
+
+.row-transparentBg > div > ul > li > a {
+  color: #005599;
+}
+
 #inputDiv {
   margin-top: 10px;
   margin-bottom: 10px;
@@ -123,10 +144,14 @@ html, body {
   border-radius: 6px;
 }
 
-.certainCalorie a {
-  padding: 5px;
+.certainCalorie > a {
+  width: 100%;
+  text-align: center;
+  padding: 1px;
+  padding-left: 3px;
+  padding-right: 3px;
   color: rgb(51, 51, 51);
-  font-size: 25px;
+  font-size: 22px;
   border: 2px;
   &:hover {
     cursor: pointer;

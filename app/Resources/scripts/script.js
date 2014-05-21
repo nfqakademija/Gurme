@@ -54,6 +54,7 @@ app.controller("MainController", function($scope, $http){
     $scope.loadRecipes = function() {
 
         $( "#recipeBlock" ).toggleClass( "hidden", false );
+        $( "#loadingDiv" ).css("display","block");
         $( ".top-row" ).css("margin-top","0px");
         //$( "#inputDiv" ).css("margin-top","10px");
         if ($("#ingredientsBlock").css("display")=="block") {
@@ -65,6 +66,7 @@ app.controller("MainController", function($scope, $http){
             data: $.param({"calories":$scope.calories , "ingredients":ingredients}),
             headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
         }).success(function (data, status, headers, config) {
+            $( "#loadingDiv" ).css("display","none");
             $scope.data = angular.fromJson(data);
             $scope.recipes = $scope.data.recipes;
             var i = 0;
@@ -119,6 +121,21 @@ app.controller("MainController", function($scope, $http){
         }).error(function (data, status, headers, config) {
             $scope.status = status;
         });
+    }
+
+    $scope.toggleCategoryDiv = function() {
+        if ($("#categories").is(':visible')) {
+            $("#categories").css('display','none');
+            $("a[ng-click='toggleCategoryDiv()'] > span").attr('class', 'glyphicon glyphicon-chevron-down');
+        } else {
+            $('#categories').css('display','block');
+            $("html, body").animate({ scrollTop: 0 }, 1000);
+            $("a[ng-click='toggleCategoryDiv()'] > span").attr('class', 'glyphicon glyphicon-chevron-up');
+        }
+    }
+
+    $scope.toggleCategory = function(id,event) {
+        $(event.target).css('font-weight','bold');
     }
 
 

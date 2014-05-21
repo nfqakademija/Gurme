@@ -39,6 +39,12 @@
 
                 <div class="navbar-collapse collapse">
 
+                    <ul class="nav navbar-nav navbar-left">
+                         <li>
+                             <a href="" ng-click="toggleCategoryDiv()">Categories&nbsp;<span class="glyphicon glyphicon-chevron-down"></span></a>
+                         </li>
+                    </ul>
+
                     {% render(controller('FOSUserBundle:Security:loginNav', { 'mode': 'homepage' })) %}
 
 
@@ -58,6 +64,11 @@
         <div id="main" class="container clear-top">
             {% block body %}
 
+            <div id="categories" class="row row-transparentBg">
+                {% block categories %}
+                {% endblock categories %}
+            </div>
+
             <div id="calorieInput">
 
                 <div class="row top-row">
@@ -67,8 +78,10 @@
                                 <h3 style="margin-top: 10px; margin-bottom: 15px"><strong>How much calories do I need?</strong></h3>
                                 <p style="font-size: 20px;">Find out your daily calorie menu for your personality and create your own menus with a help of Gurme staff.</p>
                                 <a href="{{ path('fos_user_registration_register') }}" class="btn btn-default" style="">Calculate</a>
-                                or
-                                <a href="{{ path('fos_user_registration_register') }}" class="btn btn-default" style="">Register</a>
+                                {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                                    or
+                                    <a href="{{ path('fos_user_registration_register') }}" class="btn btn-default" style="">Register</a>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -98,12 +111,12 @@
                                     {# content, displayed when no recipes were found #}
                                     <p class="text-center" id="no_recipes" style="font-size: 20px; display: none; color: red"><strong>We are sorry<br />No matching results were found</strong></p>
                                 </div>
-                                <div style="display: table-cell; padding-left: 10px;">
-                                    {#<p style="height: 23px;">&nbsp;</p>#}
-                                    <p class="certainCalorie"><a class="certainCalorie" style="width:100%" role="button" id="btnSearch" onclick="caloriesLessThan(400)">< 400</a></p>
-                                    <p class="certainCalorie"><a style="width:100%" role="button" id="btnSearch" onclick="caloriesLessThan(300)">< 300</a></p>
-                                    <p class="certainCalorie"><a style="width:100%" role="button" id="btnSearch" onclick="caloriesLessThan(200)">< 200</a></p>
-                                    <p class="certainCalorie"><a style="width:100%" role="button" id="btnSearch" onclick="caloriesLessThan(100)"><&nbsp;100</a></p>
+                                <div style="display: table-cell; padding-left: 10px; padding-top: 0px; margin-top: 0px; vertical-align: top;">
+                                    <p class="certainCalorie"><a class="btn" role="button" onclick="caloriesLessThan(1000)">Any</a></p>
+                                    <p class="certainCalorie"><a class="btn" role="button" onclick="caloriesLessThan(400)">< 400</a></p>
+                                    <p class="certainCalorie"><a class="btn" role="button" onclick="caloriesLessThan(300)">< 300</a></p>
+                                    <p class="certainCalorie"><a class="btn" role="button" onclick="caloriesLessThan(200)">< 200</a></p>
+                                    <p class="certainCalorie"><a class="btn" role="button" onclick="caloriesLessThan(100)"><&nbsp;100</a></p>
                                 </div>
                             </div>
                         </div>
@@ -111,14 +124,25 @@
                     <div class="col-md-4"  style="margin-top: 30px; height: 250px;">
                         <div class="transparentBg" style="height: 100%; padding: 15px;">
                             <div style="margin-top: auto; margin-bottom: auto">
-                                <h3 style="margin-top: 10px; margin-bottom: 15px"><strong>Categories</strong></h3>
-                                <p style="font-size: 20px;">Chicken, beef, vegetarian etc.</p>
+                                <h3 style="margin-top: 10px; margin-bottom: 15px"><strong>Random tip</strong></h3>
+                                <p style="font-size: 20px;">
+                                    {% block tip %}
+                                    {% endblock tip %}
+                                </p>
 
                             </div>
                         </div>
                     </div>
                 </div>
             </div> <!-- /container -->
+
+            <div class="row" id="loadingDiv">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <p class="text-center">
+                        <img class="transparentBg" style="padding: 20px; width: 200px; height: 200px" src="{{ asset('images/loading.gif') }}">
+                    </p>
+                </div>
+            </div>
 
             <div id="recipesList">
                 <div class="row">

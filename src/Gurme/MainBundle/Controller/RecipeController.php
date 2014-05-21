@@ -66,7 +66,6 @@ class RecipeController extends Controller
         $form = $this->createCreateForm($entity);
 
         $form->handleRequest($request);
-//        exit(var_dump($entity->getCategories()));
         $zeroTime = new \DateTime('1970-01-01 00:00:00');
         if ($entity->getReadyTime() == $zeroTime) {
             $interval1 = date_diff($zeroTime, $entity->getPrepTime(), true);
@@ -76,7 +75,6 @@ class RecipeController extends Controller
         }
 
         $ingredientCheck = $this->checkIngredientInput($entity->getIngredients());
-//        exit(var_dump($entity->getUser()));
 
         if (($form->isValid())&&($ingredientCheck['status'])) {
             $em = $this->getDoctrine()->getManager();
@@ -136,7 +134,8 @@ class RecipeController extends Controller
             $em->persist($entity);
             $em->flush();
 
-//            exit(var_dump($entity));
+            $this->recalculateCategories();
+
             return $this->redirect($this->generateUrl('data_recipe_show', array('id' => $entity->getId())));
         } else if (!$ingredientCheck['status']) {
             $form->get('ingredients')
@@ -507,6 +506,31 @@ class RecipeController extends Controller
         else $result = false;
 
         return array('status' => $result, 'ingredients' => $ing);
+    }
+
+    /**
+     * Recalculate recipe number in each category.
+     */
+    private function recalculateCategories()
+    {
+        /** @var \Doctrine\ORM\EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+        $categories = $em->getRepository('GurmeMainBundle:Categorie')->findAll();
+        $recipes = $em->getRepository('GurmeMainBundle:RecipeCategorie')->findAll();
+        $counter = array_fill(1,count($categories)+2,0);
+//        exit(var_dump($counter));
+        /** @var \Gurme\MainBundle\Entity\RecipeCategorie $recipe */
+        foreach ($recipes as $recipe) {
+
+            $counter[$recipe->getCategory()->getId()]++;
+        }
+        /** @var \Gurme\MainBundle\Entity\Categorie $category */
+        foreach ($categories as $category) {
+            $category->setRecipes($counter[$category->getId()]);
+            $em->persist($category);
+        }
+
+        $em->flush();
     }
 
 }
