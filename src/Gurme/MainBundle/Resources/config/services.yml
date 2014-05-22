@@ -1,7 +1,8 @@
 parameters:
-#    gurme_main.example.class: Gurme\MainBundle\Example
+    gurme_main.recipe.class: Gurme\MainBundle\Recipe\DataHandler
 
 services:
-#    gurme_main.example:
-#        class: %gurme_main.example.class%
-#        arguments: [@service_id, "plain_value", %parameter%]
+    gurme_main.recipe:
+        class: %gurme_main.recipe.class%
+        arguments: [@doctrine.orm.entity_manager]
+#        arguments: [@doctrine.orm.entity_manager, "plain_value", %parameter%]

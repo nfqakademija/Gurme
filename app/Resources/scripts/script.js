@@ -17,6 +17,12 @@ app.controller("MainController", function($scope, $http){
     $scope.status = $("#ingredientsBlock").css("display");
     $("#recipeBlock").toggleClass("hidden");
 
+    $scope.status = recipesJson;
+    if (recipesJson!='')  {
+        $( ".top-row" ).css("margin-top","0px");
+        $scope.recipes = jQuery.parseJSON(recipesJson);
+    }
+
     $("inputtt").on('keyup',function() {
         $('#btnSearch').html('aaaaaaaa');
     });
@@ -138,6 +144,10 @@ app.controller("MainController", function($scope, $http){
         $(event.target).css('font-weight','bold');
     }
 
+    $scope.showCategory = function(category,event) {
+        window.location = $scope.root + "/category/" + category;
+    }
+
 
 });
 
@@ -187,5 +197,7 @@ function caloriesLessThan(calories) {
     angular.element($('body')).scope().calories = calories;
     angular.element($('body')).scope().loadRecipes();
 }
+
+
 
 

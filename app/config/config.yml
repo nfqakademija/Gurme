@@ -1,6 +1,7 @@
 imports:
     - { resource: parameters.yml }
     - { resource: security.yml }
+    - { resource: "@GurmeMainBundle/Resources/config/services.yml" }
 
 framework:
     #esi:             ~

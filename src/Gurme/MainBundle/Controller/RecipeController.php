@@ -2,17 +2,18 @@
 
 namespace Gurme\MainBundle\Controller;
 
-use Gurme\MainBundle\Entity\Ingredient;
-use Gurme\MainBundle\Entity\UserFavorite;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\Form\FormError;
 use Gurme\MainBundle\Entity\Recipe;
 use Gurme\MainBundle\Entity\Categorie;
 use Gurme\MainBundle\Form\RecipeType;
+use Gurme\MainBundle\Entity\Ingredient;
+use Gurme\MainBundle\Entity\UserFavorite;
 use Gurme\MainBundle\Entity\RecipePhoto;
 use Gurme\MainBundle\Entity\RecipeIngredient;
 use Gurme\MainBundle\Entity\RecipeCategorie;
@@ -55,17 +56,14 @@ class RecipeController extends Controller
     {
         $entity = new Recipe();
 
-        $securityContext = $this->container->get('security.context');
-        if( $securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED') ){
-            $entity->setUser($this->container->get('security.context')->getToken()->getUser());
-            $entity->setCreatedAt(new \DateTime('NOW'));
-//            exit(var_dump($entity));
+        if (!$this->container->get('security.context')->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+            return $this->redirect($this->generateUrl('fos_user_security_login'));
         }
-        else { return $this->redirect($this->generateUrl('fos_user_security_login')); }
 
         $form = $this->createCreateForm($entity);
 
         $form->handleRequest($request);
+
         $zeroTime = new \DateTime('1970-01-01 00:00:00');
         if ($entity->getReadyTime() == $zeroTime) {
             $interval1 = date_diff($zeroTime, $entity->getPrepTime(), true);
@@ -74,72 +72,16 @@ class RecipeController extends Controller
             $entity->setReadyTime($zeroTime);
         }
 
-        $ingredientCheck = $this->checkIngredientInput($entity->getIngredients());
+        $entity->setUser($this->container->get('security.context')->getToken()->getUser());
+        $entity->setCreatedAt(); // sets current date by default
+
+        $ingredientCheck = $this->get('gurme_main.recipe')->checkIngredientInput($entity->getIngredients());
 
         if (($form->isValid())&&($ingredientCheck['status'])) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
-            $em->flush();
-
-            $categories = array();
-            foreach($entity->getCategories() as $selectedCat) {
-                $recipeCat = new RecipeCategorie();
-                /** @var Categorie $category */
-                $category = $em->getRepository('GurmeMainBundle:Categorie')->find($selectedCat);
-                $recipeCat->setCategory($category);
-                $recipeCat->setRecipe($entity);
-                $categories[]=$recipeCat;
-                $em->persist(end($categories));
-            }
-            $em->flush();
-
-            $ingredients = array();
-            $i=0;
-            foreach ($ingredientCheck['ingredients'] as $ing) {
-                $listItem = new RecipeIngredient();
-                $listItem->setRecipe($entity);
-                $listItem->setAmount($ing['amount']);
-                /** @var Ingredient $ingredient */
-                $ingredient = $em->getRepository('GurmeMainBundle:Ingredient')
-                    ->findOneBy(array('name' => $ing['ingredient']));
-
-                if (is_null($ingredient)) {
-                    $newIngredient = new Ingredient();
-                    $newIngredient->setName($ing['ingredient']);
-                    $em->persist($newIngredient);
-                    $em->flush();
-                    $listItem->setIngredient($newIngredient);
-                } else $listItem->setIngredient($ingredient);
-
-                if (isset($ing['notes'])) $listItem->setNote($ing['notes']);
-                if (isset($ing['unitObj'])) $listItem->setUnit($ing['unitObj']);
-
-                $ingredients[$i] = $listItem;
-                $em->persist($ingredients[$i]);
-                $i++;
-            }
-
-//            $em->flush();
-//            exit(var_dump($ingredients));
-
-            $photo = new RecipePhoto();
-            $photo->setRecipe($entity);
-            $photo->setUrl($entity->getWebPath());
-            $photo->setUser(($entity->getUser() instanceof User) ? $entity->getUser() : null);
-            $photo->setUploadedAt(new \DateTime('NOW'));
-
-            $entity->setCoverPhoto($photo);
-
-            $em->persist($photo);
-            $em->persist($entity);
-            $em->flush();
-
-            $this->recalculateCategories();
-
+            $this->get('gurme_main.recipe')->addRecipe($entity,$ingredientCheck);
             return $this->redirect($this->generateUrl('data_recipe_show', array('id' => $entity->getId())));
         } else if (!$ingredientCheck['status']) {
-            $form->get('ingredients')
-                ->addError(new \Symfony\Component\Form\FormError('Bad ingredient input syntax.'));
+            $form->get('ingredients')->addError(new FormError('Bad ingredient input syntax.'));
         }
 
         return array(
@@ -171,6 +113,7 @@ class RecipeController extends Controller
         $em = $this->getDoctrine()->getManager();
         $entities = $em->getRepository('GurmeMainBundle:Categorie')->findAll();
         $categories = array();
+        /** @var Categorie $entity */
         foreach($entities as $entity) {
             $categories[$entity->getId()]=$entity->getName();
         }
@@ -212,19 +155,17 @@ class RecipeController extends Controller
     }
 
     /**
-     * Mano nauja funkcija.
+     * Validate ingredient input.
      *
      * @Route("/new/ingredientCheck", name="data_recipe_ingredient_check")
      * @Method("POST")
      */
     public function ingredientCheckAction(Request $request)
     {
-        $contents = $request->request->get('ingredients','makukaracha');
-        $response = $this->checkIngredientInput($contents);
-        $i=0;
-        foreach ($response['ingredients'] as $ii) {
+        $contents = $request->request->get('ingredients','');
+        $response = $this->get('gurme_main.recipe')->checkIngredientInput($contents);
+        for ($i = 0; $i < count($response['ingredients']); $i++) {
             $response['ingredients'][$i]['unitObj'] = null;
-            $i++;
         }
         return new JsonResponse($response);
     }
@@ -265,6 +206,7 @@ class RecipeController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
+        /** @var Recipe $entity */
         $entity = $em->getRepository('GurmeMainBundle:Recipe')->find($id);
 
         if (!$entity) {
@@ -310,7 +252,7 @@ class RecipeController extends Controller
     public function updateAction(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
-
+        /** @var Recipe $entity */
         $entity = $em->getRepository('GurmeMainBundle:Recipe')->find($id);
 
         if (!$entity) {
@@ -375,162 +317,6 @@ class RecipeController extends Controller
             ->add('submit', 'submit', array('label' => 'Delete'))
             ->getForm()
         ;
-    }
-
-    private function checkIngredientInput($contents)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $units = $em->getRepository('GurmeMainBundle:Unit')->findAll();
-
-        $ing = array();
-        $searchFor = '';
-
-        // escape special characters in the query
-        $pattern = preg_quote($searchFor, '/');
-        $pattern = "/^.*$pattern.*\$/m";
-
-        if(preg_match_all($pattern, $contents, $matches)){
-//exit(var_dump(trim($matches[0])));
-            $lines = $matches[0];
-            $i=0;
-            foreach($lines as $line){
-
-                if (trim($line) == '') { continue; }
-
-                $ing[$i]['valid'] = 'remove';
-
-                // Find any notes within brackets. e.g. (4 ponds)
-                $pattern = '/\((.+)\)/';
-                unset($matches);
-                if(preg_match_all($pattern, $line, $matches)){
-                    $ing[$i]['notes'] = $matches[0][0];
-                    $line = preg_replace($pattern, '', $line);
-                }
-
-                // Find any unit name in the line
-                $line = ' ' . $line;
-                $unitMatched = false;
-                foreach($units as $unit){
-                    // check singular
-                    if (null !== $unit->getMain()) {
-                        $pattern = '/\s('.$unit->getMain().'s?)\s/';
-                        unset($matches);
-                        if(preg_match($pattern, $line, $matches)){
-                            //exit($matches[0]);
-                            $ing[$i]['unit'] = $matches[1];
-                            $ing[$i]['unitObj'] = $unit;
-                            $unitMatched = true;
-                        }
-                    }
-                    // check plural
-                    if ((null !== $unit->getPlural())&&($unit->getPlural()!=$unit->getMain())) {
-                        $pattern = '/\s('.$unit->getPlural().'s?)\s/';
-                        unset($matches);
-                        if(preg_match($pattern, $line, $matches)){
-                            //exit($matches[0]);
-                            $ing[$i]['unit'] = $matches[1];
-                            $ing[$i]['unitObj'] = $unit;
-                            $unitMatched = true;
-                        }
-                    }
-                }
-
-                // Get amount and ingredient data from line
-                if ($unitMatched) {
-                    unset($matches);
-                    preg_match('/^\s*([. 0-9\/]+) '.$ing[$i]['unit'].'/', $line, $matches);
-                    if (isset($matches[1])) {
-                        $ing[$i]['amount'] = $matches[1];
-                    }
-                    $pattern = '/^.*'.$ing[$i]['unit'].'\s*((.*),\s*(.*)|(.*))/';
-                    unset($matches);
-                    preg_match($pattern, $line, $matches);
-                    if (isset($matches[3]) && $matches[3]!='')
-                    {
-                        $ing[$i]['ingredient'] = $matches[2];
-                        $ing[$i]['notes'] = (isset($ing[$i]['notes']) ?
-                            $matches[3] . ' ' . $ing[$i]['notes'] : $matches[3]);
-                    }
-                    else
-                    {
-                        $ing[$i]['ingredient'] = $matches[1];
-                    }
-                } else {
-                    if(preg_match('/^\s*([ 0-9\/]*)((.*),\s(.*)|(.*))/', $line, $matches)) {
-                        if (isset($matches[3])&&($matches[3]=='')&&($matches[3]=='')) {
-                            $ing[$i]['amount'] = $matches[1];
-                            $ing[$i]['ingredient'] = $matches[2];
-                        } else {
-                            $ing[$i]['amount'] = $matches[1];
-                            $ing[$i]['ingredient'] = $matches[3];
-                            $ing[$i]['notes'] = (isset($ing[$i]['notes']) ?
-                                $matches[4] . ' ' . $ing[$i]['notes'] : $matches[4]);
-                        }
-                        if(trim($ing[$i]['amount']) != '') {
-                            $ing[$i]['unit'] = 'units';
-                            $ing[$i]['unitObj'] = $em->getRepository('GurmeMainBundle:Unit')
-                                ->findOneBy(array('main' => 'unit'));
-                        } else $ing[$i]['valid'] = 'ok';
-                    }
-                }
-
-                if (!is_null($ing[$i]['ingredient'])) trim($ing[$i]['ingredient']);
-
-                // Convert amount to metric system, remove slashes
-                if ((isset($ing[$i]['amount'])) && (trim($ing[$i]['amount']) != '')) {
-                    $ing[$i]['amount'] = trim($ing[$i]['amount']);
-                    $pattern = '/((([0-9]*)\s+([0-9]*)\/([0-9]*))|([0-9]*\.[0-9]*)|(([0-9]*)\/([0-9]*))|([0-9]*))/';
-                    if (preg_match($pattern,$ing[$i]['amount'],$matches)) {
-                        $ing[$i]['valid'] = 'ok';
-                        if (isset($matches[10]) && ($matches[10]!='')) {
-                            // sveikas skaičius pvz 2,8,40 (rodo kaip STRING)
-                        } else if (isset($matches[9]) && ($matches[9]!='')){
-                            $ing[$i]['amount'] = $matches[8] / $matches[9] ; // pvz "1/3" = 0.3(3)
-                        } else if (isset($matches[6]) && ($matches[6]!='')){
-                            // skaičius su kableliu pvz 2.5 (rodo kaip STRING)
-                        } else if (isset($matches[5]) && ($matches[5]!='')){
-                            $ing[$i]['amount'] = $matches[3] + $matches[4] / $matches[5] ; // "1 1/2" = 1.5
-                        } else $ing[$i]['valid'] = 'remove';
-                    }
-                }
-
-                $i++;
-            }
-            $result = true;
-            foreach ($ing as $ingredient){
-                if ($ingredient['valid']=='remove') {
-                    $result = false;
-                }
-            }
-        }
-        else $result = false;
-
-        return array('status' => $result, 'ingredients' => $ing);
-    }
-
-    /**
-     * Recalculate recipe number in each category.
-     */
-    private function recalculateCategories()
-    {
-        /** @var \Doctrine\ORM\EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-        $categories = $em->getRepository('GurmeMainBundle:Categorie')->findAll();
-        $recipes = $em->getRepository('GurmeMainBundle:RecipeCategorie')->findAll();
-        $counter = array_fill(1,count($categories)+2,0);
-//        exit(var_dump($counter));
-        /** @var \Gurme\MainBundle\Entity\RecipeCategorie $recipe */
-        foreach ($recipes as $recipe) {
-
-            $counter[$recipe->getCategory()->getId()]++;
-        }
-        /** @var \Gurme\MainBundle\Entity\Categorie $category */
-        foreach ($categories as $category) {
-            $category->setRecipes($counter[$category->getId()]);
-            $em->persist($category);
-        }
-
-        $em->flush();
     }
 
 }

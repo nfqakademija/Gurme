@@ -15,6 +15,10 @@ use Gurme\MainBundle\Entity\Ingredient;
 use Gurme\MainBundle\Entity\UserFavorite;
 use Gurme\MainBundle\Entity\Recipe;
 
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
+
 /**
  * Unit controller.
  *
@@ -43,6 +47,42 @@ class FrontEndController extends Controller
 
         $name = "Gurme";
         return array('name' => $name, 'categories' => $categories, 'tip' => $tip);
+    }
+
+    /**
+     * Lists all recipes in particular category.
+     *
+     * @Route("/category/{category}", name="category_recipes")
+     * @Method("GET")
+     * @Template()
+     */
+    public function categoryRecipesAction($category)
+    {
+        if (preg_match("/^\d+/",$category, $matches)) {
+            $id = $matches[0];
+            /** @var \Doctrine\ORM\EntityManager $em */
+            $em = $this->getDoctrine()->getManager();
+            $dql = "SELECT r.id,r.name,r.calories,p.url
+                FROM 'GurmeMainBundle:RecipeCategorie' rc
+                JOIN rc.recipe r
+                JOIN r.coverPhoto p
+                WHERE rc.category = $id
+                ORDER BY r.calories";
+            $recipes = $em->createQuery($dql)->getResult();
+
+            $normalizer = new GetSetMethodNormalizer();
+            $encoder = new JsonEncoder();
+
+            $serializer = new Serializer(array($normalizer), array($encoder));
+            $recipes = $serializer->serialize($recipes, 'json'); // Output: {"name":"foo"}
+            $recipes = str_replace("'", "&#39;", $recipes);
+//            exit(var_dump($recipes));
+
+//            $name = "Gurme";
+            return array('recipesJson' => $recipes);
+//            return new JsonResponse($recipes));
+
+        } else return $this->redirect($this->generateUrl('index'));
     }
 
     /**

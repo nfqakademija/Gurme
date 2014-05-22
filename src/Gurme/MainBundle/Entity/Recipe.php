@@ -529,10 +529,9 @@ class Recipe
     /**
      * Set createdAt
      *
-     * @param \DateTime $createdAt
      * @return Recipe
      */
-    public function setCreatedAt($createdAt)
+    public function setCreatedAt()
     {
         if (!isset($this->createdAt)) {
             $this->createdAt = new \DateTime('NOW');

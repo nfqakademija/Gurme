@@ -6,6 +6,9 @@
         {% block stylesheets %}{% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon-carrot.ico') }}" />
         <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}" />
+        <script id="loadedRecipesJson" ng-model="loadedRecipesJson">
+            var recipesJson = '{% block recipesJson %}{% endblock %}';
+        </script>
         <script src="{{ asset('js/all.js') }}"></script>
 
         {# Chosen jQuery plugin #}
@@ -157,7 +160,7 @@
                                     </div>
                                     <div class="panel-body" style="text-align: center">
                                         <div>
-                                        <img src="{{ asset('') }}{% verbatim %}{{ recipe.url }}{% endverbatim %}" alt="..." class="img-rounded" style="width: 100%;">
+                                        <img ng-src="{{ asset('') }}{% verbatim %}{{ recipe.url }}{% endverbatim %}" alt="..." class="img-rounded" style="width: 100%;">
                                         <p class="calorieBadge">{% verbatim %}{{ recipe.calories }}{% endverbatim %} kcal</p>
                                         </div>
                                     </div>
