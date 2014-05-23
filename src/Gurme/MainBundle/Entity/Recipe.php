@@ -8,6 +8,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Gurme\MainBundle\Entity\RecipePhoto;
 use Gurme\MainBundle\Entity\RecipeIngredient;
+use NFQAkademija\BaseBundle\Entity\User;
 
 /**
  * Recipes
@@ -118,7 +119,7 @@ class Recipe
     private $private;
 
     /**
-     * @var \Users
+     * @var \User
      *
      * @ORM\ManyToOne(targetEntity="NFQAkademija\BaseBundle\Entity\User")
      * @ORM\JoinColumns({

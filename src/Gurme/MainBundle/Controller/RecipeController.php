@@ -70,7 +70,7 @@ class RecipeController extends Controller
         $entity->setUser($this->container->get('security.context')->getToken()->getUser());
         $entity->setCreatedAt(); // sets current date by default
 
-        $ingredientCheck = $this->get('gurme_main.recipe')->checkIngredientInput($entity->getIngredients());
+        $ingredientCheck = $this->get('gurme_main.ingredient_input_validation')->validate($entity->getIngredients());
 
         if (($form->isValid())&&($ingredientCheck['status'])) {
             $this->get('gurme_main.recipe')->addRecipe($entity,$ingredientCheck);
@@ -158,7 +158,7 @@ class RecipeController extends Controller
     public function ingredientCheckAction(Request $request)
     {
         $contents = $request->request->get('ingredients','');
-        $response = $this->get('gurme_main.recipe')->checkIngredientInput($contents);
+        $response = $this->get('gurme_main.ingredient_input_validation')->validate($contents);
         for ($i = 0; $i < count($response['ingredients']); $i++) {
             $response['ingredients'][$i]['unitObj'] = null;
         }

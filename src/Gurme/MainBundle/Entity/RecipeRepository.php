@@ -26,7 +26,7 @@ class RecipeRepository extends EntityRepository
 
     public function getIngredients($id)
     {
-        return $this->getEntityManager()->getRepository('GurmeMainBundle:RecipeIngredient')
+        $ingredients = $this->getEntityManager()->getRepository('GurmeMainBundle:RecipeIngredient')
             ->createQueryBuilder('il')
             ->leftJoin('il.recipe','r')
             ->leftJoin('il.ingredient','i')
@@ -36,5 +36,18 @@ class RecipeRepository extends EntityRepository
             ->setParameter('recipeId',$id)
             ->getQuery()
             ->getResult();
+
+        for ($i = 0; $i < count($ingredients); $i++) {
+            if (($ingredients[$i]['amount'] != '')&&($ingredients[$i]['amount'] > 1)) {
+                $ingredients[$i]['main'] .= 's';
+            }
+        }
+
+        return $ingredients;
+    }
+
+    public function searchByCalories($calories)
+    {
+
     }
 }

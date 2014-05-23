@@ -1,8 +1,12 @@
 parameters:
     gurme_main.recipe.class: Gurme\MainBundle\Recipe\DataHandler
+    gurme_main.ingredient_input_validation.class: Gurme\MainBundle\Recipe\IngredientInputValidation
 
 services:
     gurme_main.recipe:
         class: %gurme_main.recipe.class%
         arguments: [@doctrine.orm.entity_manager]
 #        arguments: [@doctrine.orm.entity_manager, "plain_value", %parameter%]
+    gurme_main.ingredient_input_validation:
+        class: %gurme_main.ingredient_input_validation.class%
+        arguments: [@doctrine.orm.entity_manager]
