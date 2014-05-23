@@ -2,10 +2,13 @@
 
 namespace Gurme\MainBundle\Recipe;
 
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Doctrine\ORM\EntityManager;
+use NFQAkademija\BaseBundle\Entity\User;
 use Gurme\MainBundle\Entity\Categorie;
 use Gurme\MainBundle\Entity\Ingredient;
 use Gurme\MainBundle\Entity\Recipe;
+use Gurme\MainBundle\Entity\RecipeRepository;
 use Gurme\MainBundle\Entity\RecipeCategorie;
 use Gurme\MainBundle\Entity\RecipeIngredient;
 use Gurme\MainBundle\Entity\RecipePhoto;
@@ -64,7 +67,7 @@ class DataHandler {
 
                 // Find any notes within brackets. e.g. (4 ponds)
                 $pattern = '/\((.+)\)/';
-                $matches = null;
+                $matches = [];
                 if(preg_match_all($pattern, $line, $matches)){
                     $ing[$i]['notes'] = $matches[0][0];
                     $line = preg_replace($pattern, '', $line);
@@ -75,22 +78,11 @@ class DataHandler {
                 $unitMatched = false;
                 /** @var Unit $unit */
                 foreach($units as $unit){
-                    // check singular
                     if (null !== $unit->getMain()) {
-                        $pattern = '/\s('.$unit->getMain().'s?)\s/';
-                        $matches = null;
-                        if(preg_match($pattern, $line, $matches)){
-                            //exit($matches[0]);
-                            $ing[$i]['unit'] = $matches[1];
-                            $ing[$i]['unitObj'] = $unit;
-                            $unitMatched = true;
-                        }
-                    }
-                    // check plural
-                    if ((null !== $unit->getPlural())&&($unit->getPlural()!=$unit->getMain())) {
-                        $pattern = '/\s('.$unit->getPlural().'s?)\s/';
-                        $matches = null;
-                        if(preg_match($pattern, $line, $matches)){
+                        $pattern = (null !== $unit->getPlural()) ? '('.$unit->getMain().'|'.$unit->getPlural().')' : $unit->getMain() ;
+                        $pattern = '/\s('.$pattern.'s?)\s/';
+                        $matches = [];
+                        if (preg_match($pattern, $line, $matches)) {
                             //exit($matches[0]);
                             $ing[$i]['unit'] = $matches[1];
                             $ing[$i]['unitObj'] = $unit;
@@ -101,13 +93,13 @@ class DataHandler {
 
                 // Get amount and ingredient data from line
                 if ($unitMatched) {
-                    $matches = null;
+                    $matches = [];
                     preg_match('/^\s*([. 0-9\/]+) '.$ing[$i]['unit'].'/', $line, $matches);
                     if (isset($matches[1])) {
                         $ing[$i]['amount'] = $matches[1];
                     }
                     $pattern = '/^.*'.$ing[$i]['unit'].'\s*((.*),\s*(.*)|(.*))/';
-                    $matches = null;
+                    $matches = [];
                     preg_match($pattern, $line, $matches);
                     if (isset($matches[3]) && $matches[3]!='')
                     {
@@ -120,7 +112,7 @@ class DataHandler {
                         $ing[$i]['ingredient'] = $matches[1];
                     }
                 } else {
-                    $matches = null;
+                    $matches = [];
                     if(preg_match('/^\s*([ 0-9\/]*)((.*),\s(.*)|(.*))/', $line, $matches)) {
                         if (isset($matches[3])&&($matches[3]=='')&&($matches[3]=='')) {
                             $ing[$i]['amount'] = $matches[1];
@@ -255,4 +247,88 @@ class DataHandler {
         }
         $this->em->flush();
     }
+
+    /**
+     * Get full recipe description with ingredients, photo url etc.
+     *
+     * @param integer $id
+     * @param User $user
+     * @return array
+     *
+     * @throws NotFoundHttpException if the any entity is not found.
+     */
+    public function getFullDescription($id,$user)
+    {
+        /** @var Recipe $recipe */
+        $recipe = $this->em->getRepository('GurmeMainBundle:Recipe')->find($id);
+        if (!$recipe) throw new NotFoundHttpException('Unable to find Recipe entity.');
+        $response = $recipe->getObjectVars();
+
+        $response['favorite'] = false;
+        if (!is_null($user)) {
+            $response['favorite'] = $this->em->getRepository('GurmeMainBundle:UserFavorite')->findOneBy(array('user' => $user->getId(), 'recipe' => $id));
+            $response['favorite'] = ($response['favorite']) ? true : false ;
+        }
+
+        $photo = $this->em->getRepository('GurmeMainBundle:RecipePhoto')->find($recipe->getCoverPhoto()->getId());
+        if (!$photo) throw new NotFoundHttpException('Unable to find Recipe photo.');
+
+        $response['photo'] = $photo->getUrl();
+
+        /** @var RecipeRepository $repo */
+        $repo = $this->em->getRepository('GurmeMainBundle:Recipe');
+        $ingredients = $repo->getIngredients($id);
+
+        $x=0;
+        foreach ($ingredients as $i) {
+            if (($i['amount'] != '')&&($i['amount'] > 1)) {
+                $ingredients[$x]['main'] .= 's';
+            }
+            $x++;
+        }
+
+        $response['ingredients'] = $ingredients;
+        $response['directions'] = '';
+        $searchFor = '';
+        // escape special characters in the query
+        $pattern = preg_quote($searchFor, '/');
+        $pattern = "/^.*$pattern.*\$/m";
+        if(preg_match_all($pattern, $recipe->getDirections(), $matches)){
+            $response['directions'] = $matches[0];
+        }
+
+        return $response;
+    }
+
+    /**
+     * Get given $number random recipes.
+     *
+     * @param integer $number
+     * @return array
+     *
+     * @throws NotFoundHttpException if the any entity is not found.
+     */
+    public function getRandomRecipes($number)
+    {
+        $recipes = $this->em->getRepository('GurmeMainBundle:Recipe')->findAll();
+        $suggestions = array();
+
+        for ($i = 0; $i < $number; $i++) {
+            /** @var $recipe \Gurme\MainBundle\Entity\Recipe */
+            $rand = rand(0,count($recipes)-1);
+            $recipe = $recipes[$rand];
+            if (!is_null($recipe)) {
+                $suggestions[$i]['id']      =   $recipe->getId();
+                $suggestions[$i]['name']    =   $recipe->getName();
+                $suggestions[$i]['calories']=   $recipe->getCalories();
+                $photo = $this->em->getRepository('GurmeMainBundle:RecipePhoto')->find($recipe->getCoverPhoto()->getId());
+                if (!$photo) throw new NotFoundHttpException('Unable to find Recipe photo entity.');
+                $suggestions[$i]['url']=$photo->getUrl();
+                $recipes[$rand] = null;
+            } else $i--;
+        }
+
+        return $suggestions;
+    }
+
 } 

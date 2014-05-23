@@ -12,11 +12,6 @@ use Symfony\Component\Form\FormError;
 use Gurme\MainBundle\Entity\Recipe;
 use Gurme\MainBundle\Entity\Categorie;
 use Gurme\MainBundle\Form\RecipeType;
-use Gurme\MainBundle\Entity\Ingredient;
-use Gurme\MainBundle\Entity\UserFavorite;
-use Gurme\MainBundle\Entity\RecipePhoto;
-use Gurme\MainBundle\Entity\RecipeIngredient;
-use Gurme\MainBundle\Entity\RecipeCategorie;
 use NFQAkademija\BaseBundle\Entity\User;
 
 

@@ -23,4 +23,18 @@ class RecipeRepository extends EntityRepository
             ->getQuery()
             ->execute();
     }
+
+    public function getIngredients($id)
+    {
+        return $this->getEntityManager()->getRepository('GurmeMainBundle:RecipeIngredient')
+            ->createQueryBuilder('il')
+            ->leftJoin('il.recipe','r')
+            ->leftJoin('il.ingredient','i')
+            ->leftJoin('il.unit','u')
+            ->select('r.id rid','il.amount','u.main','i.name','il.note')
+            ->where('r.id = :recipeId')
+            ->setParameter('recipeId',$id)
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -8,7 +8,7 @@
         </div>
         <div class="row">
             <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12" id="recipePhoto">
-                <img src="{{ asset('') }}{{ photoUrl }}" alt="..." class="img-rounded" style="width: 100%;">
+                <img src="{{ asset('') }}{{ recipe.photo }}" alt="..." class="img-rounded" style="width: 100%;">
             </div>
             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12" id="recipeDesc">
                 <h4>Preparation time:</h4>
@@ -56,7 +56,7 @@
                 </table>
                 &nbsp;<br>
                 &nbsp;<br>
-                {% if favorite %}
+                {% if recipe.favorite %}
                     <a class="btn btn-success" ng-click='toggleFavorite({{ recipe.id }})' style="float: right;" id="toggleFavorite">Your favorite <span class="glyphicon glyphicon-heart"></span><br><div style="margin-top: -10px"><small>Click to remove</small></div></a>
                 {% else %}
                     <a class="btn btn-default" ng-click='toggleFavorite({{ recipe.id }})' style="float: right;" id="toggleFavorite">Add to favorites <span class="glyphicon glyphicon-heart"></span></a>
@@ -67,7 +67,7 @@
             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" id="recipeIngredients">
                 <h3>Ingredients</h3>
                 {#<ul style="padding-left:0;">#}
-                {% for ingredient in ingredients %}
+                {% for ingredient in recipe.ingredients %}
                     <p style="border-bottom: dotted 1px;">
                         {{ ingredient.amount }} {{ ingredient.main }} {{ ingredient.name }}
                         {% if ingredient.note != '' %}, {{ ingredient.note }}{% endif %}
@@ -78,7 +78,7 @@
             <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12" id="recipeDirections">
                 <h3>Directions</h3>
                 <ol>
-                {% for dir in directions %}
+                {% for dir in recipe.directions %}
                     <li>
                         {{ dir }}
                     </li>
