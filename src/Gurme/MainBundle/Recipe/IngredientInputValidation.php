@@ -34,6 +34,7 @@ class IngredientInputValidation
     public function validate($contents)
     {
         $units = $this->em->getRepository('GurmeMainBundle:Unit')->findAll();
+        $result = true;
         $ing = array();
         $searchFor = '';
 
@@ -45,11 +46,12 @@ class IngredientInputValidation
             //exit(var_dump(trim($matches[0])));
             $lines = $matches[0];
             $i=0;
-            foreach($lines as $line){
+            foreach ($lines as $line) {
 
                 if (trim($line) == '') { continue; }
 
-                $ing[$i]['valid'] = 'remove';
+                $ing[$i]['valid']   = 'remove';
+                $ing[$i]['amount']  = '';
 
                 // Find any notes within brackets. e.g. (4 ponds)
                 $pattern = '/\((.+)\)/';
@@ -59,23 +61,8 @@ class IngredientInputValidation
                     $line = preg_replace($pattern, '', $line);
                 }
 
-                // Find any unit name in the line
                 $line = ' ' . $line;
-                $unitMatched = false;
-                /** @var Unit $unit */
-                foreach($units as $unit){
-                    if (null !== $unit->getMain()) {
-                        $pattern = (null !== $unit->getPlural()) ? '('.$unit->getMain().'|'.$unit->getPlural().')' : $unit->getMain() ;
-                        $pattern = '/\s('.$pattern.'s?)\s/';
-                        $matches = [];
-                        if (preg_match($pattern, $line, $matches)) {
-                            //exit($matches[0]);
-                            $ing[$i]['unit'] = $matches[1];
-                            $ing[$i]['unitObj'] = $unit;
-                            $unitMatched = true;
-                        }
-                    }
-                }
+                list($unitMatched,$ing[$i]['unit'],$ing[$i]['unitObj']) = $this->findUnit($line);
 
                 // Get amount and ingredient data from line
                 if ($unitMatched) {
@@ -119,35 +106,62 @@ class IngredientInputValidation
 
                 if (!is_null($ing[$i]['ingredient'])) trim($ing[$i]['ingredient']);
 
-                // Convert amount to metric system, remove slashes
-                if ((isset($ing[$i]['amount'])) && (trim($ing[$i]['amount']) != '')) {
-                    $ing[$i]['amount'] = trim($ing[$i]['amount']);
-                    $pattern = '/((([0-9]*)\s+([0-9]*)\/([0-9]*))|([0-9]*\.[0-9]*)|(([0-9]*)\/([0-9]*))|([0-9]*))/';
-                    $matches = [];
-                    if (preg_match($pattern,$ing[$i]['amount'],$matches)) {
-                        $ing[$i]['valid'] = 'ok';
-                        if (isset($matches[10]) && ($matches[10]!='')) {
-                            // sveikas skaičius pvz 2,8,40 (rodo kaip STRING)
-                        } else if (isset($matches[9]) && ($matches[9]!='')){
-                            $ing[$i]['amount'] = $matches[8] / $matches[9] ; // pvz "1/3" = 0.3(3)
-                        } else if (isset($matches[6]) && ($matches[6]!='')){
-                            // skaičius su kableliu pvz 2.5 (rodo kaip STRING)
-                        } else if (isset($matches[5]) && ($matches[5]!='')){
-                            $ing[$i]['amount'] = $matches[3] + $matches[4] / $matches[5] ; // "1 1/2" = 1.5
-                        } else $ing[$i]['valid'] = 'remove';
-                    }
-                }
+                list($ing[$i]['amount'],$ing[$i]['valid']) = $this->convertToMetric($ing[$i]['amount'],$ing[$i]['valid']);
+
+                $result = ($ing[$i]['valid']=='remove') ? false : $result;
+
                 $i++;
             }
-            $result = true;
-            foreach ($ing as $ingredient){
-                if ($ingredient['valid']=='remove') {
-                    $result = false;
-                }
-            }
+
         }
         else $result = false;
 
         return array('status' => $result, 'ingredients' => $ing);
+    }
+
+    private function findUnit($line)
+    {
+        $name = null;
+        $object = null;
+        $units = $this->repository->findAll();
+        $unitMatched = false;
+        /** @var Unit $unit */
+        foreach($units as $unit){
+            if (null !== $unit->getMain()) {
+                $pattern = (null !== $unit->getPlural()) ? '('.$unit->getMain().'|'.$unit->getPlural().')' : $unit->getMain() ;
+                $pattern = '/\s('.$pattern.'s?)\s/';
+                if (preg_match($pattern, $line, $matches)) {
+                    //exit($matches[0]);
+                    $name = $matches[1];
+                    $object = $unit;
+                    $unitMatched = true;
+                }
+            }
+        }
+
+        return array($unitMatched,$name,$object);
+    }
+
+    private function convertToMetric($amount,$valid)
+    {
+        if ((isset($amount)) && (trim($amount) != '')) {
+            $amount = trim($amount);
+            $pattern = '/((([0-9]*)\s+([0-9]*)\/([0-9]*))|([0-9]*\.[0-9]*)|(([0-9]*)\/([0-9]*))|([0-9]*))/';
+            $matches = [];
+            if (preg_match($pattern,$amount,$matches)) {
+                $valid = 'ok';
+                if (isset($matches[10]) && ($matches[10]!='')) {
+                    // sveikas skaičius pvz 2,8,40 (rodo kaip STRING)
+                } else if (isset($matches[9]) && ($matches[9]!='')){
+                    $amount = $matches[8] / $matches[9] ; // pvz "1/3" = 0.3(3)
+                } else if (isset($matches[6]) && ($matches[6]!='')){
+                    // skaičius su kableliu pvz 2.5 (rodo kaip STRING)
+                } else if (isset($matches[5]) && ($matches[5]!='')){
+                    $amount = $matches[3] + $matches[4] / $matches[5] ; // "1 1/2" = 1.5
+                } else $valid = 'remove';
+            }
+        }
+
+        return array($amount,$valid);
     }
 } 

@@ -2,6 +2,7 @@
 
 namespace Gurme\MainBundle\Controller;
 
+use Gurme\MainBundle\Entity\RecipeExtention;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -140,7 +141,7 @@ class RecipeController extends Controller
      */
     public function newAction()
     {
-        $entity = new Recipe();
+        $entity = new RecipeExtention();
         $form   = $this->createCreateForm($entity);
 
         return array(
