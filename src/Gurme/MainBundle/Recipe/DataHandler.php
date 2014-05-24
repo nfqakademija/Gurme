@@ -7,12 +7,11 @@ use Doctrine\ORM\EntityManager;
 use NFQAkademija\BaseBundle\Entity\User;
 use Gurme\MainBundle\Entity\Categorie;
 use Gurme\MainBundle\Entity\Ingredient;
-use Gurme\MainBundle\Entity\Recipe;
+use Gurme\MainBundle\Entity\RecipeExtention;
 use Gurme\MainBundle\Entity\RecipeRepository;
 use Gurme\MainBundle\Entity\RecipeCategorie;
 use Gurme\MainBundle\Entity\RecipeIngredient;
 use Gurme\MainBundle\Entity\RecipePhoto;
-use Gurme\MainBundle\Entity\Unit;
 
 class DataHandler
 {
@@ -35,14 +34,10 @@ class DataHandler
         $this->repository = $em->getRepository('GurmeMainBundle:Recipe');
     }
 
-    function test() {
-        exit('fuck you');
-    }
-
     /**
      * Add recipe to database.
      *
-     * @param Recipe $entity
+     * @param RecipeExtention $entity
      * @param $ingredientCheck
      */
     public function addRecipe($entity,$ingredientCheck)
@@ -134,7 +129,7 @@ class DataHandler
      */
     public function getFullDescription($id,$user)
     {
-        /** @var Recipe $recipe */
+        /** @var RecipeExtention $recipe */
         $recipe = $this->em->getRepository('GurmeMainBundle:Recipe')->find($id);
         if (!$recipe) throw new NotFoundHttpException('Unable to find Recipe entity.');
         $response = $recipe->getObjectVars();

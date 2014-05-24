@@ -43,7 +43,7 @@ class RecipeComment
     private $flaged;
 
     /**
-     * @var \Users
+     * @var \NFQAkademija\BaseBundle\Entity\User
      *
      * @ORM\ManyToOne(targetEntity="NFQAkademija\BaseBundle\Entity\User")
      * @ORM\JoinColumns({
@@ -53,7 +53,7 @@ class RecipeComment
     private $user;
 
     /**
-     * @var \Recipes
+     * @var \Gurme\MainBundle\Entity\Recipe
      *
      * @ORM\ManyToOne(targetEntity="Recipe")
      * @ORM\JoinColumns({

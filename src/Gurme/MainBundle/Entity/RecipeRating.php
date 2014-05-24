@@ -36,7 +36,7 @@ class RecipeRating
     private $ratedAt;
 
     /**
-     * @var \Recipes
+     * @var \Gurme\MainBundle\Entity\Recipe
      *
      * @ORM\ManyToOne(targetEntity="Recipe")
      * @ORM\JoinColumns({
@@ -46,7 +46,7 @@ class RecipeRating
     private $recipe;
 
     /**
-     * @var \Users
+     * @var \NFQAkademija\BaseBundle\Entity\User
      *
      * @ORM\ManyToOne(targetEntity="NFQAkademija\BaseBundle\Entity\User")
      * @ORM\JoinColumns({

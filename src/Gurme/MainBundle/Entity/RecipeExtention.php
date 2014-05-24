@@ -40,20 +40,20 @@ class RecipeExtention extends Recipe
      */
     private $categories;
 
-//    /**
-//     * @var mixed
-//     *
-//     */
-//    private $ingredients;
-
     /**
-     * @var \RecipeIngredient
-     *
-     * @ORM\OneToMany(targetEntity="RecipeIngredient", mappedBy="recipe")
-     * @ORM\JoinColumn(name="id", referencedColumnName="id")
+     * @var mixed
      *
      */
-    private $ingredient;
+    private $ingredients;
+
+//    /**
+//     * @var \RecipeIngredient
+//     *
+//     * @ORM\OneToMany(targetEntity="RecipeIngredient", mappedBy="recipe")
+//     * @ORM\JoinColumn(name="id", referencedColumnName="id")
+//     *
+//     */
+//    private $ingredient;
 
     /**
      * @param mixed $ingredients
