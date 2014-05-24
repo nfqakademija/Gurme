@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+use NFQAkademija\BaseBundle\Entity\User;
 use Gurme\MainBundle\Entity\Ingredient;
 use Gurme\MainBundle\Entity\UserFavorite;
 use Gurme\MainBundle\Entity\Recipe;
@@ -164,7 +165,9 @@ class FrontEndController extends Controller
                 ->findOneBy(array('user' => $this->getUser()->getId(), 'recipe' => $id));
             if (!$entity) {
                 $entity = new UserFavorite();
-                $entity->setUser($this->getUser());
+                if ($entity->getUser() instanceof User) {
+                    $entity->setUser($this->getUser());
+                }
                 /** @var $recipe Recipe */
                 $recipe = $em->getRepository('GurmeMainBundle:Recipe')->find($id);
                 if (!$recipe) {

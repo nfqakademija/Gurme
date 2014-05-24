@@ -86,9 +86,7 @@ class DataHandler
         $photo->setRecipe($entity);
         $photo->setUrl($entity->getWebPath());
         $photo->setUploadedAt(new \DateTime('NOW'));
-//        if ($entity->getUser() instanceof User) {
-            $photo->setUser($entity->getUser());
-//        }
+        $photo->setUser($entity->getUser());
         $entity->setCoverPhoto($photo);
 
         $this->em->persist($photo);
