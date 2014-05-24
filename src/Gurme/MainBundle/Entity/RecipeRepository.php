@@ -48,6 +48,13 @@ class RecipeRepository extends EntityRepository
 
     public function searchByCalories($calories)
     {
+        $dql = "SELECT r.id,r.name,r.calories,p.url
+                FROM 'GurmeMainBundle:Recipe' r
+                JOIN r.coverPhoto p
+                WHERE r.calories < $calories
+                ORDER BY r.calories";
+        $recipes = $this->getEntityManager()->createQuery($dql)->getResult();
 
+        return $recipes;
     }
 }

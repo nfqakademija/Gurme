@@ -19,12 +19,7 @@ use NFQAkademija\BaseBundle\Entity\User;
  */
 class Recipe
 {
-    public function __construct(){
-        $this->ingredient = new ArrayCollection();
-    }
-    ///////////////////////////////////////////////////////////
-    // Database variables
-    ///////////////////////////////////////////////////////////
+
     /**
      * @var integer
      *
@@ -32,7 +27,7 @@ class Recipe
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
@@ -139,15 +134,6 @@ class Recipe
     private $coverPhoto;
 
     /**
-     * @var \RecipeIngredient
-     *
-     * @ORM\OneToMany(targetEntity="RecipeIngredient", mappedBy="recipe")
-     * @ORM\JoinColumn(name="id", referencedColumnName="id")
-     *
-     */
-    private $ingredient;
-
-    /**
      * @var float
      *
      * @ORM\Column(name="carbs", type="float", nullable=false)
@@ -174,43 +160,6 @@ class Recipe
      * @ORM\Column(name="about", type="text", nullable=true)
      */
     private $about;
-
-
-    ///////////////////////////////////////////////////////////
-    // Virtual variables
-    ///////////////////////////////////////////////////////////
-
-    /**
-     * @var array
-     *
-     */
-    private $categories;
-    
-    /**
-     * @var \RecipePhotos
-     *
-     * @ORM\ManyToMany(targetEntity="RecipeIngredient")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id", referencedColumnName="id")
-     * })
-     */
-    private $ingredients;
-
-    /**
-     * @param mixed $ingredients
-     */
-    public function setIngredients($ingredients)
-    {
-        $this->ingredients = $ingredients;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getIngredients()
-    {
-        return $this->ingredients;
-    }
 
     /**
      * Get id
@@ -593,39 +542,6 @@ class Recipe
     public function getAbout()
     {
         return $this->about;
-    }
-
-    /**
-     * Set categories
-     *
-     * @param array $categories
-     * @return Recipe
-     */
-    public function setCategories($categories)
-    {
-        $this->categories = $categories;
-
-        return $this;
-    }
-
-    /**
-     * Get categories
-     *
-     * @return array
-     */
-    public function getCategories()
-    {
-        return $this->categories;
-    }
-
-    /**
-     * Get ingredient
-     *
-     * @return \Gurme\MainBundle\Entity\RecipeIngredient
-     */
-    public function getIngredient()
-    {
-        return $this->ingredient;
     }
 
 }

@@ -13,6 +13,7 @@ use Gurme\MainBundle\Entity\Unit;
 use Gurme\MainBundle\Form\UnitType;
 use Gurme\MainBundle\Entity\Ingredient;
 use Gurme\MainBundle\Entity\Recipe;
+use Gurme\MainBundle\Entity\RecipeRepository;
 use Gurme\MainBundle\Entity\RecipePhoto;
 use Gurme\MainBundle\Entity\RecipeIngredient;
 use Gurme\MainBundle\Entity\RecipeCategorie;
@@ -79,12 +80,11 @@ class DataController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         if ($ingredients==array()) {
-            $dql = "SELECT r.id,r.name,r.calories,p.url
-                FROM 'GurmeMainBundle:Recipe' r
-                JOIN r.coverPhoto p
-                WHERE r.calories < $calories
-                ORDER BY r.calories";
-            $recipes = $em->createQuery($dql)->getResult();
+
+            /** @var RecipeRepository $repo */
+            $repo = $em->getRepository('GurmeMainBundle:Recipe');
+            $recipes = $repo->searchByCalories($calories);
+
         } else {
             $dql = "SELECT DISTINCT r.id,r.name,r.calories,p.url
                 FROM GurmeMainBundle:RecipeIngredient ri JOIN ri.recipe r

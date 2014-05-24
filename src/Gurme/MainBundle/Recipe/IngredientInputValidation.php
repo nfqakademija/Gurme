@@ -33,7 +33,6 @@ class IngredientInputValidation
      */
     public function validate($contents)
     {
-        $units = $this->em->getRepository('GurmeMainBundle:Unit')->findAll();
         $result = true;
         $ing = array();
         $searchFor = '';
@@ -86,7 +85,7 @@ class IngredientInputValidation
                     }
                 } else {
                     $matches = [];
-                    if(preg_match('/^\s*([ 0-9\/]*)((.*),\s(.*)|(.*))/', $line, $matches)) {
+                    if(preg_match('/^\s*([. 0-9\/]*)((.*),\s(.*)|(.*))/', $line, $matches)) {
                         if (isset($matches[3])&&($matches[3]=='')&&($matches[3]=='')) {
                             $ing[$i]['amount'] = $matches[1];
                             $ing[$i]['ingredient'] = $matches[2];
@@ -144,21 +143,41 @@ class IngredientInputValidation
 
     private function convertToMetric($amount,$valid)
     {
-        if ((isset($amount)) && (trim($amount) != '')) {
-            $amount = trim($amount);
+        $amount = trim($amount);
+        if ($amount != '') {
             $pattern = '/((([0-9]*)\s+([0-9]*)\/([0-9]*))|([0-9]*\.[0-9]*)|(([0-9]*)\/([0-9]*))|([0-9]*))/';
-            $matches = [];
             if (preg_match($pattern,$amount,$matches)) {
                 $valid = 'ok';
-                if (isset($matches[10]) && ($matches[10]!='')) {
-                    // sveikas skaičius pvz 2,8,40 (rodo kaip STRING)
-                } else if (isset($matches[9]) && ($matches[9]!='')){
-                    $amount = $matches[8] / $matches[9] ; // pvz "1/3" = 0.3(3)
-                } else if (isset($matches[6]) && ($matches[6]!='')){
-                    // skaičius su kableliu pvz 2.5 (rodo kaip STRING)
-                } else if (isset($matches[5]) && ($matches[5]!='')){
-                    $amount = $matches[3] + $matches[4] / $matches[5] ; // "1 1/2" = 1.5
-                } else $valid = 'remove';
+                for ($i=count($matches);$i > 0;$i--) {
+                    if (isset($matches[$i]) && ($matches[$i]!='')) {
+                        switch ($i)
+                        {
+                            case 10:
+                                break 2; // sveikas skaičius pvz 2,8,40 (rodo kaip STRING)
+                            case 9:
+                                $amount = $matches[8] / $matches[9] ; // pvz "1/3" = 0.3(3)
+                                break 2;
+                            case 6:
+                                break 2; // skaičius su kableliu pvz 2.5 (rodo kaip STRING)
+                            case 5:
+                                $amount = $matches[3] + $matches[4] / $matches[5] ; // "1 1/2" = 1.5
+                                break 2;
+                            case 4:
+                                $valid = 'remove';
+                        }
+
+                    }
+                }
+//                exit($amount);
+//                if (isset($matches[10]) && ($matches[10]!='')) {
+//                    // sveikas skaičius pvz 2,8,40 (rodo kaip STRING)
+//                } else if (isset($matches[9]) && ($matches[9]!='')){
+//                    $amount = $matches[8] / $matches[9] ; // pvz "1/3" = 0.3(3)
+//                } else if (isset($matches[6]) && ($matches[6]!='')){
+//                    // skaičius su kableliu pvz 2.5 (rodo kaip STRING)
+//                } else if (isset($matches[5]) && ($matches[5]!='')){
+//                    $amount = $matches[3] + $matches[4] / $matches[5] ; // "1 1/2" = 1.5
+//                } else $valid = 'remove';
             }
         }
 

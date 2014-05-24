@@ -20,17 +20,105 @@ use NFQAkademija\BaseBundle\Entity\User;
 class RecipeExtention extends Recipe
 {
 
+    public function __construct(){
+        $this->ingredient = new ArrayCollection();
+    }
+
+    public function getObjectVars() {
+        return get_object_vars($this);
+    }
+
+    /**
+     * -------------------------
+     * Variables for recipe form
+     * -------------------------
+     */
+
     /**
      * @var array
      *
      */
     private $categories;
 
+//    /**
+//     * @var mixed
+//     *
+//     */
+//    private $ingredients;
+
+    /**
+     * @var \RecipeIngredient
+     *
+     * @ORM\OneToMany(targetEntity="RecipeIngredient", mappedBy="recipe")
+     * @ORM\JoinColumn(name="id", referencedColumnName="id")
+     *
+     */
+    private $ingredient;
+
+    /**
+     * @param mixed $ingredients
+     */
+    public function setIngredients($ingredients)
+    {
+        $this->ingredients = $ingredients;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIngredients()
+    {
+        return $this->ingredients;
+    }
+
+    /**
+     * Set categories
+     *
+     * @param array $categories
+     * @return Recipe
+     */
+    public function setCategories($categories)
+    {
+        $this->categories = $categories;
+
+        return $this;
+    }
+
+    /**
+     * Get categories
+     *
+     * @return array
+     */
+    public function getCategories()
+    {
+        return $this->categories;
+    }
+
+//    /**
+//     * Get ingredient
+//     *
+//     * @return \Gurme\MainBundle\Entity\RecipeIngredient
+//     */
+//    public function getIngredient()
+//    {
+//        return $this->ingredient;
+//    }
+
+
+    /**
+     * ---------------------------------------
+     * Variables and functions for file upload
+     * ---------------------------------------
+     */
 
     /**
      * @Assert\File(maxSize="6000000")
      */
     private $file;
+
+    public $path;
+
+    private $temp;
 
     /**
      * Sets file.
@@ -103,8 +191,6 @@ class RecipeExtention extends Recipe
 
     }
 
-    public $path;
-
     public function getAbsolutePath()
     {
         return null === $this->path
@@ -133,8 +219,6 @@ class RecipeExtention extends Recipe
         return 'images/dishes';
     }
 
-    private $temp;
-
     /**
      * @ORM\PostRemove()
      */
@@ -145,8 +229,5 @@ class RecipeExtention extends Recipe
         }
     }
 
-    public function getObjectVars() {
-        return get_object_vars($this);
-    }
 }
 

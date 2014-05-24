@@ -13,8 +13,6 @@ use Symfony\Component\Form\FormError;
 use Gurme\MainBundle\Entity\Recipe;
 use Gurme\MainBundle\Entity\Categorie;
 use Gurme\MainBundle\Form\RecipeType;
-use NFQAkademija\BaseBundle\Entity\User;
-
 
 /**
  * Recipe controller.
@@ -50,7 +48,7 @@ class RecipeController extends Controller
      */
     public function createAction(Request $request)
     {
-        $entity = new Recipe();
+        $entity = new RecipeExtention();
 
         if (!$this->container->get('security.context')->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             return $this->redirect($this->generateUrl('fos_user_security_login'));
@@ -89,11 +87,11 @@ class RecipeController extends Controller
     /**
     * Creates a form to create a Recipe entity.
     *
-    * @param Recipe $entity The entity
+    * @param RecipeExtention $entity The entity
     *
     * @return \Symfony\Component\Form\Form The form
     */
-    private function createCreateForm(Recipe $entity)
+    private function createCreateForm(RecipeExtention $entity)
     {
         $form = $this->createForm(new RecipeType(), $entity, array(
             'action' => $this->generateUrl('data_recipe_create'),
