@@ -46,14 +46,14 @@ class RecipeExtention extends Recipe
      */
     private $ingredients;
 
-//    /**
-//     * @var \RecipeIngredient
-//     *
-//     * @ORM\OneToMany(targetEntity="RecipeIngredient", mappedBy="recipe")
-//     * @ORM\JoinColumn(name="id", referencedColumnName="id")
-//     *
-//     */
-//    private $ingredient;
+    /**
+     * @var \RecipeIngredient
+     *
+     * @ORM\OneToMany(targetEntity="RecipeIngredient", mappedBy="recipe")
+     * @ORM\JoinColumn(name="id", referencedColumnName="id")
+     *
+     */
+    private $ingredient;
 
     /**
      * @param mixed $ingredients

@@ -18,6 +18,46 @@ class IngredientInputValidation
     private $em;
 
     /**
+     * @var boolean
+     */
+    private $result;
+
+    /**
+     * @var string
+     */
+    private $currentLine;
+
+    /**
+     * @var string
+     */
+    private $amount;
+
+    /**
+     * @var string
+     */
+    private $unit;
+
+    /**
+     * @var Unit
+     */
+    private $unitObject;
+
+    /**
+     * @var string
+     */
+    private $ingredient;
+
+    /**
+     * @var string
+     */
+    private $notes;
+
+    /**
+     * @var string
+     */
+    private $valid;
+
+    /**
      * @param $em EntityManager
      */
     public function __construct($em) {
@@ -33,121 +73,153 @@ class IngredientInputValidation
      */
     public function validate($contents)
     {
-        $result = true;
+        $this->result = true;
         $ing = array();
-        $searchFor = '';
 
-        // escape special characters in the query
-        $pattern = preg_quote($searchFor, '/');
-        $pattern = "/^.*$pattern.*\$/m";
+        $lines = $this->getLinesArray($contents);
 
-        if(preg_match_all($pattern, $contents, $matches)){
-            //exit(var_dump(trim($matches[0])));
-            $lines = $matches[0];
-            $i=0;
-            foreach ($lines as $line) {
+        $i=0;
+        foreach ($lines as $line) {
 
-                if (trim($line) == '') { continue; }
+            $this->currentLine = $line;
 
-                $ing[$i]['valid']   = 'remove';
-                $ing[$i]['amount']  = '';
+            $this->reset();
+//            $ing[$i]['valid']   = 'remove';
+//            $ing[$i]['amount']  = '';
+//            $ing[$i]['ingredient'] = '';
 
-                // Find any notes within brackets. e.g. (4 ponds)
-                $pattern = '/\((.+)\)/';
-                $matches = [];
-                if(preg_match_all($pattern, $line, $matches)){
-                    $ing[$i]['notes'] = $matches[0][0];
-                    $line = preg_replace($pattern, '', $line);
-                }
+            $this->notes = $this->getNotesInBrackets();
 
-                $line = ' ' . $line;
-                list($unitMatched,$ing[$i]['unit'],$ing[$i]['unitObj']) = $this->findUnit($line);
+            // Find any notes within brackets. e.g. (4 ponds)
+//            $pattern = '/\((.+)\)/';
+//            $matches = [];
+//            if(preg_match_all($pattern, $line, $matches)){
+//                $ing[$i]['notes'] = $matches[0][0];
+//                $line = preg_replace($pattern, '', $line);
+//            }
 
-                // Get amount and ingredient data from line
-                if ($unitMatched) {
-                    $matches = [];
-                    preg_match('/^\s*([. 0-9\/]+) '.$ing[$i]['unit'].'/', $line, $matches);
-                    if (isset($matches[1])) {
-                        $ing[$i]['amount'] = $matches[1];
-                    }
-                    $pattern = '/^.*'.$ing[$i]['unit'].'\s*((.*),\s*(.*)|(.*))/';
-                    $matches = [];
-                    preg_match($pattern, $line, $matches);
-                    if (isset($matches[3]) && $matches[3]!='')
-                    {
-                        $ing[$i]['ingredient'] = $matches[2];
-                        $ing[$i]['notes'] = (isset($ing[$i]['notes']) ?
-                            $matches[3] . ' ' . $ing[$i]['notes'] : $matches[3]);
-                    }
-                    else
-                    {
-                        $ing[$i]['ingredient'] = $matches[1];
-                    }
-                } else {
-                    $matches = [];
-                    if(preg_match('/^\s*([. 0-9\/]*)((.*),\s(.*)|(.*))/', $line, $matches)) {
-                        if (isset($matches[3])&&($matches[3]=='')&&($matches[3]=='')) {
-                            $ing[$i]['amount'] = $matches[1];
-                            $ing[$i]['ingredient'] = $matches[2];
-                        } else {
-                            $ing[$i]['amount'] = $matches[1];
-                            $ing[$i]['ingredient'] = $matches[3];
-                            $ing[$i]['notes'] = (isset($ing[$i]['notes']) ?
-                                $matches[4] . ' ' . $ing[$i]['notes'] : $matches[4]);
-                        }
-                        if(trim($ing[$i]['amount']) != '') {
-                            $ing[$i]['unit'] = 'units';
-                            $ing[$i]['unitObj'] = $this->em->getRepository('GurmeMainBundle:Unit')
-                                ->findOneBy(array('main' => 'unit'));
-                        } else $ing[$i]['valid'] = 'ok';
-                    }
-                }
+            $this->unit = $this->getUnit();
+//            list($unitMatched,$ing[$i]['unit'],$ing[$i]['unitObj']) = $this->getUnit($this->currentLine);
 
-                if (!is_null($ing[$i]['ingredient'])) trim($ing[$i]['ingredient']);
+            $this->amount = $this->getAmount();
 
-                list($ing[$i]['amount'],$ing[$i]['valid']) = $this->convertToMetric($ing[$i]['amount'],$ing[$i]['valid']);
 
-                $result = ($ing[$i]['valid']=='remove') ? false : $result;
+            $this->ingredient = $this->getIngredient();
 
-                $i++;
-            }
 
+//            // Get amount and ingredient data from line
+//            if (!is_null($this->unit)) {
+//                $matches = [];
+//                preg_match('/^\s*([. 0-9\/]+) '.$ing[$i]['unit'].'/', $line, $matches);
+//                if (isset($matches[1])) {
+//                    $ing[$i]['amount'] = $matches[1];
+//                }
+//                $pattern = '/^.*'.$ing[$i]['unit'].'\s*((.*),\s*(.*)|(.*))/';
+//                $matches = [];
+//                preg_match($pattern, $line, $matches);
+//                if (isset($matches[3]) && $matches[3]!='')
+//                {
+//                    $ing[$i]['ingredient'] = $matches[2];
+//                    $ing[$i]['notes'] = (isset($ing[$i]['notes']) ?
+//                        $matches[3] . ' ' . $ing[$i]['notes'] : $matches[3]);
+//                }
+//                else
+//                {
+//                    $ing[$i]['ingredient'] = $matches[1];
+//                }
+//            } else {
+//                $matches = [];
+//                if(preg_match('/^\s*([. 0-9\/]*)((.*),\s(.*)|(.*))/', $line, $matches)) {
+//                    if (isset($matches[3])&&($matches[3]=='')&&($matches[3]=='')) {
+//                        $ing[$i]['amount'] = $matches[1];
+//                        $ing[$i]['ingredient'] = $matches[2];
+//                    } else {
+//                        $ing[$i]['amount'] = $matches[1];
+//                        $ing[$i]['ingredient'] = $matches[3];
+//                        $ing[$i]['notes'] = (isset($ing[$i]['notes']) ?
+//                            $matches[4] . ' ' . $ing[$i]['notes'] : $matches[4]);
+//                    }
+//                    if(trim($ing[$i]['amount']) != '') {
+//                        $ing[$i]['unit'] = 'units';
+//                        $ing[$i]['unitObj'] = $this->em->getRepository('GurmeMainBundle:Unit')
+//                            ->findOneBy(array('main' => 'unit'));
+//                    } else $ing[$i]['valid'] = 'ok';
+//                }
+//            }
+
+            $this->amount = $this->convertToMetric();
+
+            $ingredient = array(
+                'amount'    => $this->amount,
+                'unit'      => $this->unit,
+                'unitObj'   => $this->unitObject,
+                'ingredient' => $this->ingredient,
+                'notes'     => $this->notes,
+                'valid'     => $this->valid
+            );
+
+            $ing[]=$ingredient;
+
+//            list($ing[$i]['amount'],$ing[$i]['valid']) = $this->convertToMetric($ing[$i]['amount'],$ing[$i]['valid']);
+
+            $this->result = ($this->valid=='remove') ? false : $this->result;
+
+            $i++;
         }
-        else $result = false;
 
-        return array('status' => $result, 'ingredients' => $ing);
+        return array('status' => $this->result, 'ingredients' => $ing);
     }
 
-    private function findUnit($line)
+    private function reset()
     {
+        $this->amount = null;
+        $this->unit = null;
+        $this->ingredient = null;
+        $this->notes = null;
+    }
+
+    private function getNotesInBrackets()
+    {
+        $notes = null;
+        // Find any notes within brackets. e.g. (4 ponds)
+        $pattern = '/\((.+)\)/';
+        $matches = [];
+        if(preg_match_all($pattern, $this->currentLine, $matches)){
+            $notes = $matches[0][0];
+            $this->currentLine = preg_replace($pattern, '', $this->currentLine);
+        }
+        return $notes;
+    }
+
+    private function getUnit()
+    {
+        $this->currentLine = ' ' . $this->currentLine;
         $name = null;
         $object = null;
         $units = $this->repository->findAll();
-        $unitMatched = false;
         /** @var Unit $unit */
-        foreach($units as $unit){
+        foreach ($units as $unit) {
             if (null !== $unit->getMain()) {
                 $pattern = (null !== $unit->getPlural()) ? '('.$unit->getMain().'|'.$unit->getPlural().')' : $unit->getMain() ;
                 $pattern = '/\s('.$pattern.'s?)\s/';
-                if (preg_match($pattern, $line, $matches)) {
+                if (preg_match($pattern, $this->currentLine, $matches)) {
                     //exit($matches[0]);
                     $name = $matches[1];
-                    $object = $unit;
-                    $unitMatched = true;
+                    $this->unitObject = $unit;
                 }
             }
         }
 
-        return array($unitMatched,$name,$object);
+        return $name;
     }
 
-    private function convertToMetric($amount,$valid)
+    private function convertToMetric()
     {
-        $amount = trim($amount);
+        $amount = trim($this->amount);
         if ($amount != '') {
             $pattern = '/((([0-9]*)\s+([0-9]*)\/([0-9]*))|([0-9]*\.[0-9]*)|(([0-9]*)\/([0-9]*))|([0-9]*))/';
             if (preg_match($pattern,$amount,$matches)) {
-                $valid = 'ok';
+                $this->valid = 'ok';
                 for ($i=count($matches);$i > 0;$i--) {
                     if (isset($matches[$i]) && ($matches[$i]!='')) {
                         switch ($i)
@@ -163,7 +235,7 @@ class IngredientInputValidation
                                 $amount = $matches[3] + $matches[4] / $matches[5] ; // "1 1/2" = 1.5
                                 break 2;
                             case 4:
-                                $valid = 'remove';
+                                $this->valid = 'remove';
                         }
 
                     }
@@ -181,6 +253,97 @@ class IngredientInputValidation
             }
         }
 
-        return array($amount,$valid);
+        return $amount;
+    }
+
+    private function getAmount()
+    {
+        $amount = null;
+        // Get amount and ingredient data from line
+        if (!is_null($this->unit)) {
+            $matches = [];
+            preg_match('/^\s*([. 0-9\/]+) '.$this->unit.'/', $this->currentLine, $matches);
+            if (isset($matches[1])) {
+                $amount = $matches[1];
+            }
+            $pattern = '/^.*'.$this->unit.'\s*((.*),\s*(.*)|(.*))/';
+            $matches = [];
+            preg_match($pattern, $this->currentLine, $matches);
+            if (isset($matches[3]) && $matches[3]!='')
+            {
+                $this->notes = (!is_null($this->notes) ?
+                    $matches[3] . ' ' . $this->notes : $matches[3]);
+            }
+        } else {
+            $matches = [];
+            if(preg_match('/^\s*([. 0-9\/]*)((.*),\s(.*)|(.*))/', $this->currentLine, $matches)) {
+                if (isset($matches[3])&&($matches[3]=='')&&($matches[3]=='')) {
+                    $amount = $matches[1];
+                } else {
+                    $amount = $matches[1];
+                    $this->notes = (!is_null($this->notes) ?
+                        $matches[4] . ' ' . $this->notes : $matches[4]);
+                }
+                if(trim($amount) != '') {
+                    $this->unit = 'units';
+                    $this->unitObject = $this->em->getRepository('GurmeMainBundle:Unit')
+                        ->findOneBy(array('main' => 'unit'));
+                } else $this->valid = 'ok';
+            }
+        }
+        return $amount;
+    }
+
+    private function getIngredient()
+    {
+        $ingredient = '';
+        if (!is_null($this->unit) && $this->unit != 'unit' && $this->unit != 'units') {
+            $pattern = '/^.*'.$this->unit.'\s*((.*),\s*(.*)|(.*))/';
+            $matches = [];
+            preg_match($pattern, $this->currentLine, $matches);
+            if (isset($matches[3]) && $matches[3]!='')
+            {
+                $ingredient = $matches[2];
+                $this->notes = (!is_null($this->notes) ?
+                    $matches[3] . ', ' . $this->notes : $matches[3]);
+            }
+            else
+            {
+                $ingredient = $matches[1];
+            }
+        } else {
+            if(preg_match('/^\s*([. 0-9\/]*)((.*),\s(.*)|(.*))/', $this->currentLine, $matches)) {
+                if (isset($matches[3])&&($matches[3]=='')&&($matches[3]=='')) {
+                    $ingredient = $matches[2];
+                } else {
+                    $ingredient = $matches[3];
+                    $this->notes = (!is_null($this->notes) ?
+                        $matches[4] . ', ' . $this->notes : $matches[4]);
+                }
+            }
+        }
+        $ingredient = trim($ingredient);
+        return $ingredient;
+    }
+
+    private function getLinesArray($contents)
+    {
+        $lines = array();
+        $searchFor = '';
+        // escape special characters in the query
+        $pattern = preg_quote($searchFor, '/');
+        $pattern = "/^.*$pattern.*\$/m";
+
+        if (preg_match_all($pattern, $contents, $matches)) {
+            //exit(var_dump(trim($matches[0])));
+            $lines = $matches[0];
+            for ($i=0;$i<count($lines);$i++) {
+                if ( trim($lines[$i]) == '' ) unset($lines[$i]);
+            }
+            $lines = array_values($lines);
+        }
+        else $this->result = false;
+
+        return $lines;
     }
 } 

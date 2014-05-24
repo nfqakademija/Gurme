@@ -114,7 +114,7 @@ class Recipe
     private $private;
 
     /**
-     * @var \User
+     * @var \NFQAkademija\BaseBundle\Entity\User
      *
      * @ORM\ManyToOne(targetEntity="NFQAkademija\BaseBundle\Entity\User")
      * @ORM\JoinColumns({
