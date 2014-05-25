@@ -87,38 +87,6 @@ class FrontEndController extends Controller
     }
 
     /**
-     * Lists all Unit entities.
-     *
-     * @Route("/calories", name="calories")
-     * @Method("GET")
-     * @Template()
-     */
-    public function caloriesAction()
-    {
-        return $this->render('GurmeMainBundle:Default:calories.html.twig', array());
-    }
-
-    /**
-     * Lists all Unit entities.
-     *
-     * @Route("/recipes", name="recipes")
-     * @Method("POST")
-     * @Template()
-     */
-    public function recipesAction()
-    {
-        if (isset($_POST['calories'])) {
-            $calories = $_POST['calories'];
-            $recipes = $this->getDoctrine()
-                ->getRepository('GurmeMainBundle:Recipe')->retrieveRecipesWithPhotos($calories);
-        } else {
-            $recipes = $this->getDoctrine()
-                ->getRepository('GurmeMainBundle:Recipe')->retrieveRecipesWithPhotos();
-        }
-        return $this->render('GurmeMainBundle:Default:recipes.html.twig', array('recipes' => $recipes));
-    }
-
-    /**
      * Gets ingredient list for Chosen Ajax Call.
      *
      * @Route("/queryIngredient/{query}", name="query_ingredient")
@@ -165,7 +133,7 @@ class FrontEndController extends Controller
                 ->findOneBy(array('user' => $this->getUser()->getId(), 'recipe' => $id));
             if (!$entity) {
                 $entity = new UserFavorite();
-                if ($entity->getUser() instanceof User) {
+                if ($this->getUser() instanceof User) {
                     $entity->setUser($this->getUser());
                 }
                 /** @var $recipe Recipe */
@@ -185,28 +153,6 @@ class FrontEndController extends Controller
             }
         }
         return new JsonResponse(array('r' => $result));
-    }
-
-    /**
-     * Lists all Unit entities.
-     *
-     * @Route("/recipe", name="recipe")
-     * @Method("GET")
-     * @Template()
-     */
-    public function singleRecipeAction()
-    {
-        if(isset($_GET['id']))
-        $recipe = $this->getDoctrine()
-            ->getRepository('GurmeMainBundle:Recipe')->find($_GET['id']);
-        else return false;
-        return $this->render('GurmeMainBundle:Default:recipe.html.twig', array('recipe' => $recipe));
-    }
-
-
-    public function addRecipeAction($name)
-    {
-        return $this->render('GurmeMainBundle:Default:index.html.twig', array('name' => $name));
     }
 
 }

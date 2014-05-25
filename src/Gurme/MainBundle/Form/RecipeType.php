@@ -8,7 +8,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class RecipeType extends AbstractType
 {
-        /**
+     /**
      * @param FormBuilderInterface $builder
      * @param array $options
      */
@@ -16,34 +16,23 @@ class RecipeType extends AbstractType
     {
         $builder
             ->add('name', 'text', array(
-                'attr' => array(
-                    'class' => 'form-control'
-                ),
+                'attr' => array('class' => 'form-control'),
                 'data' => 'Sample Recipe'
             ))
             ->add('ingredients', 'textarea', array(
                 'attr' => array(
                     'label' => 'Ingredients',
-                    'class' => 'form-control',
-                    'rows' => '8'
+                    'class' => 'form-control','rows' => '8'
                 )
             ))
             ->add('directions', 'textarea', array(
-                'attr' => array(
-                    'class' => 'form-control',
-                    'rows' => '8'
-                )
+                'attr' => array('class' => 'form-control','rows' => '8')
             ))
             ->add('about', 'textarea', array(
-                'attr' => array(
-                    'class' => 'form-control',
-                    'rows' => '4'
-                )
+                'attr' => array('class' => 'form-control','rows' => '4')
             ))
             ->add('servings', 'integer', array(
-                'attr' => array(
-                    'class' => 'form-control'
-                ),
+                'attr' => array('class' => 'form-control'),
                 'data' => '4'
             ))
             ->add('prepTime', 'time', array(
@@ -65,35 +54,22 @@ class RecipeType extends AbstractType
                 'data' => new \DateTime("0000-00-00 00:00:00")
             ))
             ->add('calories', 'integer', array(
-                'attr' => array(
-                    'class' => 'form-control'
-                ),
+                'attr' => array('class' => 'form-control'),
                 'data' => '500'
             ))
             ->add('carbs', 'number', array(
-                'attr' => array(
-                    'class' => 'form-control'
-                ),
+                'attr' => array('class' => 'form-control'),
                 'data' => '52'
             ))
             ->add('fat', 'number', array(
-                'attr' => array(
-                    'class' => 'form-control'
-                ),
+                'attr' => array('class' => 'form-control'),
                 'data' => '23'
             ))
             ->add('protein', 'number', array(
-                'attr' => array(
-                    'class' => 'form-control'
-                ),
+                'attr' => array('class' => 'form-control'),
                 'data' => '81'
             ))
-            ->add('approved')
-            ->add('rating')
-            ->add('private')
-            ->add('coverPhoto')
-            ->add('user')
-            ->add('createdAt')
+            ->add('approved')->add('rating')->add('private')->add('coverPhoto')->add('user')->add('createdAt')
         ;
     }
     

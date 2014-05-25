@@ -15,12 +15,14 @@ use Symfony\Component\DependencyInjection\Loader;
 class NFQAkademijaBaseExtension extends Extension
 {
     /**
+     * This extention is subject to app user
      * {@inheritDoc}
      */
     public function load(array $configs, ContainerBuilder $container)
     {
         $configuration = new Configuration();
         $this->processConfiguration($configuration, $configs);
+        // jei naudosim sita extetion'a uncommentint
 //        $config = $this->processConfiguration($configuration, $configs);
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));

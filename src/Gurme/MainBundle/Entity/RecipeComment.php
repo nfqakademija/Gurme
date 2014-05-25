@@ -100,12 +100,13 @@ class RecipeComment
     /**
      * Set createdAt
      *
-     * @param \DateTime $createdAt
      * @return RecipeComment
      */
-    public function setCreatedAt($createdAt)
+    public function setCreatedAt()
     {
-        $this->createdAt = $createdAt;
+        if (!isset($this->createdAt)) {
+            $this->createdAt = new \DateTime('NOW');
+        }
 
         return $this;
     }

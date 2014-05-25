@@ -14,7 +14,6 @@ class RecipeRepository extends EntityRepository
 {
     public function retrieveRecipesWithPhotos($cal = 500)
     {
-
         return $this->createQueryBuilder('r')
             ->select('r')
             ->where('r.calories >= :start')
@@ -54,6 +53,22 @@ class RecipeRepository extends EntityRepository
                 WHERE r.calories < $calories
                 ORDER BY r.calories";
         $recipes = $this->getEntityManager()->createQuery($dql)->getResult();
+
+        return $recipes;
+    }
+
+    public function searchByCaloriesAndIngredients($calories,$ingredients)
+    {
+        $dql = "SELECT DISTINCT r.id,r.name,r.calories,p.url
+                FROM GurmeMainBundle:RecipeIngredient ri JOIN ri.recipe r
+                JOIN r.coverPhoto p
+                WHERE r.calories < $calories AND ri.ingredient IN (:ingredients)
+                ORDER BY r.calories";
+
+        $recipes = $this->getEntityManager()
+            ->createQuery($dql)
+            ->setParameter('ingredients',$ingredients)
+            ->getResult();
 
         return $recipes;
     }

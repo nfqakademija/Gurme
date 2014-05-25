@@ -2,7 +2,6 @@
 
 namespace Gurme\MainBundle\Controller;
 
-use Gurme\MainBundle\Entity\RecipeExtention;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -11,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\Form\FormError;
 use Gurme\MainBundle\Entity\Recipe;
+use Gurme\MainBundle\Recipe\DataHandler;
 use Gurme\MainBundle\Entity\Categorie;
 use Gurme\MainBundle\Form\RecipeType;
 
@@ -48,7 +48,7 @@ class RecipeController extends Controller
      */
     public function createAction(Request $request)
     {
-        $entity = new RecipeExtention();
+        $entity = new Recipe();
 
         if (!$this->container->get('security.context')->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             return $this->redirect($this->generateUrl('fos_user_security_login'));
@@ -58,13 +58,9 @@ class RecipeController extends Controller
 
         $form->handleRequest($request);
 
-        $zeroTime = new \DateTime('1970-01-01 00:00:00');
-        if ($entity->getReadyTime() == $zeroTime) {
-            $interval1 = date_diff($zeroTime, $entity->getPrepTime(), true);
-            $interval2 = date_diff($zeroTime, $entity->getCookTime(), true);
-            $zeroTime->add($interval1)->add($interval2);
-            $entity->setReadyTime($zeroTime);
-        }
+        /** @var DataHandler $service */
+        $service = $this->get('gurme_main.recipe');
+        $entity = $service->checkReadyTime($entity);
 
         $entity->setUser($this->container->get('security.context')->getToken()->getUser());
         $entity->setCreatedAt(); // sets current date by default
@@ -72,7 +68,7 @@ class RecipeController extends Controller
         $ingredientCheck = $this->get('gurme_main.ingredient_input_validation')->validate($entity->getIngredients());
 
         if (($form->isValid())&&($ingredientCheck['status'])) {
-            $this->get('gurme_main.recipe')->addRecipe($entity,$ingredientCheck);
+            $service->addRecipe($entity,$ingredientCheck);
             return $this->redirect($this->generateUrl('data_recipe_show', array('id' => $entity->getId())));
         } else if (!$ingredientCheck['status']) {
             $form->get('ingredients')->addError(new FormError('Bad ingredient input syntax.'));
@@ -87,11 +83,11 @@ class RecipeController extends Controller
     /**
     * Creates a form to create a Recipe entity.
     *
-    * @param RecipeExtention $entity The entity
+    * @param Recipe $entity The entity
     *
     * @return \Symfony\Component\Form\Form The form
     */
-    private function createCreateForm(RecipeExtention $entity)
+    private function createCreateForm(Recipe $entity)
     {
         $form = $this->createForm(new RecipeType(), $entity, array(
             'action' => $this->generateUrl('data_recipe_create'),
@@ -139,7 +135,7 @@ class RecipeController extends Controller
      */
     public function newAction()
     {
-        $entity = new RecipeExtention();
+        $entity = new Recipe();
         $form   = $this->createCreateForm($entity);
 
         return array(

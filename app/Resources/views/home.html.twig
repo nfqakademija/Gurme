@@ -151,24 +151,41 @@
                 <div class="row">
 
                     <ng ng-repeat="recipe in recipes">
-                        <a href="recipe/{% verbatim %}{{ recipe.id }}{% endverbatim %}">
-                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6" id="recipeBlock">
 
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <h3 class="panel-title">{% verbatim %}{{ recipe.name }}{% endverbatim %}</h3>
+                        <a href="{% verbatim %}{{ recipe.link }}{% endverbatim %}">
+                            <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6" id="recipeBlock" style="margin-bottom: 10px;">
+
+                                <div class="" style="height: 200px; background-size: cover; background-image: url({{ asset('') }}{% verbatim %}{{ recipe.url }}{% endverbatim %})">
+                                    <div class="transparentBg" style="padding-bottom: 0px;">
+                                        <p style="color: #000; font-size: 20px; padding: 5px; margin-bottom: 0px;">{% verbatim %}{{ recipe.name }}{% endverbatim %}</p>
                                     </div>
-                                    <div class="panel-body" style="text-align: center">
-                                        <div>
-                                        <img ng-src="{{ asset('') }}{% verbatim %}{{ recipe.url }}{% endverbatim %}" alt="..." class="img-rounded" style="width: 100%;">
-                                        <p class="calorieBadge">{% verbatim %}{{ recipe.calories }}{% endverbatim %} kcal</p>
-                                        </div>
+                                    <div class="calorieBadge">
+                                        {% verbatim %}{{ recipe.calories }}{% endverbatim %} kcal
                                     </div>
                                 </div>
 
                             </div>
                             <div class="{% verbatim %}{{ recipe.containerInsert }}{% endverbatim %}"></div>
                         </a>
+
+                        {#<a href="recipe/{% verbatim %}{{ recipe.id }}{% endverbatim %}">#}
+                            {#<div class="col-lg-3 col-md-3 col-sm-6 col-xs-6" id="recipeBlock">#}
+
+                                {#<div class="panel panel-default">#}
+                                    {#<div class="panel-heading">#}
+                                        {#<h3 class="panel-title">{% verbatim %}{{ recipe.name }}{% endverbatim %}</h3>#}
+                                    {#</div>#}
+                                    {#<div class="panel-body" style="text-align: center">#}
+                                        {#<div>#}
+                                        {#<img ng-src="{{ asset('') }}{% verbatim %}{{ recipe.url }}{% endverbatim %}" alt="..." class="img-rounded" style="width: 100%;">#}
+                                        {#<p class="calorieBadge">{% verbatim %}{{ recipe.calories }}{% endverbatim %} kcal</p>#}
+                                        {#</div>#}
+                                    {#</div>#}
+                                {#</div>#}
+
+                            {#</div>#}
+                            {#<div class="{% verbatim %}{{ recipe.containerInsert }}{% endverbatim %}"></div>#}
+                        {#</a>#}
                     </ng>
 
                 </div>

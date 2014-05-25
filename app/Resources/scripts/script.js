@@ -21,6 +21,11 @@ app.controller("MainController", function($scope, $http){
     if (recipesJson!='')  {
         $( ".top-row" ).css("margin-top","0px");
         $scope.recipes = jQuery.parseJSON(recipesJson);
+        var i = 0;
+        for (var prop in $scope.recipes) {
+            $scope.recipes[i].link = $scope.root + '/recipe/' + $scope.recipes[i].id;
+            i = i++;
+        }
     }
 
     $("inputtt").on('keyup',function() {
@@ -77,6 +82,7 @@ app.controller("MainController", function($scope, $http){
             $scope.recipes = $scope.data.recipes;
             var i = 0;
             for (var prop in $scope.recipes) {
+                $scope.recipes[i].link = $scope.root + '/recipe/' + $scope.recipes[i].id;
                 i = i + 1;
                 if (0==i%4) {
                     $scope.recipes[prop].containerInsert = 'clearfix';

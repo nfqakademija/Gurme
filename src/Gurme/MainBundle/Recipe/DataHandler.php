@@ -7,7 +7,7 @@ use Doctrine\ORM\EntityManager;
 use NFQAkademija\BaseBundle\Entity\User;
 use Gurme\MainBundle\Entity\Categorie;
 use Gurme\MainBundle\Entity\Ingredient;
-use Gurme\MainBundle\Entity\RecipeExtention;
+use Gurme\MainBundle\Entity\Recipe;
 use Gurme\MainBundle\Entity\RecipeRepository;
 use Gurme\MainBundle\Entity\RecipeCategorie;
 use Gurme\MainBundle\Entity\RecipeIngredient;
@@ -37,7 +37,7 @@ class DataHandler
     /**
      * Add recipe to database.
      *
-     * @param RecipeExtention $entity
+     * @param Recipe $entity
      * @param $ingredientCheck
      */
     public function addRecipe($entity,$ingredientCheck)
@@ -97,6 +97,25 @@ class DataHandler
     }
 
     /**
+     * Checks zero time.
+     *
+     * @param Recipe $entity The entity
+     *
+     * @return Recipe $entity The entity
+     */
+    public function checkReadyTime($entity)
+    {
+        $zeroTime = new \DateTime('1970-01-01 00:00:00');
+        if ($entity->getReadyTime() == $zeroTime) {
+            $interval1 = date_diff($zeroTime, $entity->getPrepTime(), true);
+            $interval2 = date_diff($zeroTime, $entity->getCookTime(), true);
+            $zeroTime->add($interval1)->add($interval2);
+            $entity->setReadyTime($zeroTime);
+        }
+        return $entity;
+    }
+
+    /**
      * Recalculate recipe number in each category.
      */
     public function recalculateCategories()
@@ -127,16 +146,13 @@ class DataHandler
      */
     public function getFullDescription($id,$user)
     {
-        /** @var RecipeExtention $recipe */
+        /** @var Recipe $recipe */
         $recipe = $this->em->getRepository('GurmeMainBundle:Recipe')->find($id);
         if (!$recipe) throw new NotFoundHttpException('Unable to find Recipe entity.');
+//                exit('fuck');
         $response = $recipe->getObjectVars();
 
-        $response['favorite'] = false;
-        if (!is_null($user)
-            && $this->em->getRepository('GurmeMainBundle:UserFavorite')->findOneBy(array('user' => $user->getId(), 'recipe' => $id))) {
-            $response['favorite'] = true ;
-        }
+        $response['favorite'] = $this->checkUserFavorite($id,$user);
 
         $photo = $this->em->getRepository('GurmeMainBundle:RecipePhoto')->find($recipe->getCoverPhoto()->getId());
         if (!$photo) throw new NotFoundHttpException('Unable to find Recipe photo.');
@@ -173,7 +189,7 @@ class DataHandler
         $suggestions = array();
 
         for ($i = 0; $i < $number; $i++) {
-            /** @var $recipe \Gurme\MainBundle\Entity\Recipe */
+            /** @var $recipe Recipe */
             $rand = rand(0,count($recipes)-1);
             $recipe = $recipes[$rand];
             if (!is_null($recipe)) {
@@ -188,6 +204,25 @@ class DataHandler
         }
 
         return $suggestions;
+    }
+
+    /**
+     * Check if recipe is user favorite.
+     *
+     * @param integer $id
+     * @param User $user
+     * @return boolean
+     */
+    public function checkUserFavorite($id,$user)
+    {
+        $response = false;
+        if (!is_null($user)
+            && $this->em->getRepository('GurmeMainBundle:UserFavorite')
+                ->findOneBy(array('user' => $user->getId(), 'recipe' => $id))) {
+            $response = true ;
+        }
+
+        return $response;
     }
 
 } 
