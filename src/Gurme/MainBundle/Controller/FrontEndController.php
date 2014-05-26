@@ -134,7 +134,7 @@ class FrontEndController extends Controller
             if (!$entity) {
                 $entity = new UserFavorite();
                 if ($this->getUser() instanceof User) {
-                    $entity->setUser($this->getUser());
+                    $entity->setUser($this->container->get('security.context')->getToken()->getUser());
                 }
                 /** @var $recipe Recipe */
                 $recipe = $em->getRepository('GurmeMainBundle:Recipe')->find($id);

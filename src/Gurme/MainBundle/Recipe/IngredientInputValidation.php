@@ -180,14 +180,11 @@ class IngredientInputValidation
     {
         $amount = null;
         if (!is_null($this->unit)) {
-
             preg_match('/^\s*([. 0-9\/]+) '.$this->unit.'/', $this->currentLine, $matches);
             if (isset($matches[1])) {
                 $amount = $matches[1];
             }
-
         } else {
-
             if(preg_match('/^\s*([. 0-9\/]*)((.*),\s(.*)|(.*))/', $this->currentLine, $matches)) {
                 $amount = $matches[1];
 
@@ -196,9 +193,7 @@ class IngredientInputValidation
                     $this->unitObject = $this->em->getRepository('GurmeMainBundle:Unit')
                         ->findOneBy(array('main' => 'unit'));
                 } else $this->valid = 'ok';
-
             }
-
         }
 
         return $amount;
@@ -207,28 +202,15 @@ class IngredientInputValidation
     private function getIngredient()
     {
         $ingredient = '';
-        if (!is_null($this->unit) && $this->unit != 'unit' && $this->unit != 'units') {
-            $pattern = '/^.*'.$this->unit.'\s*((.*),\s*(.*)|(.*))/';
-            preg_match($pattern, $this->currentLine, $matches);
-            if (isset($matches[3]) && $matches[3]!='')
-            {
+        $unit = ($this->unit != 'unit' && $this->unit != 'units') ? $this->unit : '';
+        $pattern = '/^\s*([. 0-9\/]*)'.$unit.'\s((.*),\s(.*)|(.*))/';
+        if (preg_match($pattern, $this->currentLine, $matches)) {
+            if (isset($matches[3])&&($matches[3]=='')) {
                 $ingredient = $matches[2];
+            } else {
+                $ingredient = $matches[3];
                 $this->notes = (!is_null($this->notes) ?
-                    $matches[3] . ', ' . $this->notes : $matches[3]);
-            }
-            else
-            {
-                $ingredient = $matches[1];
-            }
-        } else {
-            if(preg_match('/^\s*([. 0-9\/]*)((.*),\s(.*)|(.*))/', $this->currentLine, $matches)) {
-                if (isset($matches[3])&&($matches[3]=='')&&($matches[3]=='')) {
-                    $ingredient = $matches[2];
-                } else {
-                    $ingredient = $matches[3];
-                    $this->notes = (!is_null($this->notes) ?
-                        $matches[4] . ', ' . $this->notes : $matches[4]);
-                }
+                    $matches[4] . ', ' . $this->notes : $matches[4]);
             }
         }
         $ingredient = trim($ingredient);
@@ -262,16 +244,6 @@ class IngredientInputValidation
 
                     }
                 }
-//                exit($amount);
-//                if (isset($matches[10]) && ($matches[10]!='')) {
-//                    // sveikas skaičius pvz 2,8,40 (rodo kaip STRING)
-//                } else if (isset($matches[9]) && ($matches[9]!='')){
-//                    $amount = $matches[8] / $matches[9] ; // pvz "1/3" = 0.3(3)
-//                } else if (isset($matches[6]) && ($matches[6]!='')){
-//                    // skaičius su kableliu pvz 2.5 (rodo kaip STRING)
-//                } else if (isset($matches[5]) && ($matches[5]!='')){
-//                    $amount = $matches[3] + $matches[4] / $matches[5] ; // "1 1/2" = 1.5
-//                } else $valid = 'remove';
             }
         }
         return $amount;
