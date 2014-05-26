@@ -72,7 +72,7 @@ app.controller("MainController", function($scope, $http){
             var ingredients = $('.chosen-select').chosen().val();
         }
         $http({
-            url: document.location.href.replace(/\/$/,'') + '/list',
+            url: $scope.root + '/list',
             method: "POST",
             data: $.param({"calories":$scope.calories , "ingredients":ingredients}),
             headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}

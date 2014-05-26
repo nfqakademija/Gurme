@@ -48,6 +48,7 @@ namespace :deploy do
         execute "cd #{release_path} && bower install"
         execute "cd #{release_path} && gulp init"
         execute "cd #{release_path} && gulp"
+        execute "cd #{release_path}/web/images && chmod 775 dishes"
     end
   end
   after :finishing, 'deploy:cleanup'
