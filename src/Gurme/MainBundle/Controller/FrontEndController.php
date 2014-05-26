@@ -71,6 +71,21 @@ class FrontEndController extends Controller
     }
 
     /**
+     * Load categories DIV.
+     *
+     * @Template()
+     */
+    public function categoriesDivAction()
+    {
+        /** @var \Doctrine\ORM\EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+        $categories = $em->getRepository('GurmeMainBundle:Categorie')->findAll();
+
+        $template = sprintf('GurmeMainBundle:FrontEnd:categoriesDiv.html.%s', $this->container->getParameter('fos_user.template.engine'));
+        return $this->container->get('templating')->renderResponse($template, array('categories' => $categories));
+    }
+
+    /**
      * Lists all recipes in particular category.
      *
      * @Route("/category/{category}", name="category_recipes")

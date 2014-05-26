@@ -137,10 +137,20 @@ app.controller("MainController", function($scope, $http){
 
     $scope.toggleCategoryDiv = function() {
         if ($("#categories").is(':visible')) {
+            if ($('#calorieInput > div').css('margin-top')!='0px') {
+                var heightToSet = parseInt($('#calorieInput > div').css('margin-top').replace("px", "")) + $('#categories').height() + 10;
+                console.log(heightToSet);
+                $('#calorieInput > div').css('margin-top',heightToSet);
+            }
             $("#categories").css('display','none');
             $("a[ng-click='toggleCategoryDiv()'] > span").attr('class', 'glyphicon glyphicon-chevron-down');
         } else {
             $('#categories').css('display','block');
+            if ($('#calorieInput > div').css('margin-top')!='0px') {
+                var heightToSet = parseInt($('#calorieInput > div').css('margin-top').replace("px", "")) - $('#categories').height() - 10;
+                console.log(heightToSet);
+                $('#calorieInput > div').css('margin-top',heightToSet);
+            }
             $("html, body").animate({ scrollTop: 0 }, 1000);
             $("a[ng-click='toggleCategoryDiv()'] > span").attr('class', 'glyphicon glyphicon-chevron-up');
         }

@@ -67,9 +67,10 @@
         <div id="main" class="container clear-top">
             {% block body %}
 
-            <div id="categories" class="row row-transparentBg">
-                {% block categories %}
-                {% endblock categories %}
+            <div id="categories" class="row row-transparentBg" style="">
+                {% render(controller('GurmeMainBundle:FrontEnd:categoriesDiv')) %}
+                    {#{% block categories %}#}
+                    {#{% endblock categories %}#}
             </div>
 
             <div id="calorieInput">
