@@ -137,7 +137,7 @@ app.controller("MainController", function($scope, $http){
 
     $scope.toggleCategoryDiv = function() {
         if ($("#categories").is(':visible')) {
-            if ($('#calorieInput > div').css('margin-top')!='0px') {
+            if ($('#calorieInput > div').length>0 && $('#calorieInput > div').css('margin-top')!='0px') {
                 var heightToSet = parseInt($('#calorieInput > div').css('margin-top').replace("px", "")) + $('#categories').height() + 10;
                 console.log(heightToSet);
                 $('#calorieInput > div').css('margin-top',heightToSet);
