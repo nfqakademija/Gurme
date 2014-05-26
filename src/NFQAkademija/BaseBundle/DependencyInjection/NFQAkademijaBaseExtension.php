@@ -8,24 +8,24 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
 /**
- * This is the class that loads and manages your bundle configuration
+ * Configuration, but not very important cause bundle just for user interfacec
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
  */
 class NFQAkademijaBaseExtension extends Extension
 {
     /**
-     * This extention is subject to app user
      * {@inheritDoc}
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $configuration = new Configuration();
-        $this->processConfiguration($configuration, $configs);
-        // jei naudosim sita extetion'a uncommentint
-//        $config = $this->processConfiguration($configuration, $configs);
+        $cfgSet = new Configuration();
+        $fileType = 'yml';
+        $this->processConfiguration($cfgSet, $configs);
+        // jei naudosim sita extetion'a uncommentint $config = $this->processConfiguration($configuration, $configs);
 
+        $servicesFile = 'services.' . $fileType;
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('services.yml');
+        $loader->load($servicesFile);
     }
 }

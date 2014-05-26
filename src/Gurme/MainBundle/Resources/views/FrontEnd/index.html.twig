@@ -7,40 +7,6 @@
     {% endif %}
 {% endblock tips %}
 
-{% block categories %}
-
-    {% if categories|length  %}
-        {% set citiesPerColumn = (categories|length // 4) + 1 %}
-
-        {% for category in categories %}
-
-            {% if loop.index % citiesPerColumn == 1 %}
-                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12" style="margin-top: 10px">
-                <ul style="list-style-type: none;">
-            {% endif %}
-
-            <li class="city-item">
-                <input type="checkbox" ng-click="toggleCategory({{ category.id }},$event)">&nbsp;
-                <a href="" ng-click="showCategory({{ category.id }},$event)">{{ category.name }}
-                    {% if category.recipes != 0 %}
-                        <span class="badge">{{ category.recipes }}</span>
-                    {% endif %}
-                </a></li>
-
-            {% if loop.index % citiesPerColumn == 0 %}
-                </ul>
-                </div>
-            {% endif %}
-
-        {% endfor %}
-
-        </ul>
-        </div>
-    {% endif %}
-
-{% endblock categories %}
-
-
 {% block content %}
 Hello {{ name }}!.
 {% endblock %}

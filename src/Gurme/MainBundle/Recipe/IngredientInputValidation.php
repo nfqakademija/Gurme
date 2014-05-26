@@ -206,8 +206,9 @@ class IngredientInputValidation
     private function getIngredient()
     {
         $ingredient = '';
-        $unit = (strpos($this->unit,'unit') !== false) ? $this->unit : '';
+        $unit = (strpos($this->unit,'unit') !== false) ? '' : $this->unit;
         $pattern = '/^\s*([. 0-9\/]*)'.$unit.'\s((.*),\s(.*)|(.*))/';
+//        exit($pattern);
         if (preg_match($pattern, $this->currentLine, $matches)) {
             if (isset($matches[3])&&($matches[3]=='')) {
                 $ingredient = $matches[2];
@@ -215,7 +216,7 @@ class IngredientInputValidation
                 $ingredient = $matches[3];
                 $this->notes = $this->getNotes($matches[4]);
             }
-        }
+        } else $this->valid = 'remove';
         $ingredient = trim($ingredient);
         return $ingredient;
     }
