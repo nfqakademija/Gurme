@@ -85,7 +85,7 @@ class IngredientInputValidation
 
             $this->reset();
 
-            $this->notes = $this->getNotesInBrackets();
+            $this->notes = $this->getNotes();
 
             $this->unit = $this->getUnit();
 
@@ -144,15 +144,19 @@ class IngredientInputValidation
         $this->valid = false;
     }
 
-    private function getNotesInBrackets()
+    private function getNotes($addToNotes = null)
     {
-        $notes = null;
+        $notes = $this->notes;
         $pattern = '/\((.+)\)/';
-        $matches = [];
         if(preg_match_all($pattern, $this->currentLine, $matches)){
             $notes = $matches[0][0];
             $this->currentLine = preg_replace($pattern, '', $this->currentLine);
         }
+        if (!is_null($addToNotes)) {
+            $notes .= (!is_null($notes)) ?
+                $addToNotes . ', ' . $notes : $addToNotes ;
+        }
+
         return $notes;
     }
 
@@ -202,15 +206,14 @@ class IngredientInputValidation
     private function getIngredient()
     {
         $ingredient = '';
-        $unit = ($this->unit != 'unit' && $this->unit != 'units') ? $this->unit : '';
+        $unit = (strpos($this->unit,'unit') !== false) ? $this->unit : '';
         $pattern = '/^\s*([. 0-9\/]*)'.$unit.'\s((.*),\s(.*)|(.*))/';
         if (preg_match($pattern, $this->currentLine, $matches)) {
             if (isset($matches[3])&&($matches[3]=='')) {
                 $ingredient = $matches[2];
             } else {
                 $ingredient = $matches[3];
-                $this->notes = (!is_null($this->notes) ?
-                    $matches[4] . ', ' . $this->notes : $matches[4]);
+                $this->notes = $this->getNotes($matches[4]);
             }
         }
         $ingredient = trim($ingredient);

@@ -51,6 +51,24 @@ class FrontEndController extends Controller
     }
 
     /**
+     * Show recipe by id.
+     *
+     * @Route("/recipe/{id}", name="recipe")
+     * @Method("GET")
+     * @Template()
+     */
+    public function getRecipeAction($id)
+    {
+        /** @var \Gurme\MainBundle\Recipe\DataHandler $service */
+        $service = $this->get('gurme_main.recipe');
+        $recipe = $service->getFullDescription($id,$this->getUser());
+        $suggestions = $service->getRandomRecipes(3);
+
+        return $this->render('GurmeMainBundle:FrontEnd:recipe.html.twig',
+            array('recipe' => $recipe, 'suggestions' => $suggestions));
+    }
+
+    /**
      * Lists all recipes in particular category.
      *
      * @Route("/category/{category}", name="category_recipes")

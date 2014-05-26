@@ -93,22 +93,4 @@ class DataController extends Controller
         return new JsonResponse(array('status' => $result, 'recipes' => $recipes));
     }
 
-    /**
-     * Show recipe by id.
-     *
-     * @Route("/recipe/{id}", name="recipe")
-     * @Method("GET")
-     * @Template()
-     */
-    public function getRecipeAction($id)
-    {
-        /** @var \Gurme\MainBundle\Recipe\DataHandler $service */
-        $service = $this->get('gurme_main.recipe');
-        $recipe = $service->getFullDescription($id,$this->getUser());
-        $suggestions = $service->getRandomRecipes(2);
-
-        return $this->render('GurmeMainBundle:FrontEnd:recipe.html.twig',
-            array('recipe' => $recipe, 'suggestions' => $suggestions));
-    }
-
 }
