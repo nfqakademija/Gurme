@@ -77,17 +77,7 @@
 
                 <div class="row top-row">
                     <div class="col-md-4" style="margin-top: 30px; height: 250px;">
-                        <div class="transparentBg" style="height: 100%; padding: 15px; vertical-align: middle">
-                            <div style="margin-top: auto; margin-bottom: auto">
-                                <h3 style="margin-top: 10px; margin-bottom: 15px"><strong>How much calories do I need?</strong></h3>
-                                <p style="font-size: 20px;">Find out your daily calorie menu for your personality and create your own menus with a help of Gurme staff.</p>
-                                <a href="{{ path('fos_user_registration_register') }}" class="btn btn-default" style="">Calculate</a>
-                                {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-                                    or
-                                    <a href="{{ path('fos_user_registration_register') }}" class="btn btn-default" style="">Register</a>
-                                {% endif %}
-                            </div>
-                        </div>
+                        &nbsp;
                     </div>
                     <div class="col-md-4" id="inputDiv" style="">
                         <div style="">
@@ -126,16 +116,7 @@
                         </div>
                     </div>
                     <div class="col-md-4"  style="margin-top: 30px; height: 250px;">
-                        <div class="transparentBg" style="height: 100%; padding: 15px;">
-                            <div style="margin-top: auto; margin-bottom: auto">
-                                <h3 style="margin-top: 10px; margin-bottom: 15px"><strong>Random tip</strong></h3>
-                                <p style="font-size: 20px;">
-                                    {% block tips %}
-                                    {% endblock tips %}
-                                </p>
-
-                            </div>
-                        </div>
+                        &nbsp;
                     </div>
                 </div>
             </div> <!-- /container -->
@@ -197,7 +178,7 @@
 
     <footer class="footer">
         <div class="container">
-            <p class="text-white">&copy; Gurme 2014; Server message: {% verbatim %}{{ status }}{% endverbatim %}</p>
+            <p class="text-white">&copy; Gurme 2014;</p>
         </div>
     </footer>
 
