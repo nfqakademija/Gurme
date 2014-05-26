@@ -26,7 +26,7 @@ set :deploy_to, '/home/gurme/public_html'
 set :linked_files, %w{app/config/parameters.yml}
 
 # Default value for linked_dirs is []
-set :linked_dirs, %w{app/logs app/cache vendor}
+set :linked_dirs, %w{app/logs app/cache vendor web/images/dishes}
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
