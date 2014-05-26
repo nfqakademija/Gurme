@@ -81,8 +81,7 @@ class FrontEndController extends Controller
         $em = $this->getDoctrine()->getManager();
         $categories = $em->getRepository('GurmeMainBundle:Categorie')->findAll();
 
-        $template = sprintf('GurmeMainBundle:FrontEnd:categoriesDiv.html.%s', $this->container->getParameter('fos_user.template.engine'));
-        return $this->container->get('templating')->renderResponse($template, array('categories' => $categories));
+        return array('categories' => $categories);
     }
 
     /**
