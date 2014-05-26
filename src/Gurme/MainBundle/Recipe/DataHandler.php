@@ -188,7 +188,7 @@ class DataHandler
         $recipes = $this->em->getRepository('GurmeMainBundle:Recipe')->findAll();
         $suggestions = array();
 
-        for ($i = 0; $i < $number; $i++) {
+        for ($i = 0; $i < ($number + 1) ; $i++) {
             /** @var $recipe Recipe */
             $rand = rand(0,count($recipes)-1);
             $recipe = $recipes[$rand];

@@ -95,23 +95,38 @@
 
         {% for s in suggestions %}
             <a href="{{ path('recipe', { 'id': s.id }) }}">
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"
-                     style="" id="recipeSuggestions">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="recipeBlock" style="margin-bottom: 10px;">
 
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">{{ s.name }}</h3>
+                    <div class="" style="height: 200px; background-size: cover; background-image: url({{ asset('') }}{{ s.url }})">
+                        <div class="transparentBg" style="padding-bottom: 0px;">
+                            <p style="color: #000; font-size: 20px; padding: 5px; margin-bottom: 0px;">{{ s.name }}</p>
                         </div>
-                        <div class="panel-body" style="text-align: center">
-                            <div>
-                                <img src="{{ asset('') }}{{ s.url }}" alt="..." class="img-rounded" style="width: 100%;">
-                                <p class="calorieBadge">{{ s.calories }} kcal</p>
-                            </div>
+                        <div class="calorieBadge">
+                            {{ s.calories }} kcal
                         </div>
                     </div>
 
                 </div>
             </a>
+
+            {#<a href="{{ path('recipe', { 'id': s.id }) }}">#}
+                {#<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"#}
+                     {#style="" id="recipeSuggestions">#}
+
+                    {#<div class="panel panel-default">#}
+                        {#<div class="panel-heading">#}
+                            {#<h3 class="panel-title">{{ s.name }}</h3>#}
+                        {#</div>#}
+                        {#<div class="panel-body" style="text-align: center">#}
+                            {#<div>#}
+                                {#<img src="{{ asset('') }}{{ s.url }}" alt="..." class="img-rounded" style="width: 100%;">#}
+                                {#<p class="calorieBadge">{{ s.calories }} kcal</p>#}
+                            {#</div>#}
+                        {#</div>#}
+                    {#</div>#}
+
+                {#</div>#}
+            {#</a>#}
         {% endfor %}
 
     </div>
