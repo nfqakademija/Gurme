@@ -46,8 +46,8 @@ class FrontEndController extends Controller
         $count = $qb->getQuery()->getSingleScalarResult();
         if ($count>0) {
             $tip = $em->getRepository('GurmeMainBundle:Tip')->find(rand(1,$count));
-        } else $tip = 0;
-        
+        } else $tip = null;
+
         $name = "Gurme";
         return array('name' => $name, 'categories' => $categories, 'tip' => $tip);
     }
