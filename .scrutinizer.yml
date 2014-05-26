@@ -1,5 +1,3 @@
 filter:
-    paths: [*]
     excluded_paths:
-        - "src/NFQAkademija/BaseBundle/DependencyInjection/NFQAkadejimaBaseExtention.php"
-        - "src/Gurme/MainBundle/Entity/RecipeBaseClass.php"
+        [src/NFQAkademija/BaseBundle/DependencyInjection/NFQAkadejimaBaseExtention.php,src/Gurme/MainBundle/Entity/RecipeBaseClass.php]
