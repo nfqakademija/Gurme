@@ -44,8 +44,10 @@ class FrontEndController extends Controller
         $qb = $em->getRepository('GurmeMainBundle:Tip')->createQueryBuilder('tip');
         $qb->select('COUNT(tip)');
         $count = $qb->getQuery()->getSingleScalarResult();
-        $tip = $em->getRepository('GurmeMainBundle:Tip')->find(rand(1,$count));
-
+        if ($count>0) {
+            $tip = $em->getRepository('GurmeMainBundle:Tip')->find(rand(1,$count));
+        } else $tip = 0;
+        
         $name = "Gurme";
         return array('name' => $name, 'categories' => $categories, 'tip' => $tip);
     }

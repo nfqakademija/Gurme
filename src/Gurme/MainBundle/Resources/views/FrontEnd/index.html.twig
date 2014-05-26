@@ -1,10 +1,10 @@
 {% extends '::home.html.twig' %}
 
 {% block tips %}
-
+    {% if tip is not null %}
     <h3>{{ tip.header }}</h3>
     <span style="font-style: italic">{{ tip.text }}</span>
-
+    {% endif %}
 {% endblock tips %}
 
 {% block categories %}
