@@ -114,6 +114,12 @@ class IngredientInputValidation
         return array('status' => $this->result, 'ingredients' => $ing);
     }
 
+    /**
+     * Get array of valid lines for reading
+     *
+     * @param $contents
+     * @return array
+     */
     private function getLinesArray($contents)
     {
         $lines = array();
@@ -134,6 +140,9 @@ class IngredientInputValidation
         return $lines;
     }
 
+    /**
+     * Reset variables before reading new line
+     */
     private function reset()
     {
         $this->amount = null;
@@ -144,6 +153,12 @@ class IngredientInputValidation
         $this->valid = false;
     }
 
+    /**
+     * Get notes in brackets or add $addToNotes string to the notes
+     *
+     * @param null|string $addToNotes
+     * @return string
+     */
     private function getNotes($addToNotes = null)
     {
         $notes = $this->notes;
@@ -160,6 +175,11 @@ class IngredientInputValidation
         return $notes;
     }
 
+    /**
+     * Match any unit in the line to the unit database units
+     *
+     * @return null
+     */
     private function getUnit()
     {
         $this->currentLine = ' ' . $this->currentLine;
@@ -180,6 +200,11 @@ class IngredientInputValidation
         return $name;
     }
 
+    /**
+     * Get amount at the beginning of the line
+     *
+     * @return null
+     */
     private function getAmount()
     {
         $amount = null;
@@ -203,6 +228,11 @@ class IngredientInputValidation
         return $amount;
     }
 
+    /**
+     * Get ingredient name, and extract notes after comma
+     *
+     * @return string
+     */
     private function getIngredient()
     {
         $ingredient = '';
@@ -221,6 +251,11 @@ class IngredientInputValidation
         return $ingredient;
     }
 
+    /**
+     * Convert various types of number input into decimal number
+     *
+     * @return float|string
+     */
     private function convertToMetric()
     {
         $amount = trim($this->amount);

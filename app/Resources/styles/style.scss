@@ -48,6 +48,9 @@ html, body {
   background-color: rgba(230, 230, 230, 0.7);
   color: #000;
   font-size: 20px; padding: 5px 5px;
+  @media (max-width: $screen-xs-max) {
+    right:0px;
+  }
 }
 
 .top-row {

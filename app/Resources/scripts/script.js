@@ -20,7 +20,7 @@ app.controller("MainController", function($scope, $http){
     $scope.status = recipesJson;
     if (recipesJson!='')  {
         $( ".top-row" ).css("margin-top","0px");
-        $scope.recipes = jQuery.parseJSON(recipesJson);
+        $scope.recipes = jQuery.parseJSON(recipesJson.replace("&#39;","'"));
         var i = 0;
         for (var prop in $scope.recipes) {
             $scope.recipes[i].link = $scope.root + '/recipe/' + $scope.recipes[i].id;

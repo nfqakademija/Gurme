@@ -50,7 +50,6 @@
 
                     {% render(controller('FOSUserBundle:Security:loginNav', { 'mode': 'homepage' })) %}
 
-
                     {# link'as į Mindaugo action'ą yra src/NFQAkademija/BaseBundle/Resources/views/security/loginNav.html.twig#}
 
                 </div><!--/.navbar-collapse -->
@@ -68,8 +67,6 @@
 
             <div id="categories" class="row row-transparentBg" style="">
                 {% render(controller('GurmeMainBundle:FrontEnd:categoriesDiv')) %}
-                {#{% block categories %}#}
-                {#{% endblock categories %}#}
             </div>
 
             {% block body %}
@@ -77,7 +74,7 @@
             <div id="calorieInput">
 
                 <div class="row top-row">
-                    <div class="col-md-4" style="margin-top: 30px; height: 250px;">
+                    <div class="col-md-4">
                         &nbsp;
                     </div>
                     <div class="col-md-4" id="inputDiv" style="">
@@ -116,7 +113,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4"  style="margin-top: 30px; height: 250px;">
+                    <div class="col-md-4">
                         &nbsp;
                     </div>
                 </div>
@@ -151,24 +148,6 @@
                             <div class="{% verbatim %}{{ recipe.containerInsert }}{% endverbatim %}"></div>
                         </a>
 
-                        {#<a href="recipe/{% verbatim %}{{ recipe.id }}{% endverbatim %}">#}
-                            {#<div class="col-lg-3 col-md-3 col-sm-6 col-xs-6" id="recipeBlock">#}
-
-                                {#<div class="panel panel-default">#}
-                                    {#<div class="panel-heading">#}
-                                        {#<h3 class="panel-title">{% verbatim %}{{ recipe.name }}{% endverbatim %}</h3>#}
-                                    {#</div>#}
-                                    {#<div class="panel-body" style="text-align: center">#}
-                                        {#<div>#}
-                                        {#<img ng-src="{{ asset('') }}{% verbatim %}{{ recipe.url }}{% endverbatim %}" alt="..." class="img-rounded" style="width: 100%;">#}
-                                        {#<p class="calorieBadge">{% verbatim %}{{ recipe.calories }}{% endverbatim %} kcal</p>#}
-                                        {#</div>#}
-                                    {#</div>#}
-                                {#</div>#}
-
-                            {#</div>#}
-                            {#<div class="{% verbatim %}{{ recipe.containerInsert }}{% endverbatim %}"></div>#}
-                        {#</a>#}
                     </ng>
 
                 </div>

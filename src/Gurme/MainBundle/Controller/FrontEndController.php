@@ -6,30 +6,20 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-//use Symfony\Component\BrowserKit\Request;
-use Symfony\Component\HttpFoundation\Request;
-use Doctrine\ORM\EntityManager;
-use Symfony\Component\HttpFoundation\JsonResponse;
-
-use NFQAkademija\BaseBundle\Entity\User;
-use Gurme\MainBundle\Entity\Ingredient;
-use Gurme\MainBundle\Entity\UserFavorite;
-use Gurme\MainBundle\Entity\Recipe;
-
+use Gurme\MainBundle\Entity\RecipeRepository;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 
 /**
- * Unit controller.
+ * Front end controller.
  *
  * @Route("/")
  */
-
 class FrontEndController extends Controller
 {
     /**
-     * Lists all Unit entities.
+     * Index page action.
      *
      * @Route("/", name="index")
      * @Method("GET")
@@ -37,19 +27,8 @@ class FrontEndController extends Controller
      */
     public function indexAction()
     {
-        /** @var \Doctrine\ORM\EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-        $categories = $em->getRepository('GurmeMainBundle:Categorie')->findAll();
-
-        $qb = $em->getRepository('GurmeMainBundle:Tip')->createQueryBuilder('tip');
-        $qb->select('COUNT(tip)');
-        $count = $qb->getQuery()->getSingleScalarResult();
-        if ($count>0) {
-            $tip = $em->getRepository('GurmeMainBundle:Tip')->find(rand(1,$count));
-        } else $tip = null;
-
         $name = "Gurme";
-        return array('name' => $name, 'categories' => $categories, 'tip' => $tip);
+        return array('name' => $name);
     }
 
     /**
@@ -59,15 +38,14 @@ class FrontEndController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function getRecipeAction($id)
+    public function recipeAction($id)
     {
         /** @var \Gurme\MainBundle\Recipe\DataHandler $service */
         $service = $this->get('gurme_main.recipe');
         $recipe = $service->getFullDescription($id,$this->getUser());
         $suggestions = $service->getRandomRecipes(3);
 
-        return $this->render('GurmeMainBundle:FrontEnd:recipe.html.twig',
-            array('recipe' => $recipe, 'suggestions' => $suggestions));
+        return array('recipe' => $recipe, 'suggestions' => $suggestions);
     }
 
     /**
@@ -94,99 +72,21 @@ class FrontEndController extends Controller
     public function categoryRecipesAction($category)
     {
         if (preg_match("/^\d+/",$category, $matches)) {
-            $id = $matches[0];
-            /** @var \Doctrine\ORM\EntityManager $em */
-            $em = $this->getDoctrine()->getManager();
-            $dql = "SELECT r.id,r.name,r.calories,p.url
-                FROM 'GurmeMainBundle:RecipeCategorie' rc
-                JOIN rc.recipe r
-                JOIN r.coverPhoto p
-                WHERE rc.category = $id
-                ORDER BY r.calories";
-            $recipes = $em->createQuery($dql)->getResult();
+            $categoryId = $matches[0];
+
+            /** @var RecipeRepository $repo */
+            $repo = $this->getDoctrine()->getManager()->getRepository('GurmeMainBundle:Recipe');
+            $recipes = $repo->searchByCategory($categoryId);
 
             $normalizer = new GetSetMethodNormalizer();
             $encoder = new JsonEncoder();
-
             $serializer = new Serializer(array($normalizer), array($encoder));
-            $recipes = $serializer->serialize($recipes, 'json'); // Output: {"name":"foo"}
+            $recipes = $serializer->serialize($recipes, 'json');
             $recipes = str_replace("'", "&#39;", $recipes);
-//            exit(var_dump($recipes));
 
-//            $name = "Gurme";
             return array('recipesJson' => $recipes);
-//            return new JsonResponse($recipes));
 
         } else return $this->redirect($this->generateUrl('index'));
-    }
-
-    /**
-     * Gets ingredient list for Chosen Ajax Call.
-     *
-     * @Route("/queryIngredient/{query}", name="query_ingredient")
-     */
-    public function queryIngredientAction($query,Request $request)
-    {
-        $ingredients = array();
-
-        $query = ($query=='ajaxChosen') ? $request->request->get('data')['q'] : $query;
-        /** @var $em \Doctrine\ORM\EntityManager */
-        $em = $this->getDoctrine()->getManager();
-        $q = $em->createQuery("SELECT i.id,i.name FROM Gurme\MainBundle\Entity\Ingredient i WHERE i.name LIKE '%$query%' OR i.alias LIKE '%$query%'");
-        $result = $q->getResult();
-
-        foreach($result as $ingredient) {
-            $ingredients[] = array(
-                'id' => $ingredient['id'] ,
-                'text' => str_replace(array("\r\n", "\n", "\r"), '', $ingredient['name'])
-            );
-        }
-
-        return new JsonResponse(
-            array(
-                'q' => $query,
-                'results' => $ingredients
-            )
-        );
-    }
-
-
-    /**
-     * Toggle recipe in favorites list.
-     *
-     * @Route("/recipe/{id}/toggleFavorite", name="data_recipe_add_to_favorites")
-     * @Method("GET")
-     */
-    public function toggleFavoriteAction($id)
-    {
-        $result = 'Redirecting...';
-        if (!is_null($this->getUser())) {
-            /** @var \Doctrine\ORM\EntityManager $em */
-            $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('GurmeMainBundle:UserFavorite')
-                ->findOneBy(array('user' => $this->getUser()->getId(), 'recipe' => $id));
-            if (!$entity) {
-                $entity = new UserFavorite();
-                if ($this->getUser() instanceof User) {
-                    $entity->setUser($this->container->get('security.context')->getToken()->getUser());
-                }
-                /** @var $recipe Recipe */
-                $recipe = $em->getRepository('GurmeMainBundle:Recipe')->find($id);
-                if (!$recipe) {
-                    throw $this->createNotFoundException('Unable to find Recipe entity.');
-                }
-                $entity->setRecipe($recipe);
-                $entity->setAddedAt(new \DateTime('NOW'));
-                $em->persist($entity);
-                $em->flush();
-                $result = 'Added to favorites';
-            } else {
-                $em->remove($entity);
-                $em->flush();
-                $result = 'Removed from favorites';
-            }
-        }
-        return new JsonResponse(array('r' => $result));
     }
 
 }

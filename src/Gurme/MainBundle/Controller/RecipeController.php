@@ -145,22 +145,6 @@ class RecipeController extends Controller
     }
 
     /**
-     * Validate ingredient input.
-     *
-     * @Route("/new/ingredientCheck", name="data_recipe_ingredient_check")
-     * @Method("POST")
-     */
-    public function ingredientCheckAction(Request $request)
-    {
-        $contents = $request->request->get('ingredients','');
-        $response = $this->get('gurme_main.ingredient_input_validation')->validate($contents);
-        for ($i = 0; $i < count($response['ingredients']); $i++) {
-            $response['ingredients'][$i]['unitObj'] = null;
-        }
-        return new JsonResponse($response);
-    }
-
-    /**
      * Finds and displays a Recipe entity.
      *
      * @Route("/{id}", name="data_recipe_show")
@@ -307,6 +291,22 @@ class RecipeController extends Controller
             ->add('submit', 'submit', array('label' => 'Delete'))
             ->getForm()
         ;
+    }
+
+    /**
+     * Validate ingredient input.
+     *
+     * @Route("/new/ingredientCheck", name="data_recipe_ingredient_check")
+     * @Method("POST")
+     */
+    public function ingredientCheckAction(Request $request)
+    {
+        $contents = $request->request->get('ingredients','');
+        $response = $this->get('gurme_main.ingredient_input_validation')->validate($contents);
+        for ($i = 0; $i < count($response['ingredients']); $i++) {
+            $response['ingredients'][$i]['unitObj'] = null;
+        }
+        return new JsonResponse($response);
     }
 
 }

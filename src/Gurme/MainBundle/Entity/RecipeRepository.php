@@ -72,4 +72,35 @@ class RecipeRepository extends EntityRepository
 
         return $recipes;
     }
+
+    public function searchByCategory($categoryId)
+    {
+        /** @var \Doctrine\ORM\EntityManager $em */
+        $em = $this->getEntityManager();
+        $dql = "SELECT r.id,r.name,r.calories,p.url
+                FROM 'GurmeMainBundle:RecipeCategorie' rc
+                JOIN rc.recipe r
+                JOIN r.coverPhoto p
+                WHERE rc.category = $categoryId
+                ORDER BY r.calories";
+
+        $recipes = $em->createQuery($dql)->getResult();
+
+        return $recipes;
+    }
+
+    public function searchIngredients($query)
+    {
+        /** @var $em \Doctrine\ORM\EntityManager */
+        $em = $this->getEntityManager();
+        $dql = "SELECT i.id,i.name
+                FROM Gurme\MainBundle\Entity\Ingredient i
+                WHERE i.name LIKE '%$query%'
+                OR i.alias LIKE '%$query%'";
+
+        $ingredients = $em->createQuery($dql)->getResult();
+
+        return $ingredients;
+    }
+
 }
