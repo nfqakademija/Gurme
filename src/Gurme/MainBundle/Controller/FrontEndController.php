@@ -42,7 +42,7 @@ class FrontEndController extends Controller
     {
         /** @var \Gurme\MainBundle\Recipe\DataHandler $service */
         $service = $this->get('gurme_main.recipe');
-        $recipe = $service->getFullDescription($id,$this->getUser());
+        $recipe = $service->getFullDescription($id,$this->container->get('security.context')->getToken()->getUser());
         $suggestions = $service->getRandomRecipes(3);
 
         return array('recipe' => $recipe, 'suggestions' => $suggestions);

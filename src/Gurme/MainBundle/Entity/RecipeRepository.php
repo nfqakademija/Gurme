@@ -45,6 +45,12 @@ class RecipeRepository extends EntityRepository
         return $ingredients;
     }
 
+    /**
+     * Search for recipes by calories
+     *
+     * @param $calories
+     * @return array
+     */
     public function searchByCalories($calories)
     {
         $dql = "SELECT r.id,r.name,r.calories,p.url
@@ -57,6 +63,13 @@ class RecipeRepository extends EntityRepository
         return $recipes;
     }
 
+    /**
+     * Search for recipes by calories and ingredients
+     *
+     * @param $calories
+     * @param $ingredients
+     * @return array
+     */
     public function searchByCaloriesAndIngredients($calories,$ingredients)
     {
         $dql = "SELECT DISTINCT r.id,r.name,r.calories,p.url
@@ -73,6 +86,12 @@ class RecipeRepository extends EntityRepository
         return $recipes;
     }
 
+    /**
+     * Get recipes of one particular category
+     *
+     * @param $categoryId
+     * @return array
+     */
     public function searchByCategory($categoryId)
     {
         /** @var \Doctrine\ORM\EntityManager $em */
@@ -89,18 +108,19 @@ class RecipeRepository extends EntityRepository
         return $recipes;
     }
 
+    /**
+     * Get ingredients that match the $query
+     *
+     * @param $query
+     * @return array
+     */
     public function searchIngredients($query)
     {
-        /** @var $em \Doctrine\ORM\EntityManager */
-        $em = $this->getEntityManager();
         $dql = "SELECT i.id,i.name
                 FROM Gurme\MainBundle\Entity\Ingredient i
                 WHERE i.name LIKE '%$query%'
                 OR i.alias LIKE '%$query%'";
-
-        $ingredients = $em->createQuery($dql)->getResult();
-
-        return $ingredients;
+        return $this->getEntityManager()->createQuery($dql)->getResult();
     }
 
 }

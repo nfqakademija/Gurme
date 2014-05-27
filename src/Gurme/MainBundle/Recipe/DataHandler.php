@@ -216,7 +216,7 @@ class DataHandler
     public function checkUserFavorite($id,$user)
     {
         $response = false;
-        if (!is_null($user)
+        if (!is_null($user) && $user != 'anon.'
             && $this->em->getRepository('GurmeMainBundle:UserFavorite')
                 ->findOneBy(array('user' => $user->getId(), 'recipe' => $id))) {
             $response = true ;
