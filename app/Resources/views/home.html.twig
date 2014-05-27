@@ -79,8 +79,10 @@
                     </div>
                     <div class="col-lg-6 col-md-8 col-sm-10 col-xs-12" id="inputDiv" style="">
                         <div style="">
-                            <p class="text-center" style="font-size: 30px;font-weight: bold;">How much calories do I need?</p>
-                            <p class="text-center">Join our community and get hundreds of delicous low calorie recipes. Register and you can get your own calorie programme for your body fit and personality.</p>
+                            <p class="text-center" style="font-size: 42px; line-height: 42px; padding-top: 15px;">
+                                <b>Low calorie</b> dishes <br>are now <b>delicious</b></p>
+                            <p class="text-center" style="font-size: 22px; padding-bottom: 10px;">
+                                Enter calories. Get recipe. Make it. Taste it. Smile!</p>
                             {#<p class="text-center" style="font-size: 26px">Maximum calories:</p>#}
                         </div>
                         <div style="display: table">
@@ -101,12 +103,12 @@
                                         <select data-placeholder="Your favorite ingredients" multiple class="chosen-select form-control" ng-change="ingredientInputChange()"></select>
                                     </div>
 
-                                    <p><a class="btn btn-primary btn-lg" style="width:100%" role="button" ng-click='loadRecipes()' id="btnSearch">Search</a></p>
+                                    <p style="padding: 10px 0 15px 0;"><a class="btn btn-primary btn-lg" style="width:100%" role="button" ng-click='loadRecipes()' id="btnSearch">Search</a></p>
 
                                     {# content, hidden when "Choose ingredients" button is clicked #}
-                                    <div id="orChooseIngredients">
-                                        <p class="text-center" style="">or</p>
-                                        <p><a class="btn btn-default btn-lg" style="width:100%" role="button" onclick='displayIngredientsBlock()'>Choose ingredients</a></p>
+                                    <div id="orChooseIngredients" class="text-center">
+                                        {#<p class="text-center" style="">or</p>#}
+                                        <p style="font-size: 18px;">Any ingredients you want to use? <a class="chooseIngredientsLink" style="width:100%" role="button" onclick='displayIngredientsBlock()'>Choose them!</a></p>
                                     </div>
 
                                     {# content, displayed when no recipes were found #}

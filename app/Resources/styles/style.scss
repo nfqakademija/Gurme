@@ -54,7 +54,7 @@ html, body {
 }
 
 .top-row {
-  margin-top: 20%;
+  margin-top: 10%;
 }
 
 #calories {
@@ -161,5 +161,13 @@ html, body {
     color: #000000;
     text-decoration: none;
     background-color: rgba(51, 153, 255, 0.2);
+  }
+}
+
+.chooseIngredientsLink {
+  text-decoration: underline;
+  &:hover {
+    text-decoration: none;
+    cursor: pointer;
   }
 }
