@@ -45,7 +45,7 @@ app.controller("MainController", function($scope, $http){
     $scope.ingredientCheck = function() {
         $scope.buttonName = "Checking...";
         $http({
-            url: document.location.href.replace(/\/$/,'') + '/ingredientCheck',
+            url: $scope.root + '/editor/recipe/new/ingredientCheck',
             method: "POST",
             data: $.param({ "ingredients" : $scope.ingredientsTextArea }),
             headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
@@ -192,7 +192,7 @@ function displayIngredientsBlock()
     $('.chosen-select').ajaxChosen({
         dataType: 'json',
         type: 'POST',
-        url: document.location.href.replace(/\/$/,'') + '/queryIngredient/ajaxChosen',
+        url: angular.element($('body')).scope().root + '/queryIngredient/ajaxChosen',
         data: {'keyboard':'cat'}, //Or can be [{'name':'keyboard', 'value':'cat'}]. chose your favorite, it handles both.
         success: function(data, textStatus, jqXHR){
             // do somthng

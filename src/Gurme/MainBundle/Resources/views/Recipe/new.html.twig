@@ -39,7 +39,7 @@
 <ng ng-controller='MainController'>
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-12">
-        {{ form_label(form.ingredients) }}&nbsp;&nbsp;{amount} {unit} {ingredient} , {note}
+        {{ form_label(form.ingredients) }}&nbsp;&nbsp;(e.g. [amount] [unit] [ingredient] , [note])
         {{ form_errors(form.ingredients) }}
         {{ form_widget(form.ingredients, { 'attr': {'ng-model': 'ingredientsTextArea'} }) }}
         </div>

@@ -168,8 +168,8 @@ class IngredientInputValidation
             $this->currentLine = preg_replace($pattern, '', $this->currentLine);
         }
         if (!is_null($addToNotes)) {
-            $notes .= (!is_null($notes)) ?
-                $addToNotes . ', ' . $notes : $addToNotes ;
+            $notes = (!is_null($this->notes)) ?
+                $addToNotes . ', ' . $this->notes : $addToNotes ;
         }
 
         return $notes;
